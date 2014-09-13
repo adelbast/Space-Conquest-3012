@@ -1,0 +1,17 @@
+Space Conquest 3012 – Beyond Earth- Cas d'usages
+
+1-	Joindre
+2-	Créer une partie 
+3-	Démarrer la partie
+4-	Créer des unités
+5-	Créer des bâtiments
+6-	Donner un ordre (à une troupe/bâtiment)
+7-	Organiser les troupes
+8-	Déplacement normal
+9-	Attaquer 
+10-	Amélioration des unités/choisir une recherche
+11-	Circonstances de fin de partie
+12-	Communiquer en « one-to-one » (supplémentaire en nœud-à-noeud)
+13-	Retour au menu 
+
+
