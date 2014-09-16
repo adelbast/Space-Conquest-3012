@@ -1,0 +1,64 @@
+RTS
+client/serveur
+internet
+partie
+neuf joueurs
+connecter
+civilisation
+ressources
+environnement
+jeu
+hégémonie
+Exploration
+stratégies
+richesse
+artefacts
+secrets
+habitants
+infrastructure
+véhicules
+constructions défensives
+armes
+communications
+exploitation
+logiciel
+force
+real-time
+monde
+action
+attrition
+pacte
+alliance
+échange
+époques
+sophistications
+troupe
+Morale
+compétence
+moral
+compétence
+résultat
+mécanisme
+récolte
+guerre
+matériel
+outils
+armes
+intelligence Artificielle
+peer-to-peer
+circonstance
+factions
+communication
+interface graphique
+Protocole
+Pyro4
+PIL
+tkinter
+modèle
+frame
+cadre
+boucle de jeu
+actions
+statistiques
+
+
