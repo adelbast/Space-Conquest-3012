@@ -1,0 +1,125 @@
+Titre: SPace Conquest 3012
+
+Nombre de joueur : 2 à 8 ou contre IA
+
+Types de ressources:
+	-nourriture
+		permets de créer des troupes
+	-energie
+		permet la création de vehicule, de batiments et recherche
+	-métaux
+		permet la création des unités, des batiments et de la recherche
+	-artéfacts
+		donne des bonus
+		A DEVELOPPER ( combien et que font les artefacts)
+
+MAP:
+	grosseur : 2000x2000 tiles
+	la map n'est pas généré aléatoirement
+	position de départ défini pour chaque joueur
+	
+TUILES:
+	nombres: 9++
+	
+	Gazon : marchable,survolable
+	Sable : macharble,volable
+	Terre : marchable,volable
+	roche: marchable,volable
+	eau : non-marchable,volable
+	lave : non-marchable,volable
+	foret : marchable,volable
+	montagne : non-marchable, non-volable
+	minerai : non-marchable, non-volable
+	
+	Pour transition, tjrs moins pire des deux -> ex moitié gazon, moitié eau on peux marcher
+	
+		
+Types d'unités:
+Pop.cap : 200 -> commence a 35
+	
+	-ouvriers
+		necessaire pour la création de batiments
+		consumer lors de la creation de batiments******
+		peut réparer des batiments
+	
+	
+	INFANTERIE DE BASTON
+	grosseur : 32x32
+	-Beret Vert( BASTON tier 1)
+	-Space Ninja ( BASTON tier 2)
+	-Predator ( BASTON tier 3 )
+		FORCE : infanterie de portée
+		FAIBLESSE : VEHICULE TERRESTRE
+		ABILITÉ : invisibilité
+	
+	INFANTERIE DE PORTÉE
+	grosseur : 32x32
+	-Trooper (soldat au sol tier 1)
+	-SuperTrooper ( soldat tier 2 gun laser)
+	-Psychonaute ( tier 3)
+		FORCE : vehicule aérien
+		FAIBLESSE : VEHICULE TERRESTRE, BASTON
+		ABILITÉ : coup critique(+ de dmg pendant 2000 tick)
+		
+	VEHICULE TERRESTRE
+	grosseur : 64x64
+	-half Track (vehicule tier 1)
+	-tank(vehicule tier 2)
+	-Mech( vehicule tier 3)
+		FORCE : infanterie
+		FAIBLESSE : VEHICULE aérien
+		ABILITÉ : bonus de vitesse
+	
+	VEHICULE AÉRIEN
+	grosseur : 64x64
+	-Chopper ( Volant tier 1)
+	-Harrier ( Volant tier 2)
+	-Soucoupe Volante( Volant tier 3)
+		FORCE : vehicule terrestre
+		FAIBLESSE : infanterie de portée
+		ABILITÉ : bombardement ( + dmg contre batiments AOE )
+		
+Types de batiments :
+	necessite metaux et energie pour construire
+	
+	quartier général: batiment principal, on commence avec un
+		création d'ouvrier
+		changement d'age
+			
+	caserne:
+		créer infanterie
+	mine:
+		production de métal ( montant par tick )
+	ferme:
+		production de nourriture ( montant par tick)
+	facilité de recherche:
+		amélioration des unités et batiments de la civilisation
+	usine:
+		création de véhicule terrestre
+	aéroport:
+		création d'aéronef
+	panneau solaire:
+		production d'énergie ( montant par tick )
+	mur:
+		comme un tile, non-walkable,volable avec HP
+	tour de garde:
+		attaque les unités ennemies
+
+culture:
+	Politique Gouvernementale
+	dans le HQ 2 options qui coute des ressources :
+	1- monter le moral
+	2- monter la soif de sang
+	niveau de base :100
+		moral augmente la productivité et def.batiment
+		la soif de sang augmente la force générale des unités
+	les deux sont opposés, quand on monte l'un l'autre descend.
+		
+diplomatie:
+	échange de ressources
+	chat
+	possibilité de rendre une autre faction inattaquable
+	
+	
+		
+	
