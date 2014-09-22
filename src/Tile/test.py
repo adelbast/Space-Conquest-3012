@@ -1,9 +1,13 @@
 import Tileset
+import Map
 from PIL import Image
 
-t = Tileset.Tileset(Image.open("tileset.png"), 64, 64)
+m = Map.Map()
 
-t.generateTileset()
+m.generateMapFromFile("map1.csv")
+
+
+
 
 
 

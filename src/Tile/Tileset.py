@@ -1,22 +1,22 @@
-#Proprietaire : Arnaud Girardin
+__author__ = "Arnaud Girardin"
 
 from PIL import Image
 import configparser
 
 class Tileset:
     def __init__(self, tilesetImg, tileWidth, tileHeight):
-        self.tilesetImg = tilesetImg
+        self.tilesetImg = Image.open(tilesetImg)
         self.tileWidth = tileWidth    #Largeur d'une tile
         self.tileHeight = tileHeight    #Hauteur d'une tile
         self.tileset = []
+
+        self.generateTileset()
 
     #Fonction qui genere un tileset avec la tilesetImg
     def generateTileset(self):
 
         cfg = configparser.ConfigParser()
-        cfg.read('tileconfig.cfg')
-
-        
+        cfg.read('Tile/tileconfig.cfg')
 
         #Variables contenant la grandeur total de l'image
         (totalWidth, totalHeight) = self.tilesetImg.size
@@ -42,22 +42,19 @@ class Tileset:
 
                     #Image temporaire pour la tile
                     img = self.tilesetImg.crop((x*self.tileWidth,y*self.tileHeight, (x*self.tileWidth)+self.tileWidth, (y*self.tileHeight)+self.tileHeight))
-
-                    #img.save('tile'+str(x)+'.png')
                     
                     tilecfg = cfg[str((y*10)+x)]
                     
                     self.tileset.append(Tile(tilecfg['name'], tilecfg.getboolean('Walkable'), tilecfg.getboolean('Flyable'), img))
                     
                     print(self.tileset[len(self.tileset)-1].name, self.tileset[len(self.tileset)-1].isWalkable, self.tileset[len(self.tileset)-1].isFlyable)
+
                     
                 #Le tileset est termine
                 else:
                     return
-                    
-            
-        
 
+                    
 class Tile:
     def __init__(self, name, isWalkable, isFlyable, img):
         self.name = name
