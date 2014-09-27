@@ -8,15 +8,26 @@ class Vue:
         self.root = Tk()
         self.root.resizable(0,0)
         self.root.title("RTS")
-        self.width = 1200
-        self.height = 800
+
+        #Mesures de la fenetre
+        self.windowWidth = 1200
+        self.windowHeight = 800
+
+        #Mesures de la minimap
         self.miniMapW = 250
         self.miniMapH = 150
-        self.root.geometry(str(self.width)+"x"+str(self.height))
+
+        #Mesures de la surface de jeu
+        self.surfaceW = 1200
+        self.surfaceH = 550
+
+        self.root.geometry(str(self.windowWidth)+"x"+str(self.windowHeight))
 
         #Mesures reduites par rapport au canvas original
-        self.relativeW = math.floor(self.width*self.miniMapW/(len(self.parent.modele.map.map[0])*64))
-        self.relativeH = math.floor(self.height*self.miniMapH/(len(self.parent.modele.map.map)*64))
+        self.relativeW = math.floor(self.surfaceW*self.miniMapW/(len(self.parent.modele.map.map[0])*64))
+        self.relativeH = math.floor(self.surfaceH*self.miniMapH/(len(self.parent.modele.map.map)*64))
+
+        print(self.relativeW, self.relativeH)
 
         #Image pour le HUD
         self.imageHUD = Image.open("gui/gui.png")
@@ -29,7 +40,7 @@ class Vue:
         #Initialisation de la surface de jeu
         self.hud = Canvas(self.root,height=250, width=1200,highlightthickness=0)
         self.miniMap = Canvas(self.root, width=self.miniMapW, height=self.miniMapH, bg='black', highlightthickness=0)
-        self.surfaceJeu = Canvas(self.root, width=1200, height=550, bg='white', highlightthickness=0)
+        self.surfaceJeu = Canvas(self.root, width=self.surfaceW, height=self.surfaceH, bg='white', highlightthickness=0)
         self.surfaceJeu.configure(scrollregion=(0,0,len(self.parent.modele.map.map[0])*64,len(self.parent.modele.map.map)*64))
         print("Map size:", len(self.parent.modele.map.map[0])*64, len(self.parent.modele.map.map)*64)
         self.surfaceJeu.place(x=0, y=0)
@@ -97,6 +108,6 @@ class Vue:
         posx = math.floor(self.surfaceJeu.canvasx(0)*self.miniMapW/(len(self.parent.modele.map.map[0])*64))
         posy = math.floor(self.surfaceJeu.canvasy(0)*self.miniMapH/(len(self.parent.modele.map.map)*64))
         
-        self.miniMap.create_rectangle(posx, posy, posx + self.relativeW, posy + self.relativeH - 12, outline='red', tags="region")
+        self.miniMap.create_rectangle(posx, posy, posx + self.relativeW, posy + self.relativeH, outline='red', tags="region")
         
         
