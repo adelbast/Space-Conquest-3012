@@ -1,6 +1,7 @@
 from tkinter import *
 import math
 from PIL import ImageTk, Image
+import os
 
 class Vue:
     def __init__(self, parent):    
@@ -56,7 +57,6 @@ class Vue:
 
         #Pour le click sur la map
         self.miniMap.bind("<Button-1>", self.miniMapClick)
-        self.miniMap.bind("<B1-Motion>", self.miniMapClick)
         
     
 
@@ -126,7 +126,7 @@ class Vue:
              
                 self.surfaceJeu.create_image(x*64,y*64,anchor=NW, image=self.parent.modele.tileset.tileset[int(self.parent.modele.map.map[y][x])].img, tags="tile")
 
-
+              
     #Affiche le HUD
     def displayHUD(self):
         self.hud.create_image(0,0,anchor=NW,image=self.photoImageHUD, tags="hud")
