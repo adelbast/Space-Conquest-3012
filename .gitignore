@@ -6,4 +6,6 @@
 
 
 #Fichier à ne pas sync:
-~$*
+
+#Tout fichier débutant par un tilde...
+**/~*
