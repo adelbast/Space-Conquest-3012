@@ -1,9 +1,11 @@
 from Tile import Tileset
 from Tile import Map
+from Sprites import Sprites
 
 class Modele:
     def __init__(self, parent):
         self.parent = parent
+<<<<<<< HEAD
         self.map = Map.Map("Tile/map1.csv")           
         self.tileset = Tileset.Tileset("Tile/tileset.png", 64, 64) #Element visual qui doit aller dans la vue
         print(self.tileset.tileset[0].name)
@@ -24,8 +26,13 @@ class Ouvrier (Unite):
       
         
         
+=======
+        self.infantry = Sprites.Sprites(32,32,96,128, "Sprites/infantryconfig.cfg")
+        self.map = Map.Map("Tile/map1.csv")
+        self.tileset = Tileset.Tileset("image/tileset/tileset.png", 64, 64)
+>>>>>>> 78c8f04525c05943e096cd4971641eb3f9538586
         
-    
+        print(self.infantry.spriteDict)
         
         
 if __name__ == '__main__':
