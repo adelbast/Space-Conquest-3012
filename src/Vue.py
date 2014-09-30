@@ -126,6 +126,15 @@ class Vue:
              
                 self.surfaceJeu.create_image(x*64,y*64,anchor=NW, image=self.parent.modele.tileset.tileset[int(self.parent.modele.map.map[y][x])].img, tags="tile")
 
+    def displayObject(self,units,structure,artefact):
+        self.surfaceJeu.delete("unit","structure","artefact")
+        for i in units:
+            self.surfaceJeu.create_image(i.position[0],anchor=NW,image =i.position[1],sprites[i.name],tags="unit")
+        for i in structure:
+            self.surfaceJeu.create_image(i.position[0],anchor=NW,image =i.position[1],sprites[i.name],tags="structure")
+        for i in artefect:
+            self.surfaceJeu.create_image(i.position[0],anchor=NW,image =i.position[1],sprites[i.name],tags="artefect")
+        
               
     #Affiche le HUD
     def displayHUD(self):
