@@ -1,4 +1,4 @@
-Titre: SPace Conquest 3012
+﻿Titre: SPace Conquest 3012
 
 Nombre de joueur : 2 à 8 ou contre IA
 
@@ -43,7 +43,7 @@ Pop.cap : 200 -> commence a 35
 		peut réparer des batiments
 	
 	
-	INFANTERIE DE BASTON
+	INFANTERIE DE COMBAT
 	grosseur : 32x32
 	-Beret Vert( BASTON tier 1)
 	-Space Ninja ( BASTON tier 2)

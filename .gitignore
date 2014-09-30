@@ -1,0 +1,9 @@
+#S'il vous plaît, ajouter tout fichier temporaire à cette liste, AVANT DE COMMIT!!
+
+#Dossier à ne pas sync:
+**/__pycache__
+
+
+
+#Fichier à ne pas sync:
+~$*

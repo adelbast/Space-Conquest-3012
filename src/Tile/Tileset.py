@@ -32,7 +32,7 @@ class Tileset:
                 
                 #Si la premiere pixel de la case n'est pas transparente
                 for i in self.tilesetImg.getpixel((x*self.tileWidth,y*self.tileHeight)):
-                    print(i)
+                    #print(i)
                     if i != 0:
                         isTransparent = False
                         break
@@ -47,7 +47,7 @@ class Tileset:
                     
                     self.tileset.append(Tile(tilecfg['name'], tilecfg.getboolean('Walkable'), tilecfg.getboolean('Flyable'), img))
                     
-                    print(self.tileset[len(self.tileset)-1].name, self.tileset[len(self.tileset)-1].isWalkable, self.tileset[len(self.tileset)-1].isFlyable)
+                    #print(self.tileset[len(self.tileset)-1].name, self.tileset[len(self.tileset)-1].isWalkable, self.tileset[len(self.tileset)-1].isFlyable)
 
                     
                 #Le tileset est termine
