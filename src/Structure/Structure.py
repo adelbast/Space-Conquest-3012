@@ -1,7 +1,7 @@
 class Structure (object):
     def __init__(self,name,xy,cost,hp,img,size,owner):
         self.name = name
-        self.position = xy
+        self.xy = xy
         self.cost = cost
         self.hp =hp
         self.image =img
