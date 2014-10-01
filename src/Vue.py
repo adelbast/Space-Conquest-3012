@@ -35,8 +35,8 @@ class Vue:
         self.photoImageHUD = ImageTk.PhotoImage(self.imageHUD)
 
         #Pour transferer les images en PhotoImage
-        for tile in self.parent.modele.tileset.tileset:
-            tile.img = ImageTk.PhotoImage(tile.img)
+        """for tile in self.parent.modele.tileset.tileset: #Xav : Arnaud, fait quelquechose avec ça!!!
+            tile.img = ImageTk.PhotoImage(tile.img)"""
             
         #Initialisation de la surface de jeu
         self.hud = Canvas(self.root,height=250, width=1200,highlightthickness=0)
@@ -122,18 +122,18 @@ class Vue:
 
             #Pour chaque colone
             for x in range(0, len(self.parent.modele.map.map[0])):
-
-             
-                self.surfaceJeu.create_image(x*64,y*64,anchor=NW, image=self.parent.modele.tileset.tileset[int(self.parent.modele.map.map[y][x])].img, tags="tile")
-
-    def displayObject(self,units,structure,artefact):
+                                                                            #Ça c'est mal! Demander en parametre et le controleur va te le donner
+                pass#Xav : ARNAUD!!!! Need a fix!                                     V
+                #self.surfaceJeu.create_image(x*64,y*64,anchor=NW, image=self.parent.modele.tileset.tileset[int(self.parent.modele.map.map[y][x])].img, tags="tile")
+                                                                                                                        #   /\
+    def displayObject(self,units,structure,artefact):                                                                   #Le mal est partout!
         self.surfaceJeu.delete("unit","structure","artefact")
         for i in units:
-            self.surfaceJeu.create_image(i.position[0],anchor=NW,image =i.position[1],sprites[i.name],tags="unit")
+            self.surfaceJeu.create_image(i.position[0],anchor=NW,image =i.position[1],name = sprites[i.name],tags="unit")
         for i in structure:
-            self.surfaceJeu.create_image(i.position[0],anchor=NW,image =i.position[1],sprites[i.name],tags="structure")
+            self.surfaceJeu.create_image(i.position[0],anchor=NW,image =i.position[1],name = sprites[i.name],tags="structure")
         for i in artefect:
-            self.surfaceJeu.create_image(i.position[0],anchor=NW,image =i.position[1],sprites[i.name],tags="artefect")
+            self.surfaceJeu.create_image(i.position[0],anchor=NW,image =i.position[1],name = sprites[i.name],tags="artefect")
         
               
     #Affiche le HUD

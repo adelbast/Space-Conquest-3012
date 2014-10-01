@@ -1,13 +1,13 @@
-import Vue
-import Modele
-from Class import Server
-from Class import Client
+from Vue    import Vue
+from Modele import Modele
+from Class.Server import Server
+from Class.Client import Client
 
 class Controleur:
     def __init__(self):
-        self.modele = Modele.Modele()
-        self.vue = Vue.Vue(self)
-        self.client = None      #Client.Client()
+        self.modele = Modele()
+        self.vue = Vue(self)
+        self.client = None      #Client()
         self.serveur = None
         self.vue.root.mainloop()
 
@@ -15,7 +15,7 @@ class Controleur:
         self.serveur = Serveur.Serveur(nomPartie,nomJoueur)
 
     def lancerPartie(self):
-        self.modele.initPartie
+        self.modele.initPartie(0,["Xavier","Antoine","AI","Laurence","Arnaud","Francis","Alexandre","AI"],True)
 
     def gameLoop(self):
         self.modele.gestion()

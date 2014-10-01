@@ -26,7 +26,7 @@ class Serviteur(object):
 		return info
 
         
-class Main(object):
+class Server(object):
 	def __init__(self, nomServeur,nomJoueurHost):
 		self.port = 9988
 		self.ip = socket.gethostbyname(socket.gethostname())
