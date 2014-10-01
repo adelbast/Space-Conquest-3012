@@ -9,13 +9,16 @@ class Controleur:
         self.vue = Vue(self)
         self.client = None      #Client()
         self.serveur = None
+        self.lancerPartie()
         self.vue.root.mainloop()
 
     def creeServer(self):
         self.serveur = Serveur.Serveur(nomPartie,nomJoueur)
 
     def lancerPartie(self):
-        self.modele.initPartie(0,["Xavier","Antoine","AI","Laurence","Arnaud","Francis","Alexandre","AI"],True)
+        self.vue.displayMap(self.modele.map)
+        self.vue.displayHUD()
+        #self.modele.initPartie(0,["Xavier","Antoine","AI","Laurence","Arnaud","Francis","Alexandre","AI"],True)
 
     def gameLoop(self):
         self.modele.gestion()

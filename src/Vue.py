@@ -1,6 +1,7 @@
 from tkinter import *
 import math
 from PIL import ImageTk, Image
+from Tile import Tileset
 import os
 
 class Vue:
@@ -8,7 +9,10 @@ class Vue:
         self.parent = parent #Pour l'heritage provenant du Controleur
         self.root = Tk()
         self.root.resizable(0,0)
-        self.root.title("RTS")
+        self.root.title("Space Conquest 3012")
+
+        #Creation du Tileset
+        self.tileset = Tileset.Tileset("Image/tileset/tileset.png",64,64)
 
         #Mesures de la fenetre
         self.windowWidth = 1200
@@ -17,6 +21,7 @@ class Vue:
         #Mesures de la minimap
         self.miniMapW = 250
         self.miniMapH = 150
+        self.miniMapImage = None
 
         #Mesures de la surface de jeu
         self.surfaceW = 1200
@@ -35,8 +40,8 @@ class Vue:
         self.photoImageHUD = ImageTk.PhotoImage(self.imageHUD)
 
         #Pour transferer les images en PhotoImage
-        """for tile in self.parent.modele.tileset.tileset: #Xav : Arnaud, fait quelquechose avec ça!!!
-            tile.img = ImageTk.PhotoImage(tile.img)"""
+        for tile in self.tileset.tileset: 
+            tile.pImg = ImageTk.PhotoImage(tile.img)
             
         #Initialisation de la surface de jeu
         self.hud = Canvas(self.root,height=250, width=1200,highlightthickness=0)
@@ -46,17 +51,13 @@ class Vue:
         print("Map size:", len(self.parent.modele.map.map[0])*64, len(self.parent.modele.map.map)*64)
         self.surfaceJeu.place(x=0, y=0)
         
-        self.displayMap()
-        self.displayMiniMap()
-        self.updateMiniMap()
-        self.displayHUD()
-        
 
         #Pour que le canvas scroll lorsquon click
         self.root.bind("<Key>", self.scroll_move)
 
         #Pour le click sur la map
         self.miniMap.bind("<Button-1>", self.miniMapClick)
+        self.miniMap.bind("<B1-Motion>", self.miniMapClick)
         
     
 
@@ -115,19 +116,32 @@ class Vue:
        
         
     #Affiche la map
-    def displayMap(self):
+    def displayMap(self, mapObj):
+
+        self.miniMapImage = Image.new('RGB', (len(mapObj.map[0])*64,len(mapObj.map)*64))
         
         #Pour chaque ligne
-        for y in range(0, len(self.parent.modele.map.map)):
+        for y in range(0, len(mapObj.map)):
 
             #Pour chaque colone
-            for x in range(0, len(self.parent.modele.map.map[0])):
-                                                                            #Ça c'est mal! Demander en parametre et le controleur va te le donner
-                pass#Xav : ARNAUD!!!! Need a fix!                                     V
-                #self.surfaceJeu.create_image(x*64,y*64,anchor=NW, image=self.parent.modele.tileset.tileset[int(self.parent.modele.map.map[y][x])].img, tags="tile")
-                                                                                                                        #   /\
-    def displayObject(self,units,structure,artefact):                                                                   #Le mal est partout!
+            for x in range(0, len(mapObj.map[0])):
+
+                temp = self.tileset.tileset[int(mapObj.map[y][x])].img
+                self.miniMapImage.paste(temp, (x*64, y*64))
+
+                self.surfaceJeu.create_image(x*64,y*64,anchor=NW, image=self.tileset.tileset[int(mapObj.map[y][x])].pImg, tags="tile")
+
+        self.miniMapImage = self.miniMapImage.resize((self.miniMapW,self.miniMapH), Image.BILINEAR)
+        self.miniMapImage = ImageTk.PhotoImage(self.miniMapImage)
+
+        self.displayMiniMap()
+        self.updateMiniMap()
+
+                                                                                                           
+    def displayObject(self,units,structure,artefact):
+        
         self.surfaceJeu.delete("unit","structure","artefact")
+        
         for i in units:
             self.surfaceJeu.create_image(i.position[0],anchor=NW,image =i.position[1],name = sprites[i.name],tags="unit")
         for i in structure:
@@ -144,6 +158,7 @@ class Vue:
     #Affiche la minimap a la bonne position
     def displayMiniMap(self):      
         self.miniMap.place(x=928, y=600)
+        self.miniMap.create_image(0,0, anchor=NW, image=self.miniMapImage, tags="miniMapImage")
 
     #Update la camera sur la minimap et aussi l'affichage des unites
     def updateMiniMap(self):

@@ -61,3 +61,4 @@ class Tile:
         self.isWalkable = isWalkable
         self.isFlyable = isFlyable
         self.img = img
+        self.pImg = None
