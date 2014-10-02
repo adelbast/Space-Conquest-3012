@@ -15,7 +15,7 @@ class Modele(object):
         self.map = Map("Tile/map1.csv")
 
         self.dicAction2Server = {}
-        self.dicActionFromServer = [{
+        self.dicActionFromServer = [{#joueur1
                                     "Deplacement":     (0, 500,500),#(noUnit, cibleX, cibleY)
                                     "DeplacementCible":(1, 2, 1, 0),#(noUnit, noProprio, 0:unité/1:structure , noUnitCible)
                                     "RechercheAge": 1,          #si changement d'âge
@@ -24,17 +24,17 @@ class Modele(object):
                                     "SuppressionBatiment":1,    #noBatiment
                                     "SuppressionUnit":2},       #noUnit
                                     
-                                    {
+                                    {#joueur2
 
                                     },
-                                    {},
-                                    {}]
+                                    {},#joueur3
+                                    {}]#joueur4...
 
     def initPartie(self,noJoueur,listeNomJoueur,host=False):
         self.noJoueurLocal = noJoueur
         for nomJoueur in listeNomJoueur:
             if(nomJoueur == "AI"):
-                self.listeJoueur.append(AI())
+                self.listeJoueur.append(AI(len(self.listeJoueur)))
             else:
                 self.listeJoueur.append(Joueur(nomJoueur,len(self.listeJoueur)))
         self.host = host

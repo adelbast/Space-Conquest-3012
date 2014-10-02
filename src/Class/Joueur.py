@@ -15,6 +15,7 @@ class Joueur():
         self.nbUnite=0
         self.idUnite=0
         self.idBatiment=0
+        print("Joueur " + self.nom + ", numero " + str(noJoueur))
         
 
     def creerBatiment(self,typeBatiment,position,pathConfig):
