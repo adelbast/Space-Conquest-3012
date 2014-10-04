@@ -36,17 +36,25 @@ class Controleur:
         self.vue.root.after(24,self.gameLoop)
 
     def gererMouseClick(self,event):
-        self.clickDroitPress = event
+        self.modele.drag = False
         self.modele.gererMouseClick(event)
 
-    def gererMouseDrag(self,click,event):
-        if(self.drag or event.x>click.x+16  or  event.x<click.x-16  or  event.y>click.y+16  or  event.y<click.y-16): #si il y a eu un déplacement de la souris de plus de 16px de la source, c'est considerer un drag
+    def gererMouseDrag(self):
+        if(self.modele.ClickPosx != self.modele.ReleasePosx): #condition non fini, juste pour test
+            self.modele.drag = True
+            self.modele.gererDrag()
+            print("DRAG", "depart: " ,self.modele.ClickPosx , self.modele.ClickPosy, "Fin: ", self.modele.ReleasePosx, self.modele.ReleasePosy )
+            #self.vue.dessinerSelection((self.modele.ClickPosx,self.modele.ClickPosy),(self.modele.ReleasePosx,self.modele.ReleasePosy))
+
+
+
+        """if(self.drag or event.x>click.x+16  or  event.x<click.x-16  or  event.y>click.y+16  or  event.y<click.y-16): #si il y a eu un déplacement de la souris de plus de 16px de la source, c'est considerer un drag
             self.drag = True
-            self.vue.dessinerSelection((click.x,click.y),(event.x,event.y))
+            self.vue.dessinerSelection((click.x,click.y),(event.x,event.y))"""
 
     def gererMouseRelease(self,event):
-        self.drag = False
-        self.modele.gererMouseRelease(self.clickDroitPress,event)
+        self.modele.gererMouseRelease(event)
+        self.gererMouseDrag()
 
 if __name__ == "__main__":
     c = Controleur()

@@ -8,7 +8,6 @@ class Modele(object):
         self.host = False
         self.listeJoueur = []
         self.noJoueurLocal = None
-
         self.maxUnite = 20  #???
         self.selection = []
         self.listeArtefact = []
@@ -32,7 +31,13 @@ class Modele(object):
                                     },
                                     {},#joueur3
                                     {}]#joueur4...
-
+        # facilite la gestion de la souris
+        self.ClickPosx = 0
+        self.ClickPosy = 0
+        self.ReleasePosx = 0
+        self.ReleasePosy = 0
+        self.drag = False
+    
     def initPartie(self,noJoueur,listeNomJoueur,host=False):
         self.noJoueurLocal = noJoueur
         for nomJoueur in listeNomJoueur:
@@ -70,15 +75,17 @@ class Modele(object):
                                 noArtefact = valeur
                             elif(clee == "PerteArtefact"):
                                 noArtefact = valeur
-        
 
-
-    def gererMouseClick(self,mousePress,mouseRelease):
-        if(event.num == 0):#assomption de bouton gauche
+    def gererMouseClick(self,event): #ne faudrait-il pas mettre tout cela dans mouse release,ainsi on peu mettre une condition pour savoir si il y a drag ou non
+        if(event.num == 0): #assomption de bouton droit
             cible = self.clickCibleOuTile(event.x,event.y)
             self.modifierSelection(cible)
 
-        if(event.num == 1):     #assomption de bouton droit
+        if(event.num == 1):     #assomption de bouton gauche
+            #print("dans le modeleClick", event.x, event.y)
+            self.ClickPosx = event.x
+            self.ClickPosy = event.y
+            print("okay click fait")
             if(self.selection): #Si le joueur a quelque chose de sélectionné, sinon inutile
                 if(self.selection[0].owner.noJoueur == self.noJoueurLocal):
 
@@ -94,10 +101,17 @@ class Modele(object):
                         for unite in self.selection:
                             unite.move(cible)
 
+    def gererDrag(self):
+        if(self.drag == True):
+            print("drag dans modele")
+        #faire gestion de la selection multiple
 
-
-    def gererMouseRelease(self,mousePress,mouseRelease):
-        pass
+    def gererMouseRelease(self,event):
+       # print("dans le mouseReleaseModele", event.x, event.y)
+       # a ajouter : le rajout des unite entre clickXY et releaseXY
+        self.ReleasePosx = event.x
+        self.ReleasePosy = event.y
+        print("mouseRelease")
 
     def clickCibleOuTile(self,x,y): #retourne None pour un tile et la cible pour une cible
     #fonction qui regarde si le clic est sur un batiment ou une unité

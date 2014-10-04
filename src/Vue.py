@@ -59,7 +59,9 @@ class Vue:
         self.miniMap.bind("<Button-1>", self.miniMapClick)
         self.miniMap.bind("<B1-Motion>", self.miniMapClick)
         
-    
+        self.surfaceJeu.bind("<Button-1>",self.mapClick)
+        self.surfaceJeu.bind("<ButtonRelease-1>",self.mapRelease)
+        # manque right click pour cancel selection
 
     #Deplacement de la map avec WASD
     def scroll_move(self, event):
@@ -84,6 +86,12 @@ class Vue:
         print(self.surfaceJeu.canvasx(0), self.surfaceJeu.canvasy(0))
 
         self.updateMiniMap()
+
+    def mapClick(self,event):
+        self.parent.gererMouseClick(event)
+
+    def mapRelease(self,event):
+        self.parent.gererMouseRelease(event)
 
     #Deplacer la camera lorsqu'on clique sur le canvas de la minimap
     def miniMapClick(self, event):
