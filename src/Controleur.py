@@ -9,7 +9,6 @@ class Controleur:
         self.vue = Vue(self)
         self.client = None
         self.serveur = None
-        self.drag = False
         self.clickDroitPress = None
         self.lancerPartie()#lorsque le menu sera fait, utiliser la fontion du bas plutôt que celle-ci
         #self.vue.afficherMenu()
@@ -37,20 +36,13 @@ class Controleur:
 
     def gererMouseClick(self,event):
         self.modele.drag = False
-        self.modele.gererMouseClick(event)
+        self.modele.ClickPosx = event.x
+        self.modele.ClickPosy = event.y
 
     def gererMouseDrag(self):
-        if(self.modele.ClickPosx != self.modele.ReleasePosx): #condition non fini, juste pour test
-            self.modele.drag = True
-            self.modele.gererDrag()
+        if(self.modele.ClickPosx != self.modele.ReleasePosx and self.modele.ClickPosy != self.modele.ReleasePosy):
             print("DRAG", "depart: " ,self.modele.ClickPosx , self.modele.ClickPosy, "Fin: ", self.modele.ReleasePosx, self.modele.ReleasePosy )
-            #self.vue.dessinerSelection((self.modele.ClickPosx,self.modele.ClickPosy),(self.modele.ReleasePosx,self.modele.ReleasePosy))
-
-
-
-        """if(self.drag or event.x>click.x+16  or  event.x<click.x-16  or  event.y>click.y+16  or  event.y<click.y-16): #si il y a eu un déplacement de la souris de plus de 16px de la source, c'est considerer un drag
-            self.drag = True
-            self.vue.dessinerSelection((click.x,click.y),(event.x,event.y))"""
+            self.vue.dessinerSelection((self.modele.ClickPosx,self.modele.ClickPosy),(self.modele.ReleasePosx,self.modele.ReleasePosy))
 
     def gererMouseRelease(self,event):
         self.modele.gererMouseRelease(event)
