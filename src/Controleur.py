@@ -46,7 +46,8 @@ class Controleur:
 
     def gererMouseRelease(self,event):
         self.modele.gererMouseRelease(event)
-        self.gererMouseDrag()
+        if(event.num == 1):
+            self.gererMouseDrag()
 
 if __name__ == "__main__":
     c = Controleur()

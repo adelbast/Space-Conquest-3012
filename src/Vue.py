@@ -61,6 +61,7 @@ class Vue:
         
         self.surfaceJeu.bind("<Button-1>",self.parent.gererMouseClick)
         self.surfaceJeu.bind("<ButtonRelease-1>",self.parent.gererMouseRelease)
+        self.surfaceJeu.bind("<Button-3>", self.parent.gererMouseRelease)
         # manque right click pour cancel selection
 
     #Deplacement de la map avec WASD
@@ -86,7 +87,7 @@ class Vue:
         print(self.surfaceJeu.canvasx(0), self.surfaceJeu.canvasy(0))
 
         self.updateMiniMap()
-
+    
     #Deplacer la camera lorsqu'on clique sur le canvas de la minimap
     def miniMapClick(self, event):
         print(event.x, event.y)

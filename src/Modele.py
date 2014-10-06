@@ -76,16 +76,36 @@ class Modele(object):
                                 noArtefact = valeur
 
     def gererMouseRelease(self,event):
-        if(event.num == 0):
+        if(event.num == 3): #clic droit
             cible = self.clickCibleOuTile(event.x,event.y)
             self.modifierSelection(cible)
-        if(event.num == 1):
+            print("rightClick")
+        
+        if(event.num == 1): #clic gauche
             self.ReleasePosx = event.x
             self.ReleasePosy = event.y
             print("okay release fait")
             if(self.ClickPosx != self.ReleasePosx and self.ClickPosy != self.ReleasePosy):
                 print("selection MULTIPLE!!!!!!!!! DRAG")
-                # le code pour la selection multiple va aller ici
+                for unit in self.listeJoueur[0].listeUnite: #a changer a joueur actuel plutot que [0], je prends seulement les unites puisque selection multiple de batiment inutile
+                    if (self.ClickPosx < self.ReleasePosx and self.ClickPosy < self.ReleasePosy): # on doit faire 4 different if en fonction de comment le drag a ete fait
+                    # de haut Droit a Bas Gauche       de haut gauche a bas droit etc
+                        if (unit.x > self.ClickPosx and unit.x < self.ReleasePosx and unit.y > self.ClickPosy and unit.y < self.ReleasePosy ): #HG a BD
+                            self.selection.append(unit)
+                            print("HG a BD")
+                    elif (self.ClickPosx > self.ReleasePosx and self.ClickPosy > self.ReleasePosy):
+                        if (unit.x < self.ClickPosx and unit.x > self.ReleasePosx and unit.y < self.ClickPosy and unit.y > self.ReleasePosy ): #BD a HG
+                            self.selection.append(unit)
+                            print("BD a HG")
+                    elif(self.ClickPosx < self.ReleasePosx and self.ClickPosy > self.ReleasePosy):
+                        if (unit.x > self.ClickPosx and unit.x < self.ReleasePosx and unit.y < self.ClickPosy and unit.y > self.ReleasePosy ): #BG a HD
+                            self.selection.append(unit)
+                            print("BG a HD")
+                    else:
+                        if (unit.x < self.ClickPosx and unit.x > self.ReleasePosx and unit.y < self.ClickPosy and unit.y > self.ReleasePosy ): #BD a HG
+                            self.selection.append(unit)
+                            print("BD a HG")
+
             elif(self.selection): #Si le joueur a quelque chose de sélectionné, sinon inutile
                 if(self.selection[0].owner.noJoueur == self.noJoueurLocal):
 
@@ -103,7 +123,7 @@ class Modele(object):
 
     def clickCibleOuTile(self,x,y): #retourne None pour un tile et la cible pour une cible
     #fonction qui regarde si le clic est sur un batiment ou une unité
-        for joueur in listeJoueur:
+        for joueur in self.listeJoueur:
             liste = joueur.listeUnite+joueur.listeBatiment
             for chose in liste:
                 if(x < chose.position[0]):#+grosseur/2
