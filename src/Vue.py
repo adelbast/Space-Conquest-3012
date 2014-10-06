@@ -2,6 +2,7 @@ from tkinter import *
 import math
 from PIL import ImageTk, Image
 from Tile import Tileset
+from Sprites import Sprites
 import os
 
 class Vue:
@@ -13,6 +14,10 @@ class Vue:
 
         #Creation du Tileset
         self.tileset = Tileset.Tileset("Image/tileset/tileset.png",64,64)
+
+        #Creation des Sprites
+        self.sprites = Sprites.Sprites(32,32,96,128,"Config/AttributeInfantryUnits.cfg")
+        print(self.sprites.spriteDict)
 
         #Mesures de la fenetre
         self.windowWidth = 1200
@@ -87,7 +92,7 @@ class Vue:
         print(self.surfaceJeu.canvasx(0), self.surfaceJeu.canvasy(0))
 
         self.updateMiniMap()
-    
+
     #Deplacer la camera lorsqu'on clique sur le canvas de la minimap
     def miniMapClick(self, event):
         print(event.x, event.y)

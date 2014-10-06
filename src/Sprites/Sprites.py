@@ -20,13 +20,10 @@ class Sprites:
         cfg.read(self.cfgPath)
 
 
-        for i in range (0, len(cfg.sections())):
+        for unit in cfg.sections() :
 
-            print(i)
-            
-            spritecfg = cfg[str(i)]
 
-            sprites = Image.open("Sprites/Sprites/"+spritecfg['name']+".png")
+            sprites = Image.open("Sprites/Sprites/"+unit+".png")
                 
             #Axe verticale pour l'ensemble de spriteset
             for y in range(int(self.totalH/self.spriteH)):
@@ -38,24 +35,24 @@ class Sprites:
 
                     if(y == 0):
                         if(x == 0):
-                            self.spriteDict.update({spritecfg['name']: {'front' : {str(x): img}}})
+                            self.spriteDict.update({unit: {'front' : {str(x): img}}})
                         else:
-                            self.spriteDict[spritecfg['name']]['front'].update({str(x): img})
+                            self.spriteDict[unit]['front'].update({str(x): img})
                     elif(y == 1):
                         if(x == 0):
-                            self.spriteDict[spritecfg['name']].update({'left' : {str(x): img}})
+                            self.spriteDict[unit].update({'left' : {str(x): img}})
                         else:
-                            self.spriteDict[spritecfg['name']]['left'].update({str(x): img})
+                            self.spriteDict[unit]['left'].update({str(x): img})
                     elif(y == 2):
                         if(x == 0):
-                            self.spriteDict[spritecfg['name']].update({'right' : {str(x): img}})
+                            self.spriteDict[unit].update({'right' : {str(x): img}})
                         else:
-                            self.spriteDict[spritecfg['name']]['right'].update({str(x): img})
+                            self.spriteDict[unit]['right'].update({str(x): img})
                     elif(y == 3):
                         if(x == 0):
-                            self.spriteDict[spritecfg['name']].update({'back' : {str(x): img}})
+                            self.spriteDict[unit].update({'back' : {str(x): img}})
                         else:
-                            self.spriteDict[spritecfg['name']]['back'].update({str(x): img})
+                            self.spriteDict[unit]['back'].update({str(x): img})
 
                   
             
