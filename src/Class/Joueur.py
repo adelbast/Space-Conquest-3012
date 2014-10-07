@@ -13,28 +13,31 @@ class Joueur():
         self.diplomatieStatus=False
         self.nbBatiment=0
         self.nbUnite=0
-        self.idUnite=0
-        self.idBatiment=0
         print("Joueur " + self.nom + ", numero " + str(noJoueur))
         
 
-    def creerBatiment(self,typeBatiment,position,pathConfig):
-        cfg=configparser.ConfigParser()
-        cfg.read(pathConfig)
-        if self.batimentPossible(self,typeBatiment,self.listeRessource):
-            if modele.caseDisponible(position):
-                self.listeBatiment.append(typeBatiment,position)
-                self.listeRessource[0]-=cfg[typeBatiment][costFood]
-                self.listeRessource[1]-=cfg[typeBatiment][costMetal]
-                self.listeRessource[2]-=cfg[typeBatiment][costPower]
-                
-        return print("batiment cree")
+    def creerBatiment(self,position,worker,nom,attributs): #fr
+        if self.assezRessources(nom,attributs): #pour savoir si assezRessource
+                self.listeBatiment.append(Batiment(nom,position))
+                self.listeRessource[0] -= attributs[1][0] #food
+                self.listeRessource[1] -= attributs[1][1] #metaux
+                self.listeRessource[2] -= attributs[1][2] #energie
+                return print("batiment cree")
 
-    def supprimerBatiment(self,batiment):
-        if batiment.owner==self.NoJoueur:
-            batiment.selfDestroy()
-
-            return print("batiment supprime")
+    def assezRessources(self,nom,attributs): #fr
+        if(self.listeRessource[0] < attributs[1][0]
+           or self.listeRessource[1] < attributs[1][1]
+           or self.listeRessource[2] < attributs[1][2]):
+            return False;
+        return True;
+            
+    def supprimerBatiment(self,idbatiment): #fr
+        count =0
+        for i in self.listeBatiment:
+            if (i.id == idbatiment):
+                self.listeBatiment.pop(count)
+                return print("batiment supprime")
+            count+=1
 
     def creerUnite(self,typeUnite,position):
         cfg=configparser.ConfigParser()
