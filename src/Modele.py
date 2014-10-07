@@ -12,8 +12,8 @@ class Modele(object):
         self.maxUnite = 20  #???
         self.selection = None
         self.listeArtefact = []
-        self.DictUnit = {{}}
-        self.createListeModeleUnite()
+        self.DictUnit = {}
+        self.createDictUnit()
         
         self.map = Map("Tile/map1.csv")
 
@@ -41,6 +41,7 @@ class Modele(object):
         self.ReleasePosy = 0
     
     def initPartie(self,noJoueur,listeNomJoueur,host=False):
+        
         self.noJoueurLocal = noJoueur
         for nomJoueur in listeNomJoueur:
             if(nomJoueur == "AI"):
@@ -48,6 +49,8 @@ class Modele(object):
             else:
                 self.listeJoueur.append(Joueur(nomJoueur,len(self.listeJoueur)))
         self.host = host
+
+        self.listeJoueur[self.noJoueurLocal].creerBatiment((400,400),"","HQ",[500,(10,10,10),5,6,2,64])
 
 
 
@@ -115,7 +118,7 @@ class Modele(object):
                 uni.move()
 
 
-    def gererMouseRelease(self,event):
+    def gererMouseRelease(self,event, offset):
         if(event.num == 3): #clic droit
             print("rightClick")
             if(self.selection): #Si le joueur a quelque chose de sélectionné, sinon inutile
@@ -134,8 +137,8 @@ class Modele(object):
             
         
         elif(event.num == 1): #clic gauche
-            self.ReleasePosx = event.x
-            self.ReleasePosy = event.y
+            self.ReleasePosx = event.x+offset[0]
+            self.ReleasePosy = event.y+offset[1]
             print("okay release fait")
             if(self.ClickPosx != self.ReleasePosx and self.ClickPosy != self.ReleasePosy):
                 print("selection MULTIPLE!!!!!!!!! DRAG")
@@ -159,8 +162,8 @@ class Modele(object):
                         if (unit.x < self.ClickPosx and unit.x > self.ReleasePosx and unit.y < self.ClickPosy and unit.y > self.ReleasePosy ): #BD a HG
                             self.selection.append(unit)
                             print("BD a HG")"""
-
-
+            
+                
     def clickCibleOuTile(self,x,y): #retourne None pour un tile et la cible pour une cible
     #fonction qui regarde si le clic est sur un batiment ou une unité
         for joueur in self.listeJoueur:

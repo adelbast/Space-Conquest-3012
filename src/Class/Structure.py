@@ -1,12 +1,14 @@
 class Batiment (object):
-    def __init__(self,name,xy,cost,hp,img,size,owner):
+    def __init__(self,name,xy,attributs):
         self.name = name
         self.position = xy
-        self.cost = cost
+        self.size = 128
+        
+        '''self.cost = cost
         self.hp =hp
         self.image =img
         self.size = size
-        self.owner = owner
+        self.owner = owner'''
 
     def selfDestroy(self):#Detruire le batiment 
         print("selfDestruct")

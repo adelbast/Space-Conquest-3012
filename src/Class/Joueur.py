@@ -1,4 +1,5 @@
 import configparser
+from Class.Structure import Batiment
 
 class Joueur():
     def __init__(self,nom,noJoueur):
@@ -7,7 +8,7 @@ class Joueur():
         self.listeUnite=[]
         self.listeBatiment=[]
         self.listeArtefact=[]
-        self.listeRessoure=[] #nourriture,metaux.energie
+        self.listeRessource=[10000,10000,10000] #nourriture,metaux.energie
         self.maxPop=None
         self.ageRendu=None
         self.diplomatieStatus=False
@@ -17,17 +18,17 @@ class Joueur():
         
 
     def creerBatiment(self,position,worker,nom,attributs): #fr
-        if self.assezRessources(nom,attributs): #pour savoir si assezRessource
-                self.listeBatiment.append(Batiment(nom,position))
+        if self.assezRessources(nom,attributs[1]): #pour savoir si assezRessource
+                self.listeBatiment.append(Batiment(nom,position,attributs ))
                 self.listeRessource[0] -= attributs[1][0] #food
                 self.listeRessource[1] -= attributs[1][1] #metaux
                 self.listeRessource[2] -= attributs[1][2] #energie
                 return print("batiment cree")
 
-    def assezRessources(self,nom,attributs): #fr
-        if(self.listeRessource[0] < attributs[1][0]
-           or self.listeRessource[1] < attributs[1][1]
-           or self.listeRessource[2] < attributs[1][2]):
+    def assezRessources(self,nom,couts): #fr
+        if(self.listeRessource[0] < couts[0]
+           or self.listeRessource[1] < couts[1]
+           or self.listeRessource[2] < couts[2]):
             return False;
         return True;
             
@@ -58,7 +59,7 @@ class Joueur():
         else:
             print("Limite de population atteinte")
 
-    def supprimerBatiment(self,unite):
+    def supprimerUnite(self,unite):
         if unite.proprio==self.NoJoueur:
             self.listeUnite.remove(unite)
             

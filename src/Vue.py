@@ -16,7 +16,9 @@ class Vue:
         self.tileset = Tileset.Tileset("Image/tileset/tileset.png",64,64)
 
         #Creation des Sprites
-        self.sprites = Sprites.Sprites(32,32,96,128,"Config/AttributeInfantryUnits.cfg")
+        self.sprites = Sprites.Sprites()
+        self.sprites.generateSprites(32,32,96,128,"Config/AttributeInfantryUnits.cfg")
+        self.sprites.generateSprites(64,64,192,256,"Config/AttributeVehicules.cfg")
         print(self.sprites.spriteDict)
 
         #Mesures de la fenetre
@@ -165,17 +167,31 @@ class Vue:
         self.displayMiniMap()
         self.updateMiniMap()
 
-                                                                                                           
-    def displayObject(self,units,structure,artefact):
+        #self.surfaceJeu.create_image(0,0, anchor=NW, image=self.sprites.spriteDict['trooper']['front']['1'])
+
+    #Affichage des objets sur la surface                                                                                                 
+    def displayObject(self, joueurs, artefacts):
         
         self.surfaceJeu.delete("unit","structure","artefact")
+
+        #Affichage des artefacts
+        for a in artefacts:
+            #self.surfaceJeu.create_image(a.position[0], a.position[1], anchor=NW, image=, tags="artefact")
+            self.surfaceJeu.create_oval(b.position[0],b.position[1], b.position[0]+b.size, b.position[1]+b.size, fill='red', tags="artefact")
+
+        #Iteration sur chacun des joueurs
+        for joueur in joueurs:
+
+            #Affiche les unités
+            for u in joueur.listeUnite:
+                self.surfaceJeu.create_image(u.position[0], u.position[1], anchor=NW, image=self.sprites.spriteDict[u.name][u.orientation]['1'], tags="unit")
+
+            #Affiche les batiments
+            for b in joueur.listeBatiment:
+                #self.surfaceJeu.create_image(i.position[0],anchor=NW,image =i.position[1],name = sprites[i.name],tags="structure")
+                self.surfaceJeu.create_rectangle(b.position[0],b.position[1], b.position[0]+b.size, b.position[1]+b.size, fill='blue', tags="structure")
+    
         
-        for i in units:
-            self.surfaceJeu.create_image(i.position[0],anchor=NW,image =i.position[1],name = sprites[i.name],tags="unit")
-        for i in structure:
-            self.surfaceJeu.create_image(i.position[0],anchor=NW,image =i.position[1],name = sprites[i.name],tags="structure")
-        for i in artefect:
-            self.surfaceJeu.create_image(i.position[0],anchor=NW,image =i.position[1],name = sprites[i.name],tags="artefect")
         
               
     #Affiche le HUD

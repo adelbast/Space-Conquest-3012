@@ -25,6 +25,7 @@ class Controleur:
     def lancerPartie(self):
         self.modele.initPartie(0,["Xavier","Antoine","AI","Laurence","Arnaud","Francis","Alexandre","AI"],True)
         self.vue.displayMap(self.modele.map)
+        self.vue.displayObject(self.modele.listeJoueur,[])
         self.vue.displayHUD()
         
 

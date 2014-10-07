@@ -1,23 +1,16 @@
 __author__ = "Arnaud Girardin"
 
-from PIL import Image
+from PIL import Image, ImageTk
 import configparser
 
 class Sprites:
-    def __init__(self, spriteW, spriteH, totalW, totalH, cfgPath):
-        self.spriteW = spriteW
-        self.spriteH = spriteH
-        self.totalW = totalW
-        self.totalH = totalH
-        self.cfgPath = cfgPath
+    def __init__(self):
         self.spriteDict = {}
 
-        self.generateSprites()
-
-    def generateSprites(self):
+    def generateSprites(self,spriteW, spriteH, totalW, totalH, cfgPath):
 
         cfg = configparser.ConfigParser()
-        cfg.read(self.cfgPath)
+        cfg.read(cfgPath)
 
 
         for unit in cfg.sections() :
@@ -26,33 +19,33 @@ class Sprites:
             sprites = Image.open("Sprites/Sprites/"+unit+".png")
                 
             #Axe verticale pour l'ensemble de spriteset
-            for y in range(int(self.totalH/self.spriteH)):
+            for y in range(int(totalH/spriteH)):
 
                 #Axe horizontale pour l'ensemble  de spriteset
-                for x in range(int(self.totalW/self.spriteW)):
+                for x in range(int(totalW/spriteW)):
                         
-                    img = sprites.crop((x*self.spriteW,y*self.spriteH, (x*self.spriteW)+self.spriteW, (y*self.spriteH)+self.spriteH))
+                    img = sprites.crop((x*spriteW,y*spriteH, (x*spriteW)+spriteW, (y*spriteH)+spriteH))
 
                     if(y == 0):
                         if(x == 0):
-                            self.spriteDict.update({unit: {'front' : {str(x): img}}})
+                            self.spriteDict.update({unit: {'front' : {str(x): ImageTk.PhotoImage(img)}}})
                         else:
-                            self.spriteDict[unit]['front'].update({str(x): img})
+                            self.spriteDict[unit]['front'].update({str(x): ImageTk.PhotoImage(img)})
                     elif(y == 1):
                         if(x == 0):
-                            self.spriteDict[unit].update({'left' : {str(x): img}})
+                            self.spriteDict[unit].update({'left' : {str(x): ImageTk.PhotoImage(img)}})
                         else:
-                            self.spriteDict[unit]['left'].update({str(x): img})
+                            self.spriteDict[unit]['left'].update({str(x): ImageTk.PhotoImage(img)})
                     elif(y == 2):
                         if(x == 0):
-                            self.spriteDict[unit].update({'right' : {str(x): img}})
+                            self.spriteDict[unit].update({'right' : {str(x): ImageTk.PhotoImage(img)}})
                         else:
-                            self.spriteDict[unit]['right'].update({str(x): img})
+                            self.spriteDict[unit]['right'].update({str(x): ImageTk.PhotoImage(img)})
                     elif(y == 3):
                         if(x == 0):
-                            self.spriteDict[unit].update({'back' : {str(x): img}})
+                            self.spriteDict[unit].update({'back' : {str(x): ImageTk.PhotoImage(img)}})
                         else:
-                            self.spriteDict[unit]['back'].update({str(x): img})
+                            self.spriteDict[unit]['back'].update({str(x): ImageTk.PhotoImage(img)})
 
 
         #self.spriteDict['trooper']['back']['0'].save("test.png")
