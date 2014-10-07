@@ -20,15 +20,14 @@ class Modele(object):
         self.dicAction2Server = {}
         self.dicActionFromServer = [{#joueur1
                                     "Deplacement":     (0, 500,500),#(noUnit, cibleX, cibleY)
-                                    "DeplacementCible":(1, 2, 1, 0),#(noUnit, noProprio, 0:unité/1:structure , noUnitCible)
+                                    "DeplacementCible":(1, 2, 1, 0),#(noUnit, noProprio, 0:unité/1:batiment , noUnitCible)
                                     "RechercheAge": 1,          #si changement d'âge
                                     "NewUnit":      (0,0),      #(type d'unité, noDuBatimentSpawner)
-                                    "NewStruct":    (2,200,200),#(typeBatiment, posX, posY)
+                                    "NewBatiment":    (2,200,200),#(typeBatiment, posX, posY)
                                     "SuppressionBatiment":1,    #noBatiment
                                     "SuppressionUnit":2,        #noUnit
                                     "CaptureArtefact":0,        #noArtefact
-                                    "PerteArtefact":1
-                                    "Decalage":Valeurdudecalage},
+                                    "PerteArtefact":1},
                                     
                                     {#joueur2
 
@@ -61,23 +60,60 @@ class Modele(object):
                     if(self.joueurPasMort(self.listeJoueur[ii])):
                         for clee, valeur in d.items():
                             if(clee == "Deplacement"):
-                                noUnit, x, y = valeur
+                                
+                                for i in valeur:            #i[0] = noUnit i[1] i [2] xy
+                                    self.listeJoueur[ii].listeUnite[i[0]].setDestination((i[1],i[2]))
+                                    
                             elif(clee == "DeplacementCible"):
-                                noUnit, noProprio, UvS, noUnitCible = valeur
+                                #noUnit, noProprio, UvB, noUnitCible
+
+                                for i in valeur:
+                                    if i[2] == 0:
+                                        self.listeJoueur[ii].listeUnite[i[0]].setDestination(self.listeJoueur[1].listeUnite[3])
+                                    else:
+                                        self.listeJoueur[ii].listeUnite[i[0]].setDestination(self.listeJoueur[1].listeBatiment[3])
+                            
                             elif(clee == "RechercheAge"):
                                 age = valeur
+
+                                self.listeJoueur[ii].ageRendu = age
+
+                                
                             elif(clee == "NewUnit"):
+                                
                                 typeUnit, noDuBatimentSpawner = valeur
-                            elif(clee == "NewStruct"):
+
+                                self.listeJoueur[ii].creerUnit(typeUnit, self.listeJoueur[ii].listeBatiment[noDuBatimentSpawner].position,
+                                                               self.listeJoueur[ii].listeBatiment[noDuBatimentSpawner].position)
+                                
+                                
+                            elif(clee == "NewBatiment"):
                                 typeBatiment, x, y = valeur
+
+                                self.listeJoueur[ii].creerBatiment(typeBatiment, (x,y))
+
+                                
                             elif(clee == "SuppressionBatiment"):
                                 noBatiment = valeur
+
+                                supprimerBatiment(self.listeJoueur[ii].listeBatiment[noBatiment])
+                                
                             elif(clee == "SuppressionUnit"):
                                 noUnit = valeur
+
+                                supprimerUnite(self.listeJoueur[ii].listeBatiment[noBatiment])
+                                
                             elif(clee == "CaptureArtefact"):
                                 noArtefact = valeur
                             elif(clee == "PerteArtefact"):
                                 noArtefact = valeur
+            ii+=1
+
+
+        for ind in self.listeJoueur:            #Fait bouger toutes les unitées
+            for uni in ind.listeUnite :
+                uni.move()
+
 
     def gererMouseRelease(self,event):
         if(event.num == 3): #clic droit
