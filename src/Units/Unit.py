@@ -19,8 +19,6 @@ class Unit:    ##Laurence
         self.vitesse     = parser.get(name, 'vitesse')
         self.rangeVision = parser.get(name, 'rangeVision')
         self.rangeAtt    = parser.get(name, 'rangeAtt')
-
-        self.size = 0
                       
                       
         ###Variables Temporaires
@@ -32,12 +30,9 @@ class Unit:    ##Laurence
         #if self.destination[0] != self.position[0] or self.destination[1] != self.position[1]:  #Pour savoir s'il faut bouger
          #self.path = definePath()
 
-    def setDestination(self, destination):
-        self.destination = destination
-        self.calculatePath()
         
     def takeDmg(self,dmg):
-        print("Damage Taken")
+        self.currentHp -= dmg
 
     def selfDestroy(self):
         self.currentHp = 0
@@ -46,24 +41,21 @@ class Unit:    ##Laurence
     def calculatePath(self):
         print("Path Calculated")
         
-    def move(self):   #A modifier
-        if self.position[0] > self.destination[0]:
-            self.position[0] += 1
-        else:
-            self.position[0] -= 1
-
-        if self.position[1] > self.destination[1]:
-            self.position[1] += 1
-        else:
-            self.position[1] -= 1
-
-        
+    def move(self):
+        print("Unit moving")
     
     def inRange(self,unit):
-        return True
+        Distance =  abs(self.x - unit.x)
+        if Distance < abs(self.y - unit.y):
+            Distance = abs(self.y - unit.y):
+        if Disatance <= self.rangeAtt:
+            return True
+        return False
     
     def attack(self):
-        return 0
+        return self.force
+
+    
 
 
 
