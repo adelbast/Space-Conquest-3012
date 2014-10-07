@@ -1,4 +1,5 @@
 import configparser
+import math
 
 
 class Unit:    ##Laurence
@@ -31,7 +32,7 @@ class Unit:    ##Laurence
          #self.path = definePath()
 
         
-    def takeDmg(self,dmg):
+    def takeDmg(self,dmg):#ALEX
         self.currentHp -= dmg
 
     def selfDestroy(self):
@@ -44,15 +45,19 @@ class Unit:    ##Laurence
     def move(self):
         print("Unit moving")
     
-    def inRange(self,unit):
-        Distance =  abs(self.x - unit.x)
-        if Distance < abs(self.y - unit.y):
-            Distance = abs(self.y - unit.y):
-        if Disatance <= self.rangeAtt:
+    def inRange(self,unit):#ALEX
+        Distance = math.sqrt((self.x - unit.x)**2 (self.y - unit.y)**2)
+        if Distance  < self.rangeATT:
             return True
         return False
+
+    def checkEnnemy(self,unit):#ALEX
+        Distance = math.sqrt((self.x - unit.x)**2 (self.y - unit.y)**2)
+        if Distance  < self.rangeVision:
+            return True
+        return False 
     
-    def attack(self):
+    def attack(self):#ALEX
         return self.force
 
     
