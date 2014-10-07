@@ -9,7 +9,6 @@ class Controleur:
         self.vue = Vue(self)
         self.client = None
         self.serveur = None
-        self.clickDroitPress = None
         self.lancerPartie()#lorsque le menu sera fait, utiliser la fontion du bas plutôt que celle-ci
         #self.vue.afficherMenu()
         self.vue.root.mainloop()
@@ -35,7 +34,6 @@ class Controleur:
         self.vue.root.after(24,self.gameLoop)
 
     def gererMouseClick(self,event):
-        self.modele.drag = False
         self.modele.ClickPosx = event.x
         self.modele.ClickPosy = event.y
 
@@ -45,9 +43,8 @@ class Controleur:
             self.vue.dessinerSelection((self.modele.ClickPosx,self.modele.ClickPosy),(self.modele.ReleasePosx,self.modele.ReleasePosy))
 
     def gererMouseRelease(self,event):
+        self.modele.drag = False
         self.modele.gererMouseRelease(event)
-        if(event.num == 1):
-            self.gererMouseDrag()
 
 if __name__ == "__main__":
     c = Controleur()
