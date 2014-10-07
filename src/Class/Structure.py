@@ -1,4 +1,4 @@
-class Structure (object):
+class Batiment (object):
     def __init__(self,name,xy,cost,hp,img,size,owner):
         self.name = name
         self.position = xy
@@ -18,7 +18,7 @@ class Structure (object):
 
 
 
-class Generator(Structure):
+class Generator(Batiment):
     def __init__(self, genType,amountGen,name,xy,cost,hp,img,size,owner):
         super(Generator,self).__init__(name,xy,cost,hp,img,size,owner)
         self.genType = genType
@@ -29,7 +29,7 @@ class Generator(Structure):
         return self.amountGen
 
     
-class Barrack(Structure):
+class Barrack(Batiment):
     def __init__(self,unitList,amountGen,name,xy,cost,hp,img,size,owner):
         self.unitList = UnitList
         super(Generator,self).__init__(name,xy,cost,hp,img,size,owner)
