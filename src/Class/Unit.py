@@ -2,7 +2,7 @@ import configparser
 
 
 class Unit:    ##Laurence
-    def __init__(self, name, xy, owner, destination, attributs):
+    def __init__(self, name, xy, owner, destination, attribut):
         
         self.owner    = owner
         self.name     = name

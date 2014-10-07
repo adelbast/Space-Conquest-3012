@@ -1,5 +1,6 @@
 import configparser
 from Class.Structure import Batiment
+from Class.Unit import Unit
 
 class Joueur():
     def __init__(self,nom,noJoueur):
@@ -40,24 +41,8 @@ class Joueur():
                 return print("batiment supprime")
             count+=1
 
-    def creerUnite(self,typeUnite,position):
-        cfg=configparser.ConfigParser()
-        cfg.read(pathConfig)
-        if self.compterUnite() < self.maxPop:
-            if unitePossible(self,typeUnite,self.listeRessource):
-                if modele.caseDisponible(position):
-                    self.listeUnite.append(typeUnite,position)
-                    self.listeRessource[0]-=cfg[typeBatiment][costFood]
-                    self.listeRessource[1]-=cfg[typeBatiment][costMetal]
-                    self.listeRessource[2]-=cfg[typeBatiment][costPower]
-                    
-                    print("unite cree")
-                else:
-                    print("position Invalide")
-            else:
-                print("We require more minerals")
-        else:
-            print("Limite de population atteinte")
+    def creerUnite(self,nom,position, attributs):###A modif
+        self.listeUnite.append(Unit(nom,position,self.noJoueur,[100,200],attributs))
 
     def supprimerUnite(self,unite):
         if unite.proprio==self.NoJoueur:
