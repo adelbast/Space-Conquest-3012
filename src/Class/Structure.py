@@ -29,8 +29,7 @@ class Generator(Structure):
         return self.amountGen
 
     
-class Barrack
-(Structure):
+class Barrack(Structure):
     def __init__(self,unitList,amountGen,name,xy,cost,hp,img,size,owner):
         self.unitList = UnitList
         super(Generator,self).__init__(name,xy,cost,hp,img,size,owner)

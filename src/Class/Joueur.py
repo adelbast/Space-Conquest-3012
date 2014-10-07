@@ -19,16 +19,20 @@ class Joueur():
         
 
     def creerBatiment(self,typeBatiment,position,pathConfig):
-        cfg=configparser.ConfigParser()
-        cfg.read(pathConfig)
         
-        if self.batimentPossible(self,typeBatiment,self.listeRessource):
+        if self.batimentPossible(self,nomBatiment,self.listeRessource):
             if modele.caseDisponible(position):
                 self.listeBatiment.append(typeBatiment,position)
-                self.listeRessource[0]-=cfg[typeBatiment][costFood]
-                self.listeRessource[1]-=cfg[typeBatiment][costMetal]
-                self.listeRessource[2]-=cfg[typeBatiment][costPower]
                 
+
+            for key,value in modele.DictConfigBatiment[typeBatiment]:
+                if key == "costFood":
+                    self.listeRessource[0]-=value
+                if key == "costMetal":
+                    self.listeRessource[1]-=value
+                if key == "costPower":
+                    self.listeRessource[2]-=value
+
         return print("batiment cree")
 
     def supprimerBatiment(self,batiment):
@@ -37,18 +41,39 @@ class Joueur():
 
             return print("batiment supprime")
 
-    def creerUnite(self,typeUnite,position):
-        cfg=configparser.ConfigParser()
-        cfg.read(pathConfig)
+    def creerInfanterie(self,typeUnite,position):
         
         if unitePossible(self,typeUnite,self.listeRessource):
             if modele.caseDisponible(position):
                 self.listeUnite.append(typeUnite,position)
-                self.listeRessource[0]-=cfg[typeBatiment][costFood]
-                self.listeRessource[1]-=cfg[typeBatiment][costMetal]
-                self.listeRessource[2]-=cfg[typeBatiment][costPower]
-                
-            return print("unite cree")
+
+            for key,value in modele.DictConfigInfanterie[typeBatiment]:
+                if key == "costFood":
+                    self.listeRessource[0]-=value
+                if key == "costMetal":
+                    self.listeRessource[1]-=value
+                if key == "costPower":
+                    self.listeRessource[2]-=value
+                    
+            return print("infanterie cree")
+        
+    def creerVehicule(self,typeUnite,position):
+        
+        if unitePossible(self,typeUnite,self.listeRessource):
+            if modele.caseDisponible(position):
+                self.listeUnite.append(typeUnite,position)
+
+            for key,value in modele.DictConfigVehicule[typeBatiment]:
+                if key == "costFood":
+                    self.listeRessource[0]-=value
+                if key == "costMetal":
+                    self.listeRessource[1]-=value
+                if key == "costPower":
+                    self.listeRessource[2]-=value
+                    
+            return print("vehicule cree")
+
+    
 
     def supprimerBatiment(self,batiment):
         if unite.proprio==self.NoJoueur:
