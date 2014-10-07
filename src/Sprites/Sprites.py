@@ -54,7 +54,8 @@ class Sprites:
                         else:
                             self.spriteDict[unit]['back'].update({str(x): img})
 
-                  
+
+        #self.spriteDict['trooper']['back']['0'].save("test.png")
             
         
 

@@ -75,7 +75,9 @@ class Modele(object):
                             elif(clee == "PerteArtefact"):
                                 noArtefact = valeur
 
-    def gererMouseRelease(self,event):
+    def gererMouseRelease(self,event,offset):
+
+        
         if(event.num == 3): #clic droit
             print("rightClick")
             if(self.selection): #Si le joueur a quelque chose de sélectionné, sinon inutile
@@ -85,18 +87,18 @@ class Modele(object):
                     except Exception as e:#c'est donc un batiment
                         pass
                     else:#si pas d'exception
-                        cible = self.clickCibleOuTile(event.x,event.y)
+                        cible = self.clickCibleOuTile(event.x+offset[0],event.y+offset[1])
                         if(not cible):
-                            cible = (event.x,event.y)
+                            cible = (event.x+offset[0],event.y+offset[1])
 
                         for unite in self.selection:
                             unite.move(cible)
             
         
         elif(event.num == 1): #clic gauche
-            self.ReleasePosx = event.x
-            self.ReleasePosy = event.y
-            print("okay release fait")
+            self.ReleasePosx = event.x+offset[0]
+            self.ReleasePosy = event.y+offset[1]
+            print("SelectionModele:",self.ReleasePosx, self.ReleasePosy)
             if(self.ClickPosx != self.ReleasePosx and self.ClickPosy != self.ReleasePosy):
                 print("selection MULTIPLE!!!!!!!!! DRAG")
                 for unit in self.listeJoueur[0].listeUnite: #a changer a joueur actuel plutot que [0], je prends seulement les unites puisque selection multiple de batiment inutile

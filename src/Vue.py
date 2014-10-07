@@ -63,10 +63,12 @@ class Vue:
         #Pour le click sur la map
         self.miniMap.bind("<Button-1>", self.miniMapClick)
         self.miniMap.bind("<B1-Motion>", self.miniMapClick)
-        
+
+        #Pour les clicks sur la surface de jeu
+        self.surfaceJeu.bind("<B1-Motion>", self.parent.gererMouseDrag)
         self.surfaceJeu.bind("<Button-1>",self.parent.gererMouseClick)
         self.surfaceJeu.bind("<ButtonRelease-1>",self.parent.gererMouseRelease)
-        self.surfaceJeu.bind("<Button-3>", self.parent.gererMouseRelease)
+        self.surfaceJeu.bind("<Button-3>", self.parent.gererMouseClick)
         # manque right click pour cancel selection
 
     #Deplacement de la map avec WASD
@@ -92,6 +94,9 @@ class Vue:
         print(self.surfaceJeu.canvasx(0), self.surfaceJeu.canvasy(0))
 
         self.updateMiniMap()
+
+    def getSurfacePos(self):
+        return (self.surfaceJeu.canvasx(0), self.surfaceJeu.canvasy(0))
 
     #Deplacer la camera lorsqu'on clique sur le canvas de la minimap
     def miniMapClick(self, event):
@@ -121,7 +126,22 @@ class Vue:
 
         self.surfaceJeu.xview_moveto(posx*1/self.miniMapW)
         self.surfaceJeu.yview_moveto(posy*1/self.miniMapH)
-       
+
+    #Affiche les informations sur l'unité
+    def displayInfoUnit(self, unit):
+        pass
+
+    #Affiche les ressources
+    def displayRessources(self, food, metal, power):
+        pass
+
+    def displaySelection(self, initialClick, event):
+        self.surfaceJeu.delete("selection")
+        self.surfaceJeu.create_rectangle(initialClick[0], initialClick[1], event.x+self.surfaceJeu.canvasx(0), event.y+self.surfaceJeu.canvasy(0), outline='blue', tags="selection")
+        print("SelectionGraphique:",event.x+self.surfaceJeu.canvasx(0), event.y+self.surfaceJeu.canvasy(0))
+        
+    def eraseSelection(self):
+        self.surfaceJeu.delete("selection")
         
     #Affiche la map
     def displayMap(self, mapObj):
@@ -178,5 +198,4 @@ class Vue:
         
         self.miniMap.create_rectangle(posx, posy, posx + self.relativeW, posy + self.relativeH, outline='red', tags="region")
     
-    def dessinerSelection(self, clickXY,ReleaseXY):
-        pass
+    
