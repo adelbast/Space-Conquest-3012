@@ -1,5 +1,6 @@
 import Pyro4
 import traceback
+import socket
 
 
 class Client(object):
@@ -10,7 +11,8 @@ class Client(object):
 		self.temps = temps #represente ou il est rendu dans sa lecture des evenements
 		
 		if(test):
-			self.search()
+			self.tempConnecteur()#fonction de connection temporaire(Local seulement)
+			#self.search()
 
 	def pushAction(self,dicAction2Server):
 		try:
@@ -23,6 +25,14 @@ class Client(object):
 			return self.proxy.readAction()
 		except Exception as e:
 			print(e)
+
+	def tempConnecteur(self):
+		ur = "PYRO:SpaceConquest3012@"+socket.gethostbyname(socket.gethostname())+":"+str(9912)
+		self.proxy = Pyro4.Proxy(ur)
+		if(self.proxy.ping()):
+			print("yes!")
+
+
 
 	def search(self):
 		try:
