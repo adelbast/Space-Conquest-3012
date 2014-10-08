@@ -12,8 +12,10 @@ class Modele(object):
         self.maxUnite = 20  #???
         self.selection = None
         self.listeArtefact = []
-        self.DictUnit = {}
+        self.dictUnit = {}
+        self.dicBatiment = {}
         self.createDictUnit()
+        self.createDictBatiment()
         
         self.map = Map("Tile/map1.csv")
 
@@ -204,9 +206,9 @@ class Modele(object):
     def createDictUnit(self):
 
         parser = configparser.ConfigParser()
-        parser.read('AttributUnits.cfg')
+        parser.read('Config/AttributUnits.cfg')
         parserVehicule = configparser.ConfigParser()
-        parserVehicule.read('AttributeVehicule.cfg')
+        parserVehicule.read('Config/AttributeVehicule.cfg')
 
         unit = parser.sections()
         unitVe = parser.sections()
@@ -220,8 +222,8 @@ class Modele(object):
             self.rangeVision = parser.get(name, 'rangeVision')
             self.rangeAtt    = parser.get(name, 'rangeAtt')
             self.size        = parser.get(name, 'size')
-            self.DictUnit.add(name)
-            self.DictUnit[name] = [self.type, self.maxHp, self.cost, self.force, self.vitesse, self.rangeVision, self.rangeAtt,self.size]
+            self.dictUnit.add(name)
+            self.dictUnit[name] = [self.type, self.maxHp, self.cost, self.force, self.vitesse, self.rangeVision, self.rangeAtt,self.size]
 
         for name in unitVe:
             self.type        = parser.get(name, 'type')
@@ -232,5 +234,20 @@ class Modele(object):
             self.rangeVision = parser.get(name, 'rangeVision')
             self.rangeAtt    = parser.get(name, 'rangeAtt')
             self.size        = parser.get(name, 'size')
-            self.DictUnit.add(name)
-            self.DictUnit[name] = [self.type, self.maxHp, self.cost, self.force, self.vitesse, self.rangeVision, self.rangeAtt,self.size]
+            self.dictUnit.add(name)
+            self.dictUnit[name] = [self.type, self.maxHp, self.cost, self.force, self.vitesse, self.rangeVision, self.rangeAtt,self.size]
+
+    def createDictBatiment(self):
+
+        parser = configparser.ConfigParser()
+        parser.read('Config/AttributeBuilding.cfg')
+
+        batiments = parser.sections()
+
+        for name in batiments:
+            self.maxHp       = parser.get(name, 'hp')
+            self.cost        = (parser.get(name,'costFood'), parser.get(name,'costMetal'), parser.get(name,'costPower'))
+            self.production     = parser.get(name, 'production')
+            self.size        = parser.get(name, 'size')
+            self.dicBatiment.add(name)
+            self.dicBatiment[name] = [self.maxHp, self.cost, self.production, self.size]
