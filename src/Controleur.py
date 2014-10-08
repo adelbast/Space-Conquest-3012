@@ -36,20 +36,21 @@ class Controleur:
 
     def gererMouseClick(self,event):
 
-        #Obtenir la position du canvas
-        offset = self.vue.getSurfacePos()
+        offset = self.vue.getSurfacePos()#Obtenir la position du canvas
         
-        self.modele.ClickPosx = event.x+offset[0]
-        self.modele.ClickPosy = event.y+offset[1]
+        self.modele.clickPosx = event.x+offset[0]
+        self.modele.clickPosy = event.y+offset[1]
 
     def gererMouseDrag(self, event):
-        print("DRAG", "depart: " ,self.modele.ClickPosx , self.modele.ClickPosy, "Fin: ", event.x,  event.y)
-        self.vue.displaySelection((self.modele.ClickPosx,self.modele.ClickPosy), event)
+        offset = self.vue.getSurfacePos()
+        self.vue.displaySelection((self.modele.clickPosx,self.modele.clickPosy), event)
 
     def gererMouseRelease(self,event):
         self.vue.eraseSelection()
-        self.modele.drag = False
-        self.modele.gererMouseRelease(event, self.vue.getSurfacePos())
+        offset = self.vue.getSurfacePos()#Obtenir la position du canvas
+        self.modele.releasePosx = event.x+offset[0]
+        self.modele.releasePosy = event.y+offset[1]
+        self.modele.gererMouseRelease(event)
 
 if __name__ == "__main__":
     c = Controleur()

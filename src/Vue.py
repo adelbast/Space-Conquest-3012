@@ -140,7 +140,6 @@ class Vue:
     def displaySelection(self, initialClick, event):
         self.surfaceJeu.delete("selection")
         self.surfaceJeu.create_rectangle(initialClick[0], initialClick[1], event.x+self.surfaceJeu.canvasx(0), event.y+self.surfaceJeu.canvasy(0), outline='blue', tags="selection")
-        print("SelectionGraphique:",event.x+self.surfaceJeu.canvasx(0), event.y+self.surfaceJeu.canvasy(0))
         
     def eraseSelection(self):
         self.surfaceJeu.delete("selection")
@@ -184,12 +183,12 @@ class Vue:
 
             #Affiche les unités
             for u in joueur.listeUnite:
-                self.surfaceJeu.create_image(u.position[0], u.position[1], anchor=NW, image=self.sprites.spriteDict[u.name][u.orientation]['1'], tags="unit")
+                self.surfaceJeu.create_image(u.position[0]-u.size/2, u.position[1]-u.size/2, anchor=NW, image=self.sprites.spriteDict[u.name][u.orientation]['1'], tags="unit")
 
             #Affiche les batiments
             for b in joueur.listeBatiment:
                 #self.surfaceJeu.create_image(i.position[0],anchor=NW,image =i.position[1],name = sprites[i.name],tags="structure")
-                self.surfaceJeu.create_rectangle(b.position[0],b.position[1], b.position[0]+b.size, b.position[1]+b.size, fill='blue', tags="structure")
+                self.surfaceJeu.create_rectangle(b.position[0]-b.size/2,b.position[1]-b.size/2, b.position[0]+b.size/2, b.position[1]+b.size/2, fill='blue', tags="structure")
     
         
         

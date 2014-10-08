@@ -10,7 +10,7 @@ class Modele(object):
         self.listeJoueur = []
         self.noJoueurLocal = None
         self.maxUnite = 20  #???
-        self.selection = None
+        self.selection = []
         self.listeArtefact = []
         self.dictUnit = {}
         self.dicBatiment = {}
@@ -37,10 +37,10 @@ class Modele(object):
                                     {},#joueur3
                                     {}]#joueur4...
         # facilite la gestion de la souris
-        self.ClickPosx = 0
-        self.ClickPosy = 0
-        self.ReleasePosx = 0
-        self.ReleasePosy = 0
+        self.clickPosx = 0
+        self.clickPosy = 0
+        self.releasePosx = 0
+        self.releasePosy = 0
     
     def initPartie(self,noJoueur,listeNomJoueur,host=False):
         
@@ -121,9 +121,9 @@ class Modele(object):
                 uni.move()
 
 
-    def gererMouseRelease(self,event, offset):
+    def gererMouseRelease(self,event):
         if(event.num == 3): #clic droit
-            print("rightClick")
+            print("clic droit release")
             if(self.selection): #Si le joueur a quelque chose de sélectionné, sinon inutile
                 if(self.selection[0].owner.noJoueur == self.noJoueurLocal):
                     try:            #Duck typing
@@ -131,40 +131,48 @@ class Modele(object):
                     except Exception as e:#c'est donc un batiment
                         pass
                     else:#si pas d'exception
-                        cible = self.clickCibleOuTile(event.x,event.y)
+                        cible = self.clickCibleOuTile(self.releasePosx,self.releasePosy)
                         if(not cible):
-                            cible = (event.x,event.y)
+                            cible = (self.releasePosx,self.releasePosy)
 
-                        for unite in self.selection:
-                            unite.move(cible)
+                        for unite in self.selection: #Donne un ordre de déplacement à la sélection
+                            unite.setDestination(cible)
             
         
         elif(event.num == 1): #clic gauche
-            self.ReleasePosx = event.x+offset[0]
-            self.ReleasePosy = event.y+offset[1]
-            print("okay release fait")
-            if(self.ClickPosx != self.ReleasePosx and self.ClickPosy != self.ReleasePosy):
-                print("selection MULTIPLE!!!!!!!!! DRAG")
-                for unit in self.listeJoueur[0].listeUnite: #a changer a joueur actuel plutot que [0], je prends seulement les unites puisque selection multiple de batiment inutile
-                    if(pointDansForme([self.ReleasePosx,self.ClickPosx,self.ClickPosx,self.ReleasePosx][self.ClickPosy,self.ClickPosy,self.ReleasePosy,self.ReleasePosy],unit.position[0],unit.position[1])):#La fonction dont je t'ai parlé sur ts frank...
+            self.selection[:] = [] #Vide la liste
+            print("clic gauche release")
+            if(self.clickPosx!=self.releasePosx or self.clickPosy!=self.releasePosy):#self.clickPosx+5 < self.releasePosx or self.clickPosx-5 > self.releasePosx or self.clickPosy+5 < self.releasePosy or self.clickPosy-5 > self.releasePosy
+                print("selection MULTIPLE")
+                print(self.clickPosx,self.clickPosy,self.releasePosx,self.releasePosy)
+                for unit in self.listeJoueur[self.noJoueurLocal].listeUnite: #a changer a joueur actuel plutot que [0], je prends seulement les unites puisque selection multiple de batiment inutile
+                    if(self.pointDansForme([self.releasePosx,self.clickPosx,self.clickPosx,self.releasePosx],[self.clickPosy,self.clickPosy,self.releasePosy,self.releasePosy],unit.position[0],unit.position[1])):#La fonction dont je t'ai parlé sur ts frank...
                         self.selection.append(unit)
-                    """if (self.ClickPosx < self.ReleasePosx and self.ClickPosy < self.ReleasePosy): # on doit faire 4 different if en fonction de comment le drag a ete fait
+                        print(unit.name)
+                    """if (self.clickPosx < self.releasePosx and self.clickPosy < self.releasePosy): # on doit faire 4 different if en fonction de comment le drag a ete fait
                     # de haut Droit a Bas Gauche       de haut gauche a bas droit etc
-                        if (unit.x > self.ClickPosx and unit.x < self.ReleasePosx and unit.y > self.ClickPosy and unit.y < self.ReleasePosy ): #HG a BD
+                        if (unit.x > self.clickPosx and unit.x < self.releasePosx and unit.y > self.clickPosy and unit.y < self.releasePosy ): #HG a BD
                             self.selection.append(unit)
                             print("HG a BD")
-                    elif (self.ClickPosx > self.ReleasePosx and self.ClickPosy > self.ReleasePosy):
-                        if (unit.x < self.ClickPosx and unit.x > self.ReleasePosx and unit.y < self.ClickPosy and unit.y > self.ReleasePosy ): #BD a HG
+                    elif (self.clickPosx > self.releasePosx and self.clickPosy > self.releasePosy):
+                        if (unit.x < self.clickPosx and unit.x > self.releasePosx and unit.y < self.clickPosy and unit.y > self.releasePosy ): #BD a HG
                             self.selection.append(unit)
                             print("BD a HG")
-                    elif(self.ClickPosx < self.ReleasePosx and self.ClickPosy > self.ReleasePosy):
-                        if (unit.x > self.ClickPosx and unit.x < self.ReleasePosx and unit.y < self.ClickPosy and unit.y > self.ReleasePosy ): #BG a HD
+                    elif(self.clickPosx < self.releasePosx and self.clickPosy > self.releasePosy):
+                        if (unit.x > self.clickPosx and unit.x < self.releasePosx and unit.y < self.clickPosy and unit.y > self.releasePosy ): #BG a HD
                             self.selection.append(unit)
                             print("BG a HD")
                     else:
-                        if (unit.x < self.ClickPosx and unit.x > self.ReleasePosx and unit.y < self.ClickPosy and unit.y > self.ReleasePosy ): #BD a HG
+                        if (unit.x < self.clickPosx and unit.x > self.releasePosx and unit.y < self.clickPosy and unit.y > self.releasePosy ): #BD a HG
                             self.selection.append(unit)
                             print("BD a HG")"""
+            else:
+                cible = self.clickCibleOuTile(self.releasePosx,self.releasePosy)
+                if(cible):
+                    self.selection.append(cible)
+                    print(cible.name)
+                else:
+                    print("Pas cible")
             
                 
     def clickCibleOuTile(self,x,y): #retourne None pour un tile et la cible pour une cible
@@ -172,15 +180,12 @@ class Modele(object):
         for joueur in self.listeJoueur:
             liste = joueur.listeUnite+joueur.listeBatiment
             for chose in liste:
-                if(x < chose.position[0]+chose.size/2):
-                    if(x > chose.position[0]+chose.size/2):
-                        if(y < chose.position[1]+chose.size/2):
-                            if(y > chose.position[1]+chose.size/2):
+                if(x < chose.position[0]+chose.size/2):#
+                    if(x > chose.position[0]-chose.size/2):#
+                        if(y < chose.position[1]+chose.size/2):#
+                            if(y > chose.position[1]-chose.size/2):#
                                 return chose
         else: return None
-
-    def modifierSelection(self,cible):
-        self.selection = cible
 
 
     def joueurPasMort(self,joueur):
@@ -222,7 +227,6 @@ class Modele(object):
             self.rangeVision = parser.get(name, 'rangeVision')
             self.rangeAtt    = parser.get(name, 'rangeAtt')
             self.size        = parser.get(name, 'size')
-            self.dictUnit.add(name)
             self.dictUnit[name] = [self.type, self.maxHp, self.cost, self.force, self.vitesse, self.rangeVision, self.rangeAtt,self.size]
 
         for name in unitVe:
@@ -234,7 +238,6 @@ class Modele(object):
             self.rangeVision = parser.get(name, 'rangeVision')
             self.rangeAtt    = parser.get(name, 'rangeAtt')
             self.size        = parser.get(name, 'size')
-            self.dictUnit.add(name)
             self.dictUnit[name] = [self.type, self.maxHp, self.cost, self.force, self.vitesse, self.rangeVision, self.rangeAtt,self.size]
 
     def createDictBatiment(self):
@@ -249,5 +252,4 @@ class Modele(object):
             self.cost        = (parser.get(name,'costFood'), parser.get(name,'costMetal'), parser.get(name,'costPower'))
             self.production     = parser.get(name, 'production')
             self.size        = parser.get(name, 'size')
-            self.dicBatiment.add(name)
             self.dicBatiment[name] = [self.maxHp, self.cost, self.production, self.size]
