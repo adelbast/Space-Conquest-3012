@@ -17,11 +17,11 @@ class ServerObject(object):
         self.nomServeur = nomServeur
         self.nomJoueurHost = nomJoueurHost
         self.ip = ip
-        self.nbPlayerReq = 2     #nombre de joueur necessaire pour partir la partie
+        self.nbPlayerReq =1     #nombre de joueur necessaire pour partir la partie
         self.highestRead =0     #le temps le plus recent lue
         self.highestDel = 0     #le temps le plus recent effacer
         self.client =[]         # la liste des client
-        self.actions ={"""0:act.actions(self.nbPlayerReq)"""} #la liste qui contient tous les evenements qui contiennent les actions
+        self.actions ={0:Actions(self.nbPlayerReq)} #la liste qui contient tous les evenements qui contiennent les actions
         self.maxTempsDecalage = 8
 
     def ping(self):
@@ -41,7 +41,7 @@ class ServerObject(object):
 
     def sendAction(self,package):
         if self.highestRead >= len(self.actions):# si la dernierre action dans le dictionnaire(leur cle est leur temps) est lue on en ajoute une nouvelle
-            self.actions[self.highestRead] = act.actions(self.client.__len__())
+            self.actions[self.highestRead] = Actions(self.client.__len__())
         self.actions[self.highestRead].setAction(package,self.client.__len__()-1)# on ajoute le package representant l'action  a la derniere place du dictionnaire
 
 
@@ -116,6 +116,16 @@ class Server(object):
     def stopBroadcast(self):
         bS.close()
         
+class Actions(object): 
+    def __init__(self, nbClients):
+        self.action = []
+        
+        for i in range(nbClients):
+            self.action.append([])#chacune des actions prises chaque joueur
+           
+    def setAction(self,action,num):
+        self.action[num].append(action)
+
 
 if __name__ == '__main__':
     s=Server(test = True)
