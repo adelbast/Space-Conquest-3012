@@ -21,8 +21,8 @@ class Joueur():
 
     def creerBatiment(self,position,worker,nom,attributs): #fr
         if self.assezRessources(attributs[1]): #pour savoir si assezRessource
-                self.listeBatiment.append(Batiment(nom,position,attributs,idCount ))
-                idCount+=1
+                self.listeBatiment.append(Batiment(nom,position,attributs,self.idCount ))
+                self.idCount+=1
                 self.listeRessource[0] -= attributs[1][0] #food
                 self.listeRessource[1] -= attributs[1][1] #metaux
                 self.listeRessource[2] -= attributs[1][2] #energie
@@ -45,12 +45,12 @@ class Joueur():
 
     def creerUnite(self,nom,position, attributs):### donner une destination en arg par rapport a la pos du batiment qui l'a cree ou autre ?
         if(self.assezRessources(attributs[2])):
-            self.listeUnite.append(Unit(nom,position,self.noJoueur,[100,200],attributs,idCount))
-            idCount+=1
-            self.listeRessource[0] -= attributs[1][0] #food
-            self.listeRessource[1] -= attributs[1][1] #metaux
-            self.listeRessource[2] -= attributs[1][2] #energie
-            return print("batiment cree")
+            self.listeUnite.append(Unit(nom,position,self.noJoueur,[100,200],attributs,self.idCount))
+            self.idCount+=1
+            self.listeRessource[0] -= attributs[2][0] #food
+            self.listeRessource[1] -= attributs[2][1] #metaux
+            self.listeRessource[2] -= attributs[2][2] #energie
+            return print("unite cree")
 
 
     def supprimerUnite(self,idUnite):
