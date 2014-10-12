@@ -1,9 +1,9 @@
 class Batiment (object):
-    def __init__(self,name,xy,attributs):
+    def __init__(self,name,xy,attributs,idB):
         self.name = name
         self.position = xy
         self.size = 128
-        
+        self.id = idB
         '''self.cost = cost
         self.hp =hp
         self.image =img

@@ -9,54 +9,65 @@ class Joueur():
         self.listeUnite=[]
         self.listeBatiment=[]
         self.listeArtefact=[]
-        self.listeRessource=[10000,10000,10000] #nourriture,metaux.energie
+        self.listeRessource=[10000,10000,10000] #nourriture,metaux,energie
         self.maxPop=None
         self.ageRendu=None
         self.diplomatieStatus=False
         self.nbBatiment=0
         self.nbUnite=0
+        self.idCount=0
         print("Joueur " + self.nom + ", numero " + str(noJoueur))
         
 
     def creerBatiment(self,position,worker,nom,attributs): #fr
-        if self.assezRessources(nom,attributs[1]): #pour savoir si assezRessource
-                self.listeBatiment.append(Batiment(nom,position,attributs ))
+        if self.assezRessources(attributs[1]): #pour savoir si assezRessource
+                self.listeBatiment.append(Batiment(nom,position,attributs,idCount ))
+                idCount+=1
                 self.listeRessource[0] -= attributs[1][0] #food
                 self.listeRessource[1] -= attributs[1][1] #metaux
                 self.listeRessource[2] -= attributs[1][2] #energie
                 return print("batiment cree")
 
-    def assezRessources(self,nom,couts): #fr
+    def assezRessources(self,couts): #fr
         if(self.listeRessource[0] < couts[0]
            or self.listeRessource[1] < couts[1]
            or self.listeRessource[2] < couts[2]):
             return False;
         return True;
             
-    def supprimerBatiment(self,idbatiment): #fr
+    def supprimerBatiment(self,idBatiment): #fr
         count =0
         for i in self.listeBatiment:
-            if (i.id == idbatiment):
+            if (i.id == idBatiment):
                 self.listeBatiment.pop(count)
                 return print("batiment supprime")
             count+=1
 
-    def creerUnite(self,nom,position, attributs):###A modif
-        self.listeUnite.append(Unit(nom,position,self.noJoueur,[100,200],attributs))
+    def creerUnite(self,nom,position, attributs):### donner une destination en arg par rapport a la pos du batiment qui l'a cree ou autre ?
+        if(self.assezRessources(attributs[2])):
+            self.listeUnite.append(Unit(nom,position,self.noJoueur,[100,200],attributs,idCount))
+            idCount+=1
+            self.listeRessource[0] -= attributs[1][0] #food
+            self.listeRessource[1] -= attributs[1][1] #metaux
+            self.listeRessource[2] -= attributs[1][2] #energie
+            return print("batiment cree")
 
-    def supprimerUnite(self,unite):
-        if unite.proprio==self.NoJoueur:
-            self.listeUnite.remove(unite)
-            
-        return print("unite supprimee")
+
+    def supprimerUnite(self,idUnite):
+        count = 0
+        for i in self.listeUnite:
+            if(i.id == idUnite):
+                self.listeUnite.pop(count)
+                return print("unite supprime")
+            count +=1
     
-    def compterRessource(self):
+    def compterRessource(self): # a mettre dans le modele ??
         for i in self.batiment:
-            if i.nom == "ferme":
+            if i.name == "ferme":
                 self.listeRessource[0]+= i.generate()*self.mods()   
-            if i.nom == "mine":
+            if i.name == "mine":
                 self.listeRessource[1]+= i.generate()*self.mods()
-            if i.nom == "solarPanel":
+            if i.name == "solarPanel":
                 self.listeRessource[2]+= i.generate()*self.mods()
                 
 

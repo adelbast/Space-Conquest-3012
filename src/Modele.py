@@ -51,7 +51,7 @@ class Modele(object):
             else:
                 self.listeJoueur.append(Joueur(nomJoueur,len(self.listeJoueur)))
         self.host = host
-
+        
         self.listeJoueur[self.noJoueurLocal].creerBatiment((400,400),"","HQ",[500,(10,10,10),5,6,2,128])
         self.listeJoueur[self.noJoueurLocal].creerUnite("trooper", (100,100), [500,12,(10,10,10),5,6,2,3,32])
 

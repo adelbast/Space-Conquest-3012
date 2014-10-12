@@ -2,11 +2,12 @@ import configparser
 
 
 class Unit:    ##Laurence
-    def __init__(self, name, xy, owner, destination, attribut):
+    def __init__(self, name, xy, owner, destination, attribut,idU):
         
         self.owner    = owner
         self.name     = name
         self.position = xy
+        self.id = idU
 
         self.type        = attribut[0]
         self.maxHp       = attribut[1]
