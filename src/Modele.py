@@ -51,8 +51,8 @@ class Modele(object):
             else:
                 self.listeJoueur.append(Joueur(nomJoueur,len(self.listeJoueur)))
         self.host = host
-        self.listeJoueur[self.noJoueurLocal].creerBatiment((400,400),True,"HQ",[500,(10,10,10),5,6,2,128])
-        self.listeJoueur[self.noJoueurLocal].creerUnite("trooper", (100,100), [500,12,(10,10,10),5,6,2,3,32])
+        self.listeJoueur[self.noJoueurLocal].creerBatiment((400,400),True,"wall",self.dicBatiment["wall"])
+        self.listeJoueur[self.noJoueurLocal].creerUnite("trooper", (100,100), self.dictUnit["trooper"])
 
 
 
@@ -210,7 +210,7 @@ class Modele(object):
     def createDictUnit(self):
 
         parser = configparser.ConfigParser()
-        parser.read('Config/AttributUnits.cfg')
+        parser.read('Config/AttributeInfantryUnits.cfg')
         parserVehicule = configparser.ConfigParser()
         parserVehicule.read('Config/AttributeVehicule.cfg')
 
@@ -219,24 +219,24 @@ class Modele(object):
 
         for name in unit:
             self.type        = parser.get(name, 'type')
-            self.maxHp       = parser.get(name, 'hp')
-            self.cost        = (parser.get(name,'costFood'), parser.get(name,'costMetal'), parser.get(name,'costPower'))
-            self.force       = parser.get(name,'force')
-            self.vitesse     = parser.get(name, 'vitesse')
-            self.rangeVision = parser.get(name, 'rangeVision')
-            self.rangeAtt    = parser.get(name, 'rangeAtt')
-            self.size        = parser.get(name, 'size')
+            self.maxHp       = int(parser.get(name, 'hp'))
+            self.cost        = [int(parser.get(name,'costFood')), int(parser.get(name,'costMetal')), int(parser.get(name,'costPower'))]
+            self.force       = int(parser.get(name,'force'))
+            self.vitesse     = int(parser.get(name, 'vitesse'))
+            self.rangeVision = int(parser.get(name, 'rangeVision'))
+            self.rangeAtt    = int(parser.get(name, 'rangeAtt'))
+            self.size        = int(parser.get(name, 'size'))
             self.dictUnit[name] = [self.type, self.maxHp, self.cost, self.force, self.vitesse, self.rangeVision, self.rangeAtt,self.size]
 
         for name in unitVe:
             self.type        = parser.get(name, 'type')
-            self.maxHp       = parser.get(name, 'hp')
-            self.cost        = [parser.get(name,'costFood'), parser.get(name,'costMetal'), parser.get(name,'costPower')]
-            self.force       = parser.get(name,'force')
-            self.vitesse     = parser.get(name, 'vitesse')
-            self.rangeVision = parser.get(name, 'rangeVision')
-            self.rangeAtt    = parser.get(name, 'rangeAtt')
-            self.size        = parser.get(name, 'size')
+            self.maxHp       = int(parser.get(name, 'hp'))
+            self.cost        = [int(parser.get(name,'costFood')), int(parser.get(name,'costMetal')), int(parser.get(name,'costPower'))]
+            self.force       = int(parser.get(name,'force'))
+            self.vitesse     = int(parser.get(name, 'vitesse'))
+            self.rangeVision = int(parser.get(name, 'rangeVision'))
+            self.rangeAtt    = int(parser.get(name, 'rangeAtt'))
+            self.size        = int(parser.get(name, 'size'))
             self.dictUnit[name] = [self.type, self.maxHp, self.cost, self.force, self.vitesse, self.rangeVision, self.rangeAtt,self.size]
 
     def createDictBatiment(self):
@@ -247,8 +247,8 @@ class Modele(object):
         batiments = parser.sections()
 
         for name in batiments:
-            self.maxHp       = parser.get(name, 'hp')
-            self.cost        = (parser.get(name,'costFood'), parser.get(name,'costMetal'), parser.get(name,'costPower'))
-            self.production     = parser.get(name, 'production')
-            self.size        = parser.get(name, 'size')
+            self.maxHp       = int(parser.get(name, 'hp'))
+            self.cost        = [int(parser.get(name,'costFood')), int(parser.get(name,'costMetal')), int(parser.get(name,'costPower'))]
+            self.production  = int(parser.get(name, 'production'))
+            self.size        = int(parser.get(name, 'size'))
             self.dicBatiment[name] = [self.maxHp, self.cost, self.production, self.size]

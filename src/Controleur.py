@@ -27,11 +27,13 @@ class Controleur:
         self.vue.displayMap(self.modele.map)
         self.vue.displayObject(self.modele.listeJoueur,[])
         self.vue.displayHUD()
+        self.gameLoop()
         
 
     def gameLoop(self):
-        self.modele.gestion(self.client.pullAction())
-        self.client.pushAction(self.modele.dicAction2Server)
+        #self.modele.gestion(self.client.pullAction()) #enlever pour test bouton dans la vue
+        #self.client.pushAction(self.modele.dicAction2Server) #enlever pour test bouton dans la vue
+        self.vue.displayObject(self.modele.listeJoueur,[])
         self.vue.root.after(24,self.gameLoop)
 
     def gererMouseClick(self,event):

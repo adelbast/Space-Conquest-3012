@@ -73,6 +73,11 @@ class Vue:
         self.surfaceJeu.bind("<Button-3>", self.parent.gererMouseClick)
         # manque right click pour cancel selection
 
+        #TEST BOUTON HUD JUSTE TEST, PAS DEFINITIF
+        boutonCreerUnit = Button(self.hud,text="creerUnite",command=lambda:self.parent.modele.listeJoueur[1].creerUnite("psychonaut",(300,300) , self.parent.modele.dictUnit["psychonaut"] ))
+        boutonCreerUnit.configure(width = 10, activebackground = "#33B5E5", relief = FLAT)
+        boutonCreerUnit_window = self.hud.create_window(320, 40, anchor=NW, window=boutonCreerUnit)
+
     #Deplacement de la map avec WASD
     def scroll_move(self, event):
         variation = 1
