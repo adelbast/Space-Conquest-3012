@@ -2,7 +2,7 @@ from tkinter import *
 import math
 from PIL import ImageTk, Image
 from Tile import Tileset
-from Sprites import Sprites
+from Sprites.Sprites import Sprites
 import os
 
 class Vue:
@@ -15,11 +15,7 @@ class Vue:
         #Creation du Tileset
         self.tileset = Tileset.Tileset("Image/tileset/tileset.png",64,64)
 
-        #Creation des Sprites
-        self.sprites = Sprites.Sprites()
-        self.sprites.generateSprites(32,32,96,128,"Config/AttributeInfantryUnits.cfg")
-        self.sprites.generateSprites(64,64,192,256,"Config/AttributeVehicules.cfg")
-        print(self.sprites.spriteDict)
+        self.sprites = []
 
         #Mesures de la fenetre
         self.windowWidth = 1200
@@ -134,6 +130,43 @@ class Vue:
         self.surfaceJeu.xview_moveto(posx*1/self.miniMapW)
         self.surfaceJeu.yview_moveto(posy*1/self.miniMapH)
 
+    #Generation des sprites pour chacun des joueurs
+    def generateSpriteSet(self, noLocal):
+        directories = os.listdir("Sprites/Sprites")
+
+        for d in directories:
+
+            print(d)
+            
+            s = Sprites()
+            
+            #Generation des infantries
+            s.generateSprites(32,32,96,128,"Config/AttributeInfantryUnits.cfg", d, 1)
+            #Generation des vehicules
+            s.generateSprites(64,64,192,256,"Config/AttributeVehicules.cfg", d, 1)
+
+            #Si on est au directory du joueur local, il faut creer une autre version des sprites pour la selection
+            if(directories.index(d) == noLocal):
+                ss = Sprites()
+
+
+                #Generation des infantries
+                ss.generateSprites(32,32,96,128,"Config/AttributeInfantryUnits.cfg", d, 3)
+                #Generation des vehicules
+                ss.generateSprites(64,64,192,256,"Config/AttributeVehicules.cfg", d, 3)
+
+                self.sprites.append((s, ss))
+                
+
+                
+            else:
+                self.sprites.append(s)
+
+        print(self.sprites)  
+            
+        
+        
+
     #Affiche les informations sur l'unité
     def displayInfoUnit(self, unit):
         pass
@@ -174,7 +207,7 @@ class Vue:
         #self.surfaceJeu.create_image(0,0, anchor=NW, image=self.sprites.spriteDict['trooper']['front']['1'])
 
     #Affichage des objets sur la surface                                                                                                 
-    def displayObject(self, joueurs, artefacts):
+    def displayObject(self, joueurs, artefacts, noLocal, selection):
         
         self.surfaceJeu.delete("unit","structure","artefact")
 
@@ -185,10 +218,23 @@ class Vue:
 
         #Iteration sur chacun des joueurs
         for joueur in joueurs:
-
+                   
             #Affiche les unités
             for u in joueur.listeUnite:
-                self.surfaceJeu.create_image(u.position[0]-u.size/2, u.position[1]-u.size/2, anchor=NW, image=self.sprites.spriteDict[u.name][u.orientation]['1'], tags="unit")
+
+                #Si l'unite est au joueur local
+                if(joueur.noJoueur == noLocal):
+
+                    #Si l'unite est selectionnee
+                    if(u in selection):
+                        self.surfaceJeu.create_image(u.position[0]-u.size/2, u.position[1]-u.size/2, anchor=NW, image=self.sprites[joueur.noJoueur][1].spriteDict[u.name][u.orientation]['1'], tags="unit")
+                    #Si l'unite n'est pas selectionnee
+                    else:
+                        self.surfaceJeu.create_image(u.position[0]-u.size/2, u.position[1]-u.size/2, anchor=NW, image=self.sprites[joueur.noJoueur][0].spriteDict[u.name][u.orientation]['1'], tags="unit")
+
+                #Sinon si l'unite est a un autre joueur
+                else:
+                    self.surfaceJeu.create_image(u.position[0]-u.size/2, u.position[1]-u.size/2, anchor=NW, image=self.sprites[joueur.noJoueur].spriteDict[u.name][u.orientation]['1'], tags="unit")
 
             #Affiche les batiments
             for b in joueur.listeBatiment:

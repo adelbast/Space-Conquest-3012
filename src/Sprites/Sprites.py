@@ -1,13 +1,13 @@
 __author__ = "Arnaud Girardin"
 
-from PIL import Image, ImageTk
+from PIL import Image, ImageTk, ImageEnhance
 import configparser
 
 class Sprites:
     def __init__(self):
         self.spriteDict = {}
 
-    def generateSprites(self,spriteW, spriteH, totalW, totalH, cfgPath):
+    def generateSprites(self,spriteW, spriteH, totalW, totalH, cfgPath, folder, brightness):
 
         cfg = configparser.ConfigParser()
         cfg.read(cfgPath)
@@ -16,7 +16,9 @@ class Sprites:
         for unit in cfg.sections() :
 
 
-            sprites = Image.open("Sprites/Sprites/"+unit+".png")
+            sprites = Image.open("Sprites/Sprites/"+folder+"/"+unit+".png")
+            converter = ImageEnhance.Color(sprites)
+            sprites = converter.enhance(brightness)
                 
             #Axe verticale pour l'ensemble de spriteset
             for y in range(int(totalH/spriteH)):
