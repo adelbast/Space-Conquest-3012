@@ -22,8 +22,7 @@ class Controleur:
     def lancerPartie(self):
         self.modele.initPartie(0,["Xavier","Antoine","AI","Laurence","Arnaud","Francis","Alexandre","AI"],True)
         self.vue.displayMap(self.modele.map)
-        self.vue.generateSpriteSet(self.modele.noJoueurLocal)
-        self.vue.displayObject(self.modele.listeJoueur,[],self.modele.noJoueurLocal,self.modele.selection)
+        self.vue.displayObject(self.modele.listeJoueur,[])
         self.vue.displayHUD()
         self.gameLoop()
         
@@ -31,7 +30,7 @@ class Controleur:
     def gameLoop(self):
         #self.modele.gestion(self.client.pullAction()) #enlever pour test bouton dans la vue
         #self.client.pushAction(self.modele.dicAction2Server) #enlever pour test bouton dans la vue
-        self.vue.displayObject(self.modele.listeJoueur,[],self.modele.noJoueurLocal,self.modele.selection)
+        self.vue.displayObject(self.modele.listeJoueur,[])
         self.vue.root.after(24,self.gameLoop)
 
     def gererMouseClick(self,event):
