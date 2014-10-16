@@ -19,9 +19,6 @@ class Controleur:
     def creeServeur(self):
         self.serveur = Serveur.Serveur(nomPartie,nomJoueur)
 
-    def chercherServeur(self):
-        pass
-
     def lancerPartie(self):
         self.modele.initPartie(0,["Xavier","Antoine","AI","Laurence","Arnaud","Francis","Alexandre","AI"],True)
         self.vue.displayMap(self.modele.map)

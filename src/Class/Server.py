@@ -5,6 +5,7 @@ from random import randint
 import pickle
 #from MyData import act
 import time
+from threading import Thread
 
 VERSION = "1.0"
 
@@ -90,8 +91,9 @@ class ServerObject(object):
         return info
 
         
-class Server(object):
-    def __init__(self, nomServeur = "SpaceConquest3012",nomJoueurHost = "xavier", test = False):
+class Server(Thread):
+    def __init__(self, nomServeur = "SpaceConquest3012", nomJoueurHost = "xavier", test = False):
+        super(Server, self).__init__()
         self.nomServeur = nomServeur
         self.uri = None        #adresse utiliser par pyro pour se connecter au objets distants
         self.port = 9992
@@ -99,9 +101,9 @@ class Server(object):
         self.serverObject = ServerObject(nomServeur, nomJoueurHost, self.ip, test)  #objet distant
 
         if(test):
-            self.start(self.nomServeur)
+            self.run(self.nomServeur)
 
-    def start(self,nomServeur): #lance le serveur de jeu
+    def run(self,nomServeur): #lance le serveur de jeu
         daemon=Pyro4.Daemon(host=self.ip,port=self.port)
         self.uri=daemon.register(self.serverObject,nomServeur) #"PYRO:SpaceConquest3012@192.168.100.2:9992" Uri ressemble à quelque chose comme ça
         print(self.uri)
