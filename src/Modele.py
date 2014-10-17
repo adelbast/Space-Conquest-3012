@@ -42,7 +42,7 @@ class Modele(object):
         self.releasePosy = 0
     
     def initPartie(self,noJoueur,listeNomJoueur,host=False):
-        
+        print(listeNomJoueur)
         self.noJoueurLocal = noJoueur
         for nomJoueur in listeNomJoueur:
             if(nomJoueur == "AI"):
@@ -52,6 +52,7 @@ class Modele(object):
         self.host = host
 
         print("Joueur:", self.noJoueurLocal)
+        print(self.listeJoueur)
         self.listeJoueur[self.noJoueurLocal].creerBatiment((400,400),True,"wall",self.dicBatiment["wall"])
         self.listeJoueur[self.noJoueurLocal].creerUnite("worker", (100,100), self.dictUnit["trooper"])
 

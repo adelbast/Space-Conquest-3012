@@ -9,23 +9,32 @@ class Controleur:
         self.vue = Vue(self)
         self.client = None
         self.serveur = None
+        self.listeTemporaireDeClient = ["Xavier","Antoine","AI","Laurence","Arnaud","Francis","Alexandre","AI"]
         self.lancerPartie()#lorsque le menu sera fait, utiliser la fontion du bas plutôt que celle-ci
         #self.vue.afficherMenu()
         self.vue.root.mainloop()
 
-    def creeClient(self,noJoueur):
-        self.client = Client(noJoueur)
+    def creeClient(self,nom):
+        self.client = Client(nom)
 
-    def creeServeur(self):
-        self.serveur = Serveur(nomPartie,nomJoueur)
+    def creeServeur(self,nomPartie,nomJoueur):
+        self.serveur = Server(nomPartie,nomJoueur)
+        self.serveur.daemon = True
         self.serveur.start()
 
     def lancerPartie(self):
-        self.modele.initPartie(0,["Xavier","Antoine","AI","Laurence","Arnaud","Francis","Alexandre","AI"],True)
+        self.creeClient(self.listeTemporaireDeClient[1])#changer le numero pour créé plusieur client
+        if(self.client.nameServer):
+            self.client.connect([clee for clee, valeur in self.client.getServers().items() if clee != "Pyro.NameServer"][0])#Tente de se connecter sur la premiere clee retourner par getServers() qui n'est pas égale à Pyro.NameServer
+        else:
+            self.creeServeur("DestructionGalactique","Xavier")
+            self.client.connect([clee for clee, valeur in self.client.getServers().items() if clee != "Pyro.NameServer"][0])
+        self.modele.initPartie(0,self.client.getStartingInfo(),True)
         self.vue.displayMap(self.modele.map)
         self.vue.generateSpriteSet(self.modele.noJoueurLocal)
         self.vue.displayObject(self.modele.listeJoueur,[],self.modele.noJoueurLocal,self.modele.selection)
         self.vue.displayHUD()
+        
         self.gameLoop()
         
 
@@ -52,6 +61,11 @@ class Controleur:
         self.modele.releasePosx = event.x+offset[0]
         self.modele.releasePosy = event.y+offset[1]
         self.modele.gererMouseRelease(event)
+
+    def fermeture(self):
+        if(self.serveur):
+            self.serveur.close()
+        self.vue.root.destroy()
 
 if __name__ == "__main__":
     c = Controleur()

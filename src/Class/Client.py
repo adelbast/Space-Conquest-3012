@@ -4,13 +4,14 @@ import socket
 
 
 class Client(object):
-	def __init__(self, noJoueur, num, temps, test = False):
-		self.noJoueur = noJoueur
+	def __init__(self, nom,  test = False):
+		self.nom =  nom
+		self.noJoueur = None
 		self.proxy = None
-		self.num = num
+		self.num = None
 		self.nameServer = None
-		self.temps = temps #represente ou il est rendu dans sa lecture des evenements
-		
+		self.temps = None #represente ou il est rendu dans sa lecture des evenements
+		self.getNameServer()
 		if(test):
 			s = self.getServers()
 			try:
@@ -39,7 +40,7 @@ class Client(object):
 			self.nameServer = Pyro4.naming.locateNS()	#Recherche le nameServer et l'assigne s'il le trouve
 			print("Trouvé")
 		except Exception as e:
-			print(e)
+			print("Le nameServer n'a pas été trouvé")
 
 	def getServers(self):
 		if(not self.nameServer):
@@ -59,16 +60,14 @@ class Client(object):
 			print("Connection en cours...")
 			self.proxy = Pyro4.Proxy(uri)				#Assigne l'adresse uri à l'objet pyro
 			self.proxy.ping()							#Test si l'objet est en ligne
-			self.num = self.proxy.seConnecter()			#Signale au serveur qu'on est connecté et celui-ci nous assigne un numero unique
+			self.num = self.proxy.seConnecter(self.nom)		#Signale au serveur qu'on est connecté et celui-ci nous assigne un numero unique
 			print("Connection établie!")
 		except Exception as e:
 			print(e)
 
-	def deepSearch(self): #Dangereux
-		from ServerSniffer import Sniffer
-		sniffer = Sniffer()
-		sniffer.rechercheDeServeur()
+	def getStartingInfo(self):
+		return self.proxy.getStartingInfo()
 
 
 if __name__ == '__main__':
-	m=Client(0,0,0,True)
+	m=Client(nom = "Bob",test = True)

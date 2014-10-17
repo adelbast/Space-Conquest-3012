@@ -54,6 +54,8 @@ class Vue:
         print("Map size:", len(self.parent.modele.map.map[0])*64, len(self.parent.modele.map.map)*64)
         self.surfaceJeu.place(x=0, y=0)
         
+        #Pour la fermeture de la fenetre de jeu (afin de pouvoir compléter des actions avant de quitter le programme)
+        self.root.protocol( "WM_DELETE_WINDOW", self.parent.fermeture )
 
         #Pour que le canvas scroll lorsquon click
         self.root.bind("<Key>", self.scroll_move)

@@ -7,6 +7,7 @@ import pickle
 import time
 from threading import Thread
 import traceback
+import sys
 
 VERSION = "1.0"
 
@@ -33,11 +34,11 @@ class ServerObject(object):
     def nbPlayer(self):
         return self.client.__len__()
         
-    def seConnecter(self):  #Signale au serveur quon est connecter
+    def seConnecter(self,nom):  #Signale au serveur quon est connecter
         try:
             if self.client.__len__() != self.nbPlayerReq:   # on ne peut se connecter que si la limite des joueur n'est pas depasser
                 num = self.client.__len__()                 # le numero  que le client va recevoir est sa position dans le tableau des clients
-                self.client.append(InternalClient(num,0))   #ajoute un client avec comme numero sa position dans le tableau
+                self.client.append(InternalClient(num,0,nom))   #ajoute un client avec comme numero sa position dans le tableau
                 """while (self.client.__len__() != self.nbPlayerReq):
                     time.sleep(1)    #tant que tout le monde n'est pas connecter on attend"""#Pourquoi faire attendre le client?
                 return num           #retourne le numero donne
@@ -82,7 +83,9 @@ class ServerObject(object):
                 del self.actions[(Lowest-1)]     # on enleve levenement avant du plus bas
                 self.highestDel = Lowest
 
-    
+    def getStartingInfo(self):
+        return [client.nom for client in self.client]
+
     def getInfo(self):
         global VERSION
         info = {#dictionaire d'info sur le serveur
@@ -97,9 +100,10 @@ class ServerObject(object):
 
 
 class InternalClient(object):
-    def __init__(self, num, renommerCetteVariableSiQqUnSaitDeOuElleSort):
+    def __init__(self, num, renommerCetteVariableSiQqUnSaitDeOuElleSort, nom):
         self.num = num
         self.renommerCetteVariableSiQqUnSaitDeOuElleSort = renommerCetteVariableSiQqUnSaitDeOuElleSort
+        self.nom = nom
 
 
 
@@ -112,11 +116,13 @@ class Server(Thread):
         self.port = 9992
         self.ip = socket.gethostbyname(socket.gethostname())                        #retourne le IP
         self.serverObject = ServerObject(nomServeur, nomJoueurHost, self.ip, test)  #objet distant
+        self.nameServerThread = None
 
         if(test):
             self.run()
 
     def run(self): #lance le serveur de jeu
+        print("Création du serveur en cours...")
         daemon=Pyro4.Daemon(host=self.ip,port=self.port)
         self.uri=daemon.register(self.serverObject, self.nomServeur) #"PYRO:SpaceConquest3012@192.168.100.2:9992" Uri ressemble à quelque chose comme ça
         print(self.uri)
@@ -125,10 +131,13 @@ class Server(Thread):
         daemon.requestLoop()
 
     def startNameServer(self):      #lance le serveur qui broadcast les infos du serveur de jeu sur le réseau
-        nameServerThread = Thread(target = Pyro4.naming.startNSloop,args=(self.ip, None, True)) #création de l'objet serveur
-        nameServerThread.start()    #lance le nameServeur dans un thread
+        self.nameServerThread = Thread(target = Pyro4.naming.startNSloop,args=(self.ip, None, True)) #création de l'objet serveur
+        self.nameServerThread.start()    #lance le nameServeur dans un thread
         ns = Pyro4.naming.locateNS(host=self.ip)
         ns.register(name=self.nomServeur, uri=self.uri, safe=True)
+
+    def close(self):
+        sys.exit()
  
 
 
