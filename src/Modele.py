@@ -123,32 +123,33 @@ class Modele(object):
 
     def gererMouseRelease(self,event):
         if(event.num == 3): #clic droit
-            print("clic droit release")
             if(self.selection): #Si le joueur a quelque chose de sélectionné, sinon inutile
-                if(self.selection[0].owner.noJoueur == self.noJoueurLocal):
+                if(self.selection[0].owner == self.noJoueurLocal):
                     try:            #Duck typing
-                        self.selection[0].move(None)
+                        self.selection[0].setDestination(None)
                     except Exception as e:#c'est donc un batiment
-                        pass
+                        print("impossible de bouger cette entitée")
                     else:#si pas d'exception
+
                         cible = self.clickCibleOuTile(self.releasePosx,self.releasePosy)
                         if(not cible):
                             cible = (self.releasePosx,self.releasePosy)
 
                         for unite in self.selection: #Donne un ordre de déplacement à la sélection
                             unite.setDestination(cible)
+                            print("Ordre de déplacement")
             
         
         elif(event.num == 1): #clic gauche
             self.selection[:] = [] #Vide la liste
-            print("clic gauche release")
             if(self.clickPosx!=self.releasePosx or self.clickPosy!=self.releasePosy):#self.clickPosx+5 < self.releasePosx or self.clickPosx-5 > self.releasePosx or self.clickPosy+5 < self.releasePosy or self.clickPosy-5 > self.releasePosy
-                print("selection MULTIPLE")
                 print(self.clickPosx,self.clickPosy,self.releasePosx,self.releasePosy)
                 for unit in self.listeJoueur[self.noJoueurLocal].listeUnite: #a changer a joueur actuel plutot que [0], je prends seulement les unites puisque selection multiple de batiment inutile
                     if(self.pointDansForme([self.releasePosx,self.clickPosx,self.clickPosx,self.releasePosx],[self.clickPosy,self.clickPosy,self.releasePosy,self.releasePosy],unit.position[0],unit.position[1])):#La fonction dont je t'ai parlé sur ts frank...
                         self.selection.append(unit)
                         print(unit.name)
+                    else:
+                        print("Pas cible")
             else:
                 cible = self.clickCibleOuTile(self.releasePosx,self.releasePosy)
                 if(cible):

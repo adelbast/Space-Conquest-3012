@@ -66,8 +66,7 @@ class Vue:
         self.surfaceJeu.bind("<B1-Motion>", self.parent.gererMouseDrag)
         self.surfaceJeu.bind("<Button-1>",self.parent.gererMouseClick)
         self.surfaceJeu.bind("<ButtonRelease-1>",self.parent.gererMouseRelease)
-        self.surfaceJeu.bind("<Button-3>", self.parent.gererMouseClick)
-        # manque right click pour cancel selection
+        self.surfaceJeu.bind("<ButtonRelease-3>", self.parent.gererMouseRelease)
 
         #TEST BOUTON HUD JUSTE TEST, PAS DEFINITIF
         boutonCreerUnit = Button(self.hud,text="creerUnite",command=lambda:self.parent.modele.listeJoueur[1].creerUnite("psychonaut",(300,300) , self.parent.modele.dictUnit["psychonaut"] ))
