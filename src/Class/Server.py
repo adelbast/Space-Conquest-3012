@@ -26,6 +26,7 @@ class ServerObject(object):
         self.client =[]         # la liste des client
         self.actions ={0:Actions(self.nbPlayerReq)} #la liste qui contient tous les evenements qui contiennent les actions
         self.maxTempsDecalage = 8
+        self.gameStarted = False
 
     def ping(self):
         print("ping")
@@ -36,9 +37,10 @@ class ServerObject(object):
         
     def seConnecter(self,nom):  #Signale au serveur quon est connecter
         try:
-            if self.client.__len__() != self.nbPlayerReq:   # on ne peut se connecter que si la limite des joueur n'est pas depasser
+            if not self.gameStarted:   # on ne peut se connecter que si la limite des joueur n'est pas depasser et si la partie n'est pas commencé
                 num = self.client.__len__()                 # le numero  que le client va recevoir est sa position dans le tableau des clients
                 self.client.append(InternalClient(num,0,nom))   #ajoute un client avec comme numero sa position dans le tableau
+                print(self.client[num].nom+" est connecté!")
                 """while (self.client.__len__() != self.nbPlayerReq):
                     time.sleep(1)    #tant que tout le monde n'est pas connecter on attend"""#Pourquoi faire attendre le client?
                 return num           #retourne le numero donne
@@ -82,6 +84,12 @@ class ServerObject(object):
             if Lowest-1 in self.actions:         #on verifie s'il existe (jai tester on en a pas de besoin mais jeprefaire eviter de prendre des risque)
                 del self.actions[(Lowest-1)]     # on enleve levenement avant du plus bas
                 self.highestDel = Lowest
+
+    def isGameStarted(self):
+        return self.gameStarted
+
+    def startGame(self):
+        self.gameStarted = True
 
     def getStartingInfo(self):
         return [client.nom for client in self.client]

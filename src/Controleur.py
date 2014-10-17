@@ -2,6 +2,8 @@ from Vue    import Vue
 from Modele import Modele
 from Class.Server import Server
 from Class.Client import Client
+from threading import Thread
+import time,os
 
 class Controleur:
     def __init__(self):
@@ -9,8 +11,12 @@ class Controleur:
         self.vue = Vue(self)
         self.client = None
         self.serveur = None
+        
         self.listeTemporaireDeClient = ["Xavier","Antoine","AI","Laurence","Arnaud","Francis","Alexandre","AI"]
-        self.lancerPartie()#lorsque le menu sera fait, utiliser la fontion du bas plutôt que celle-ci
+        self.leclient = 1    #changer le numero pour créé plusieur client
+        
+        self.autoCreateAndEnterLobby()#lorsque le menu sera fait, utiliser la fontion du bas plutôt que celle-ci
+        self.lobbyLoop()
         #self.vue.afficherMenu()
         self.vue.root.mainloop()
 
@@ -22,14 +28,29 @@ class Controleur:
         self.serveur.daemon = True
         self.serveur.start()
 
-    def lancerPartie(self):
-        self.creeClient(self.listeTemporaireDeClient[1])#changer le numero pour créé plusieur client
-        if(self.client.nameServer):
-            self.client.connect([clee for clee, valeur in self.client.getServers().items() if clee != "Pyro.NameServer"][0])#Tente de se connecter sur la premiere clee retourner par getServers() qui n'est pas égale à Pyro.NameServer
-        else:
+    def autoCreateAndEnterLobby(self):
+        print(self.listeTemporaireDeClient[self.leclient])
+        self.creeClient(self.listeTemporaireDeClient[self.leclient])
+        if(not self.client.nameServer):
             self.creeServeur("DestructionGalactique","Xavier")
-            self.client.connect([clee for clee, valeur in self.client.getServers().items() if clee != "Pyro.NameServer"][0])
-        self.modele.initPartie(0,self.client.getStartingInfo(),True)
+        self.client.connect([clee for clee, valeur in self.client.getServers().items() if clee != "Pyro.NameServer"][0])#Tente de se connecter sur la premiere clee retourner par getServers() qui n'est pas égale à Pyro.NameServer
+
+    def lobbyLoop(self):
+        if(self.serveur):
+            thread = Thread(target = self.inputThread)
+            thread.start()
+        while(not self.client.proxy.isGameStarted()):
+            time.sleep(0.5)
+            #os.system('cls')
+            print(self.client.getStartingInfo(), "Si le serveur est sur cette machine, pesez sur Enter pour débuter la partie ou attendre les autres joueurs")
+        self.lancerPartie()
+
+    def inputThread(self):
+        input()
+        self.client.proxy.startGame()
+
+    def lancerPartie(self):
+        self.modele.initPartie(self.leclient,self.client.getStartingInfo(),True)
         self.vue.displayMap(self.modele.map)
         self.vue.generateSpriteSet(self.modele.noJoueurLocal)
         self.vue.displayObject(self.modele.listeJoueur,[],self.modele.noJoueurLocal,self.modele.selection)
