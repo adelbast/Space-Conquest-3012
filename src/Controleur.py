@@ -17,7 +17,8 @@ class Controleur:
         self.client = Client(noJoueur)
 
     def creeServeur(self):
-        self.serveur = Serveur.Serveur(nomPartie,nomJoueur)
+        self.serveur = Serveur(nomPartie,nomJoueur)
+        self.serveur.start()
 
     def lancerPartie(self):
         self.modele.initPartie(0,["Xavier","Antoine","AI","Laurence","Arnaud","Francis","Alexandre","AI"],True)

@@ -6,6 +6,7 @@ import pickle
 #from MyData import act
 import time
 from threading import Thread
+import traceback
 
 VERSION = "1.0"
 
@@ -33,12 +34,15 @@ class ServerObject(object):
         return self.client.__len__()
         
     def seConnecter(self):  #Signale au serveur quon est connecter
-        if self.client.__len__() != self.nbPlayerReq: # on ne peut se connecter que si la limite des joueur n'est pas depasser
-            num = self.client.__len__()      # le numero  que le client va recevoir est sa position dans le tableau des clients
-            self.client.append(client(self.client.__len__(),0))    #ajoute un client avec comme numero sa position dans le tableau
-            while (self.client.__len__() != self.nbPlayerReq):    #ajoute un client avec comme numero sa position dans le tableau
-                time.sleep(1)    #tant que tout le monde n'est pas connecter on attend
-            return (num)        #retourne le numero donne
+        try:
+            if self.client.__len__() != self.nbPlayerReq:   # on ne peut se connecter que si la limite des joueur n'est pas depasser
+                num = self.client.__len__()                 # le numero  que le client va recevoir est sa position dans le tableau des clients
+                self.client.append(InternalClient(num,0))   #ajoute un client avec comme numero sa position dans le tableau
+                """while (self.client.__len__() != self.nbPlayerReq):
+                    time.sleep(1)    #tant que tout le monde n'est pas connecter on attend"""#Pourquoi faire attendre le client?
+                return num           #retourne le numero donne
+        except Exception as e:
+            print(traceback.print_exc())    #code pour avoir le "FULL STACK TRACE" :D
 
     def sendAction(self,package):
         if self.highestRead >= len(self.actions):# si la dernierre action dans le dictionnaire(leur cle est leur temps) est lue on en ajoute une nouvelle
@@ -90,6 +94,15 @@ class ServerObject(object):
         }
         return info
 
+
+
+class InternalClient(object):
+    def __init__(self, num, renommerCetteVariableSiQqUnSaitDeOuElleSort):
+        self.num = num
+        self.renommerCetteVariableSiQqUnSaitDeOuElleSort = renommerCetteVariableSiQqUnSaitDeOuElleSort
+
+
+
         
 class Server(Thread):
     def __init__(self, nomServeur = "SpaceConquest3012", nomJoueurHost = "xavier", test = False):
@@ -101,23 +114,24 @@ class Server(Thread):
         self.serverObject = ServerObject(nomServeur, nomJoueurHost, self.ip, test)  #objet distant
 
         if(test):
-            self.run(self.nomServeur)
+            self.run()
 
-    def run(self,nomServeur): #lance le serveur de jeu
+    def run(self): #lance le serveur de jeu
         daemon=Pyro4.Daemon(host=self.ip,port=self.port)
-        self.uri=daemon.register(self.serverObject,nomServeur) #"PYRO:SpaceConquest3012@192.168.100.2:9992" Uri ressemble à quelque chose comme ça
+        self.uri=daemon.register(self.serverObject, self.nomServeur) #"PYRO:SpaceConquest3012@192.168.100.2:9992" Uri ressemble à quelque chose comme ça
         print(self.uri)
-        self.startBroadcast()
+        self.startNameServer()
         print("Pret!")
         daemon.requestLoop()
 
-    def startBroadcast(self):    #lance le serveur qui broadcast les infos du serveur de jeu sur le réseau
-        bS = Pyro4.naming.BroadcastServer(nsUri = core.URI(self.uri), bcport = self.port+1)#création de l'objet serveur (self.port+1 car ""socket"" ne peut pas binder deux fois le même socket)
-        bS.runInThread()        #lance le serveur de broadcast dans un autre thread
+    def startNameServer(self):      #lance le serveur qui broadcast les infos du serveur de jeu sur le réseau
+        nameServerThread = Thread(target = Pyro4.naming.startNSloop,args=(self.ip, None, True)) #création de l'objet serveur
+        nameServerThread.start()    #lance le nameServeur dans un thread
+        ns = Pyro4.naming.locateNS(host=self.ip)
+        ns.register(name=self.nomServeur, uri=self.uri, safe=True)
+ 
 
-    def stopBroadcast(self):
-        bS.close()
-        
+
 class Actions(object): 
     def __init__(self, nbClients):
         self.action = []
