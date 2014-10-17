@@ -14,8 +14,7 @@ class Modele(object):
         self.listeArtefact = []
         self.dictUnit = {}
         self.dicBatiment = {}
-        self.createDictUnit()
-        self.createDictBatiment()
+        self.createDict()
         
         self.map = Map("Tile/map1.csv")
 
@@ -150,23 +149,6 @@ class Modele(object):
                     if(self.pointDansForme([self.releasePosx,self.clickPosx,self.clickPosx,self.releasePosx],[self.clickPosy,self.clickPosy,self.releasePosy,self.releasePosy],unit.position[0],unit.position[1])):#La fonction dont je t'ai parlé sur ts frank...
                         self.selection.append(unit)
                         print(unit.name)
-                    """if (self.clickPosx < self.releasePosx and self.clickPosy < self.releasePosy): # on doit faire 4 different if en fonction de comment le drag a ete fait
-                    # de haut Droit a Bas Gauche       de haut gauche a bas droit etc
-                        if (unit.x > self.clickPosx and unit.x < self.releasePosx and unit.y > self.clickPosy and unit.y < self.releasePosy ): #HG a BD
-                            self.selection.append(unit)
-                            print("HG a BD")
-                    elif (self.clickPosx > self.releasePosx and self.clickPosy > self.releasePosy):
-                        if (unit.x < self.clickPosx and unit.x > self.releasePosx and unit.y < self.clickPosy and unit.y > self.releasePosy ): #BD a HG
-                            self.selection.append(unit)
-                            print("BD a HG")
-                    elif(self.clickPosx < self.releasePosx and self.clickPosy > self.releasePosy):
-                        if (unit.x > self.clickPosx and unit.x < self.releasePosx and unit.y < self.clickPosy and unit.y > self.releasePosy ): #BG a HD
-                            self.selection.append(unit)
-                            print("BG a HD")
-                    else:
-                        if (unit.x < self.clickPosx and unit.x > self.releasePosx and unit.y < self.clickPosy and unit.y > self.releasePosy ): #BD a HG
-                            self.selection.append(unit)
-                            print("BD a HG")"""
             else:
                 cible = self.clickCibleOuTile(self.releasePosx,self.releasePosy)
                 if(cible):
@@ -209,15 +191,20 @@ class Modele(object):
 
 
 
-    def createDictUnit(self):
+    def createDict(self):
 
         parser = configparser.ConfigParser()
         parser.read('Config/AttributeInfantryUnits.cfg')
+        
         parserVehicule = configparser.ConfigParser()
         parserVehicule.read('Config/AttributeVehicule.cfg')
-
+        
+        parserBatiment = configparser.ConfigParser()
+        parserBatiment.read('Config/AttributeBuilding.cfg')
+        
         unit = parser.sections()
-        unitVe = parser.sections()
+        unitVe = parserVehicule.sections()
+        batiments = parserBatiment.sections()
 
         for name in unit:
             self.type        = parser.get(name, 'type')
@@ -231,26 +218,25 @@ class Modele(object):
             self.dictUnit[name] = [self.type, self.maxHp, self.cost, self.force, self.vitesse, self.rangeVision, self.rangeAtt,self.size]
 
         for name in unitVe:
-            self.type        = parser.get(name, 'type')
-            self.maxHp       = int(parser.get(name, 'hp'))
-            self.cost        = [int(parser.get(name,'costFood')), int(parser.get(name,'costMetal')), int(parser.get(name,'costPower'))]
-            self.force       = int(parser.get(name,'force'))
-            self.vitesse     = int(parser.get(name, 'vitesse'))
-            self.rangeVision = int(parser.get(name, 'rangeVision'))
-            self.rangeAtt    = int(parser.get(name, 'rangeAtt'))
-            self.size        = int(parser.get(name, 'size'))
+            self.type        = parserVehicule.get(name, 'type')
+            self.maxHp       = int(parserVehicule.get(name, 'hp'))
+            self.cost        = [int(parserVehicule.get(name,'costFood')), int(parserVehicule.get(name,'costMetal')), int(parserVehicule.get(name,'costPower'))]
+            self.force       = int(parserVehicule.get(name,'force'))
+            self.vitesse     = int(parserVehicule.get(name, 'vitesse'))
+            self.rangeVision = int(parserVehicule.get(name, 'rangeVision'))
+            self.rangeAtt    = int(parserVehicule.get(name, 'rangeAtt'))
+            self.size        = int(parserVehicule.get(name, 'size'))
             self.dictUnit[name] = [self.type, self.maxHp, self.cost, self.force, self.vitesse, self.rangeVision, self.rangeAtt,self.size]
-
-    def createDictBatiment(self):
-
-        parser = configparser.ConfigParser()
-        parser.read('Config/AttributeBuilding.cfg')
-
-        batiments = parser.sections()
-
+        
         for name in batiments:
-            self.maxHp       = int(parser.get(name, 'hp'))
-            self.cost        = [int(parser.get(name,'costFood')), int(parser.get(name,'costMetal')), int(parser.get(name,'costPower'))]
-            self.production  = int(parser.get(name, 'production'))
-            self.size        = int(parser.get(name, 'size'))
+            self.maxHp       = int(parserBatiment.get(name, 'hp'))
+            self.cost        = [int(parserBatiment.get(name,'costFood')), int(parserBatiment.get(name,'costMetal')), int(parserBatiment.get(name,'costPower'))]
+            self.production  = int(parserBatiment.get(name, 'production'))
+            self.size        = int(parserBatiment.get(name, 'size'))
             self.dicBatiment[name] = [self.maxHp, self.cost, self.production, self.size]
+
+       
+
+        
+
+        
