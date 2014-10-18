@@ -20,7 +20,7 @@ class Joueur():
 
     def creerBatiment(self,position,worker,nom,attributs): #fr
         if self.assezRessources(attributs[1]): #pour savoir si assezRessource
-                self.listeBatiment.append(Batiment(nom,position,attributs,self.idCount ))
+                self.listeBatiment.append(Batiment(self.noJoueur,nom,position,attributs,self.idCount ))
                 self.idCount+=1
                 self.listeRessource[0] -= attributs[1][0] #food
                 self.listeRessource[1] -= attributs[1][1] #metaux
@@ -61,7 +61,7 @@ class Joueur():
             count +=1
     
     def compterRessource(self): # a mettre dans le modele ??
-        for i in self.batiment:
+        for i in self.listeBatiment:
             if i.name == "ferme":
                 self.listeRessource[0]+= i.generate()*self.mods()   
             if i.name == "mine":

@@ -13,7 +13,7 @@ class Controleur:
         self.serveur = None
         
         self.listeTemporaireDeClient = ["Xavier","Antoine","AI","Laurence","Arnaud","Francis","Alexandre","AI"]
-        self.leclient = 1    #changer le numero pour créé plusieur client
+        self.leclient = 0    #changer le numero pour créé plusieur client
         
         self.autoCreateAndEnterLobby()#lorsque le menu sera fait, utiliser la fontion du bas plutôt que celle-ci
         self.lobbyLoop()
