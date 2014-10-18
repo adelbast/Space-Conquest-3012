@@ -49,8 +49,14 @@ class Controleur:
         input()
         self.client.proxy.startGame()
 
+    def isHost(self):
+        if(self.serveur): return True
+        return False
+
     def lancerPartie(self):
-        self.modele.initPartie(self.leclient,self.client.getStartingInfo(),True)
+        os.system('cls')
+        print(self.client.noJoueur)
+        self.modele.initPartie(self.client.noJoueur,self.client.getStartingInfo(),self.isHost())
         self.vue.displayMap(self.modele.map)
         self.vue.generateSpriteSet(self.modele.noJoueurLocal)
         self.vue.displayObject(self.modele.listeJoueur,[],self.modele.noJoueurLocal,self.modele.selection)

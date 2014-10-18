@@ -112,6 +112,7 @@ class InternalClient(object):
         self.num = num
         self.renommerCetteVariableSiQqUnSaitDeOuElleSort = renommerCetteVariableSiQqUnSaitDeOuElleSort
         self.nom = nom
+        self.temps = 0
 
 
 

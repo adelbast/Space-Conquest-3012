@@ -42,7 +42,6 @@ class Modele(object):
         self.releasePosy = 0
     
     def initPartie(self,noJoueur,listeNomJoueur,host=False):
-        print(listeNomJoueur)
         self.noJoueurLocal = noJoueur
         for nomJoueur in listeNomJoueur:
             if(nomJoueur == "AI"):
@@ -50,13 +49,10 @@ class Modele(object):
             else:
                 self.listeJoueur.append(Joueur(nomJoueur,len(self.listeJoueur)))
         self.host = host
-
-        print("Joueur:", self.noJoueurLocal)
-        print(self.listeJoueur)
+        print("Nom du joueur local : " + self.listeJoueur[self.noJoueurLocal].nom + ", numero : " + str(self.noJoueurLocal))
+        
         self.listeJoueur[self.noJoueurLocal].creerBatiment((400,400),True,"wall",self.dicBatiment["wall"])
         self.listeJoueur[self.noJoueurLocal].creerUnite("worker", (100,100), self.dictUnit["trooper"])
-
-
 
     def gestion(self,dicActionFromServer):
         self.listeJoueur[self.noJoueurLocal].compterRessource()
@@ -120,6 +116,9 @@ class Modele(object):
         for ind in self.listeJoueur:            #Fait bouger toutes les unitées
             for uni in ind.listeUnite :
                 uni.move()
+
+    def ajoutAction(self,clee,tup):
+        self.dicAction2Server[clee] = tup
 
 
     def gererMouseRelease(self,event):

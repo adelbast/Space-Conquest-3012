@@ -8,7 +8,6 @@ class Client(object):
 		self.nom =  nom
 		self.noJoueur = None
 		self.proxy = None
-		self.num = None
 		self.nameServer = None
 		self.temps = None #represente ou il est rendu dans sa lecture des evenements
 		self.getNameServer()
@@ -30,7 +29,7 @@ class Client(object):
 
 	def pullAction(self):
 		try:
-			return self.proxy.readAction()
+			return self.proxy.readAction(self.noJoueur)
 		except Exception as e:
 			print(e)
 
@@ -59,8 +58,7 @@ class Client(object):
 			uri = self.nameServer.lookup(nomDuServeur)	#Cherche sur le nameServer si un serveur correspond au nom recu en param
 			print("Connection en cours...")
 			self.proxy = Pyro4.Proxy(uri)				#Assigne l'adresse uri à l'objet pyro
-			self.proxy.ping()							#Test si l'objet est en ligne
-			self.num = self.proxy.seConnecter(self.nom)		#Signale au serveur qu'on est connecté et celui-ci nous assigne un numero unique
+			self.noJoueur = self.proxy.seConnecter(self.nom)		#Signale au serveur qu'on est connecté et celui-ci nous assigne un numero unique
 			print("Connection établie!")
 		except Exception as e:
 			print(e)

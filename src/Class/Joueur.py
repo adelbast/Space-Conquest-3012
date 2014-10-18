@@ -16,7 +16,6 @@ class Joueur():
         self.nbBatiment=0
         self.nbUnite=0
         self.idCount=0
-        print("Joueur " + self.nom + ", numero " + str(noJoueur))
         
 
     def creerBatiment(self,position,worker,nom,attributs): #fr
