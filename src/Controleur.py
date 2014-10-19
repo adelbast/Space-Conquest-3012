@@ -12,22 +12,26 @@ class Controleur:
         self.client = None
         self.serveur = None
         
+        #Section Temporaire
         self.listeTemporaireDeClient = ["Xavier","Antoine","AI","Laurence","Arnaud","Francis","Alexandre","AI"]
         self.leclient = 0    #changer le numero pour créé plusieur client
-        
         self.autoCreateAndEnterLobby()#lorsque le menu sera fait, utiliser la fontion du bas plutôt que celle-ci
         self.lobbyLoop()
         #self.vue.afficherMenu()
+
         self.vue.root.mainloop()
 
-    def creeClient(self,nom):
+    #Fonction qui crée le client local
+    def creeClient(self,nom): 
         self.client = Client(nom)
 
-    def creeServeur(self,nomPartie,nomJoueur):
-        self.serveur = Server(nomPartie,nomJoueur)
+    #Fonction qui crée le serveur. Un seul est nécéssaire par partie
+    def creeServeur(self,nomPartie,nomJoueur):      
+        self.serveur = Server(nomPartie,nomJoueur) #Inicialisation
         self.serveur.daemon = True
-        self.serveur.start()
+        self.serveur.start()    #Démarrage du serveur
 
+    #TEMPORAIRE : Fonction qui crée le client local et un serveur s'il n'y en a pas déjà un sur le réseau
     def autoCreateAndEnterLobby(self):
         print(self.listeTemporaireDeClient[self.leclient])
         self.creeClient(self.listeTemporaireDeClient[self.leclient])
@@ -35,6 +39,7 @@ class Controleur:
             self.creeServeur("DestructionGalactique","Xavier")
         self.client.connect([clee for clee, valeur in self.client.getServers().items() if clee != "Pyro.NameServer"][0])#Tente de se connecter sur la premiere clee retourner par getServers() qui n'est pas égale à Pyro.NameServer
 
+    #Contenu TEMPORAIRE : Fonction qui permet d'attendre que le host décide de démarrer la partie. (Pour attendre que les joueurs soient connectés)
     def lobbyLoop(self):
         if(self.serveur):
             thread = Thread(target = self.inputThread)
@@ -45,14 +50,17 @@ class Controleur:
             print(self.client.getStartingInfo(), "Si le serveur est sur cette machine, pesez sur Enter pour débuter la partie ou attendre les autres joueurs")
         self.lancerPartie()
 
+    #Petite fonction qui attend que le host pèse sur ENTER (lancé comme thread dans lobbyLoop() )
     def inputThread(self):
         input()
         self.client.proxy.startGame()
 
+    #Retourne si le client est aussi le host
     def isHost(self):
         if(self.serveur): return True
         return False
 
+    #Fonction qui démarre la partie
     def lancerPartie(self):
         os.system('cls')
         print(self.client.noJoueur)
@@ -72,9 +80,7 @@ class Controleur:
         self.vue.root.after(24,self.gameLoop)
 
     def gererMouseClick(self,event):
-
         offset = self.vue.getSurfacePos()#Obtenir la position du canvas
-        
         self.modele.clickPosx = event.x+offset[0]
         self.modele.clickPosy = event.y+offset[1]
 

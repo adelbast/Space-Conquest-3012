@@ -21,18 +21,21 @@ class Client(object):
 			except Exception as e:
 				print(traceback.print_exc())	#code pour avoir le "FULL STACK TRACE" :D
 
+	#Envoie le (possiblement "les" pour le host) dictionaires au serveur
 	def pushAction(self,dicAction2Server):
 		try:
 			self.proxy.sendAction(dicAction2Server)
 		except Exception as e:
 			print(e)
 
+	#Demande à recevoir les dictionaires des autres joueurs
 	def pullAction(self):
 		try:
 			return self.proxy.readAction(self.noJoueur)
 		except Exception as e:
 			print(e)
 
+	#Cherche le nameServer (Serveur secondaire sur lequel est enregister le(s) serveur(s) de jeux)
 	def getNameServer(self):
 		try:
 			print("Recherche Du NameServer...")
@@ -41,6 +44,7 @@ class Client(object):
 		except Exception as e:
 			print("Le nameServer n'a pas été trouvé")
 
+	#Demande au nameServer la liste des serveurs enregister dans sa base de donné
 	def getServers(self):
 		if(not self.nameServer):
 			self.getNameServer()
@@ -52,6 +56,7 @@ class Client(object):
 			print("Still rollin!")
 			return None
 
+	#Crée l'objet serveur (dit Proxy) à partir du nom fournis et souscrit au serveur qui lui retourne un numero unique
 	def connect(self,nomDuServeur):
 		try:
 			self.nameServer.ping()						#Test que le nameserver est en ligne
@@ -63,6 +68,7 @@ class Client(object):
 		except Exception as e:
 			print(e)
 
+	#Getter des info que le serveur doit donner à chaque client pour démarrer la partie
 	def getStartingInfo(self):
 		return self.proxy.getStartingInfo()
 

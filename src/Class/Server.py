@@ -85,12 +85,15 @@ class ServerObject(object):
                 del self.actions[(Lowest-1)]     # on enleve levenement avant du plus bas
                 self.highestDel = Lowest
 
+    #Getter qui retourne si la partie est commancé
     def isGameStarted(self):
         return self.gameStarted
 
+    #Fonction qui set la partie à l'état Started = TRUE
     def startGame(self):
         self.gameStarted = True
 
+    #Getter qui retourne la liste du nom des client connecté au serveur
     def getStartingInfo(self):
         return [client.nom for client in self.client]
 
