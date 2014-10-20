@@ -16,7 +16,7 @@ class Sprites:
         for unit in cfg.sections() :
 
 
-            sprites = Image.open("Sprites/Sprites/"+folder+"/"+unit+".png")
+            sprites = Image.open("Image/sprites/"+folder+"/units/"+unit+".png")
             converter = ImageEnhance.Color(sprites)
             sprites = converter.enhance(brightness)
                 
@@ -51,7 +51,22 @@ class Sprites:
 
 
         #self.spriteDict['trooper']['back']['0'].save("test.png")
-            
-        
 
-        
+    #Fonction qui permet d'obtenir les images   
+    def generateBuildingSprites(self, cfgPath, folder, brightness):
+
+        cfg = configparser.ConfigParser()
+        cfg.read(cfgPath)
+
+
+        for building in cfg.sections() :
+
+            sprites = Image.open("Image/sprites/"+folder+"/buildings/"+building+".png")
+            converter = ImageEnhance.Color(sprites)
+            img = converter.enhance(brightness)
+
+            self.spriteDict.update({building: ImageTk.PhotoImage(img)})
+
+        print(self.spriteDict)
+            
+            

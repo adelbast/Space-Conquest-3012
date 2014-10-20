@@ -133,7 +133,7 @@ class Vue:
 
     #Generation des sprites pour chacun des joueurs
     def generateSpriteSet(self, noLocal):
-        directories = os.listdir("Sprites/Sprites")
+        directories = os.listdir("Image/sprites")
 
         for d in directories:
 
@@ -145,6 +145,8 @@ class Vue:
             s.generateSprites(32,32,96,128,"Config/AttributeInfantryUnits.cfg", d, 1)
             #Generation des vehicules
             s.generateSprites(64,64,192,256,"Config/AttributeVehicules.cfg", d, 1)
+            #Generation des buildings
+            s.generateBuildingSprites("Config/AttributeBuilding.cfg", d, 1)
 
             #Si on est au directory du joueur local, il faut creer une autre version des sprites pour la selection
             if(directories.index(d) == noLocal):
@@ -155,7 +157,9 @@ class Vue:
                 ss.generateSprites(32,32,96,128,"Config/AttributeInfantryUnits.cfg", d, 3)
                 #Generation des vehicules
                 ss.generateSprites(64,64,192,256,"Config/AttributeVehicules.cfg", d, 3)
-
+                #Generation des buildings
+                ss.generateBuildingSprites("Config/AttributeBuilding.cfg", d, 3)
+                
                 self.sprites.append((s, ss))
                 
 
@@ -163,14 +167,15 @@ class Vue:
             else:
                 self.sprites.append(s)
 
-        print(self.sprites)  
+        print(self.sprites)
             
         
         
 
     #Affiche les informations sur l'unité
     def displayInfoUnit(self, unit):
-        pass
+        self.hud.create_rectangle(100,50,228,178,fill='black')
+        print(unit.name)
 
     #Affiche les ressources
     def displayRessources(self, food, metal, power):
@@ -239,8 +244,19 @@ class Vue:
 
             #Affiche les batiments
             for b in joueur.listeBatiment:
-                #self.surfaceJeu.create_image(i.position[0],anchor=NW,image =i.position[1],name = sprites[i.name],tags="structure")
-                self.surfaceJeu.create_rectangle(b.position[0]-b.size/2,b.position[1]-b.size/2, b.position[0]+b.size/2, b.position[1]+b.size/2, fill='blue', tags="structure")
+                #Si l'unite est au joueur local
+                if(joueur.noJoueur == noLocal):
+
+                    #Si l'unite est selectionnee
+                    if(b in selection):
+                        self.surfaceJeu.create_image(b.position[0]-b.size/2, b.position[1]-b.size/2, anchor=NW, image=self.sprites[joueur.noJoueur][1].spriteDict[b.name], tags="structure")
+                    #Si l'unite n'est pas selectionnee
+                    else:
+                        self.surfaceJeu.create_image(b.position[0]-b.size/2, b.position[1]-b.size/2, anchor=NW, image=self.sprites[joueur.noJoueur][0].spriteDict[b.name], tags="structure")
+
+                #Sinon si l'unite est a un autre joueur
+                else:
+                    self.surfaceJeu.create_image(b.position[0]-b.size/2, b.position[1]-b.size/2, anchor=NW, image=self.sprites[joueur.noJoueur].spriteDict[b.name], tags="structure")
     
         
         

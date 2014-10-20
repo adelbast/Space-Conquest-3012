@@ -51,7 +51,10 @@ class Modele(object):
         self.host = host
         print("Nom du joueur local : " + self.listeJoueur[self.noJoueurLocal].nom + ", numero : " + str(self.noJoueurLocal))
         
+        self.listeJoueur[self.noJoueurLocal].creerBatiment((1000,400),True,"guardTower",self.dicBatiment["guardTower"])
         self.listeJoueur[self.noJoueurLocal].creerBatiment((400,400),True,"wall",self.dicBatiment["wall"])
+        self.listeJoueur[self.noJoueurLocal].creerBatiment((1500,1500),True,"barrack",self.dicBatiment["barrack"])
+        self.listeJoueur[self.noJoueurLocal].creerUnite("trooper", (400,400), self.dictUnit["trooper"])
         self.listeJoueur[self.noJoueurLocal].creerUnite("worker", (100,100), self.dictUnit["trooper"])
 
     def gestion(self,dicActionFromServer):

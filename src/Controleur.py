@@ -94,6 +94,10 @@ class Controleur:
         self.modele.releasePosx = event.x+offset[0]
         self.modele.releasePosy = event.y+offset[1]
         self.modele.gererMouseRelease(event)
+        try:
+            self.vue.displayInfoUnit(self.modele.selection[0])
+        except Exception:
+            print("Pas de selection!")
 
     def fermeture(self):
         if(self.serveur):
