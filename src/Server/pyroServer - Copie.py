@@ -2,7 +2,6 @@
 import Pyro4
 from random import randint
 import pickle
-from MyData import act
 import time
 
 #Pyro4.config.SERIALIZER = 'pickle'
