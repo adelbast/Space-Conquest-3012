@@ -44,7 +44,7 @@ class Joueur():
 
     def creerUnite(self,nom,position, attributs):### donner une destination en arg par rapport a la pos du batiment qui l'a cree ou autre ?
         if(self.assezRessources(attributs[2])):
-            self.listeUnite.append(Unit(nom,position,self.noJoueur,(100,200),attributs,self.idCount))
+            self.listeUnite.append(Unit(nom,position,self.noJoueur,(position[0],position[1]),attributs,self.idCount))
             self.idCount+=1
             self.listeRessource[0] -= attributs[2][0] #food
             self.listeRessource[1] -= attributs[2][1] #metaux

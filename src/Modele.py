@@ -102,17 +102,25 @@ class Modele(object):
                             elif(clee == "SuppressionBatiment"):
                                 noBatiment = valeur
 
-                                supprimerBatiment(self.listeJoueur[ii].listeBatiment[noBatiment])
+                                self.listeJoueur[ii].supprimerBatiment[noBatiment]
+
+                                
                                 
                             elif(clee == "SuppressionUnit"):
                                 noUnit = valeur
 
-                                supprimerUnite(self.listeJoueur[ii].listeBatiment[noBatiment])
+                                self.listeJoueur[ii].supprimerUnite(noUnit)
                                 
                             elif(clee == "CaptureArtefact"):
                                 noArtefact = valeur
+
+                                self.listeJoueur[ii].listeArtefact.append(self.listeArtefact[noArtefact])
+
+                                
                             elif(clee == "PerteArtefact"):
                                 noArtefact = valeur
+
+                                self.listeJoueur[ii].listeArtefact.remove(self.listeArtefact[noArtefact])
             ii+=1
 
 
