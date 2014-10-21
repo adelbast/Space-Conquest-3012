@@ -1,5 +1,6 @@
 from Vue    import Vue
 from Modele import Modele
+from Class.AI import AI
 from Class.Server import Server
 from Class.Client import Client
 from threading import Thread
@@ -74,11 +75,19 @@ class Controleur:
         self.vue.displayHUD()
         
         self.gameLoop()
-        
+    
+    def packAction2Server(self):
+    	retour = []
+        retour.append((self.modele.noJoueurLocal,self.modele.dicAction2Server))
+    	if(self.serveur):
+    		for joueur in self.modele.listeJoueur:
+    			if isinstance(joueur,AI):
+    				retour.append((joueur.noJoueur, joueur.dictionaireAction))
+    	return retour
 
     def gameLoop(self):
-        #self.modele.gestion(self.client.pullAction()) #enlever pour test bouton dans la vue
-        #self.client.pushAction(self.modele.dicAction2Server) #enlever pour test bouton dans la vue
+        self.modele.gestion(self.client.pullAction()) #enlever pour test bouton dans la vue
+        self.client.pushAction( self.packAction2Server() ) #enlever pour test bouton dans la vue
 
         self.modele.bougerUnits()
         self.vue.displayObject(self.modele.listeJoueur,[],self.modele.noJoueurLocal,self.modele.selection)

@@ -19,6 +19,7 @@ class Modele(object):
         self.map = Map("Tile/map1.csv")
 
         self.dicAction2Server = {}
+        self.dicActionAI2Server = [{}]
         self.dicActionFromServer = [{#joueur1
                                     "Deplacement":     (0, 500,500),#(noUnit, cibleX, cibleY)
                                     "DeplacementCible":(1, 2, 1, 0),#(noUnit, noProprio, 0:unité/1:batiment , noUnitCible)
