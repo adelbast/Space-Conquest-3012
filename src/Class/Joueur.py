@@ -1,5 +1,5 @@
 import configparser
-from Class.Structure import Batiment
+from Class.Structure import *
 from Class.Unit import Unit
 
 class Joueur():
@@ -77,7 +77,7 @@ class Joueur():
         return self.unite.__len__()
         
     def mods(self):
-        return ("mods additionnes aux ressources")
+        return 1
         
         
  
