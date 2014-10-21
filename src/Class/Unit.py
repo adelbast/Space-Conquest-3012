@@ -26,6 +26,8 @@ class Unit:    ##Laurence
 
         self.orientation = "front"
 
+        self.moving = False
+
         ###Pathfinder Later###
         #if self.destination[0] != self.position[0] or self.destination[1] != self.position[1]:  #Pour savoir s'il faut bouger
          #self.path = definePath()
@@ -34,6 +36,7 @@ class Unit:    ##Laurence
         if destination :
             self.destination = destination
             self.calculatePath()
+            self.moving = True
         
     def takeDmg(self,dmg):
         print("Damage Taken")
@@ -46,28 +49,38 @@ class Unit:    ##Laurence
         print("Path Calculated")
         
     def move(self):   #A modifier
+        if self.moving is True:
 
-        if isinstance(self.destination, tuple):
-            if self.position[0] > self.destination[0]:
-                self.position[0] += 1
-            else:
-                self.position[0] -= 1
+            if isinstance(self.destination, tuple):
+                if self.position[0] > self.destination[0]:
+                    self.position[0] -= 5
+                else:
+                    self.position[0] += 5
 
-            if self.position[1] > self.destination[1]:
-                self.position[1] += 1
-            else:
-                self.position[1] -= 1
+                if self.position[1] > self.destination[1]:
+                    self.position[1] -= 5
+                else:
+                    self.position[1] += 5
 
-        else:
-            if self.position[0] > self.destination.position[0]:
-                self.position[0] += 1
-            else:
-                self.position[0] -= 1
+                if self.position[0] == self.destination[0] and self.position[1] == self.destination[1]:
+                    self.moving = False
 
-            if self.position[1] > self.destination.position[1]:
-                self.position[1] += 1
             else:
-                self.position[1] -= 1
+                if self.position[0] > self.destination.position[0]:
+                    self.position[0] -= 5
+                else:
+                    self.position[0] += 5
+
+                if self.position[1] > self.destination.position[1]:
+                    self.position[1] -= 5
+                else:
+                    self.position[1] += 5
+
+                if self.position[0] == self.destination.position[0] and self.position[1] == self.destination.position[1]:
+                    self.moving = False
+
+                
+            
 
 
         
