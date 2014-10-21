@@ -1,5 +1,5 @@
 import configparser
-from Class.Structure import Batiment
+from Class.Structure import *
 from Class.Unit import Unit
 
 class Joueur():
@@ -20,7 +20,10 @@ class Joueur():
 
     def creerBatiment(self,position,worker,nom,attributs): #fr
         if self.assezRessources(attributs[1]): #pour savoir si assezRessource
-                self.listeBatiment.append(Batiment(self.noJoueur,nom,position,attributs,self.idCount ))
+                if nom == "ferme" or nom == "mine" or nom == "solarPanel":
+                    self.listeBatiment.append(Generator(self.noJoueur,nom,position,attributs,self.idCount))
+                else:
+                    self.listeBatiment.append(Batiment(self.noJoueur,nom,position,attributs,self.idCount ))
                 self.idCount+=1
                 self.listeRessource[0] -= attributs[1][0] #food
                 self.listeRessource[1] -= attributs[1][1] #metaux
@@ -60,7 +63,7 @@ class Joueur():
                 return print("unite supprime")
             count +=1
     
-    def compterRessource(self): # a mettre dans le modele ??
+    def compterRessource(self): 
         for i in self.listeBatiment:
             if i.name == "ferme":
                 self.listeRessource[0]+= i.generate()*self.mods()   
@@ -74,7 +77,7 @@ class Joueur():
         return self.unite.__len__()
         
     def mods(self):
-        return ("mods additionnes aux ressources")
+        return 1
         
         
  

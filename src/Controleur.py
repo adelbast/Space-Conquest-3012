@@ -12,6 +12,7 @@ class Controleur:
         self.vue = Vue(self)
         self.client = None
         self.serveur = None
+        self.nomBatiment = None
         
         #Section Temporaire
         self.listeTemporaireDeClient = ["Xavier","Antoine","AI","Laurence","Arnaud","Francis","Alexandre","AI"]
@@ -73,23 +74,27 @@ class Controleur:
         self.vue.generateSpriteSet(self.modele.noJoueurLocal)
         self.vue.displayObject(self.modele.listeJoueur,[],self.modele.noJoueurLocal,self.modele.selection)
         self.vue.displayHUD()
+        self.vue.displayRessources(self.modele.listeJoueur[self.modele.noJoueurLocal].listeRessource)
         
         self.gameLoop()
     
     def packAction2Server(self):
-    	retour = []
+        retour = []
         retour.append((self.modele.noJoueurLocal,self.modele.dicAction2Server))
-    	if(self.serveur):
-    		for joueur in self.modele.listeJoueur:
-    			if isinstance(joueur,AI):
-    				retour.append((joueur.noJoueur, joueur.dictionaireAction))
-    	return retour
+        if(self.serveur):
+            for joueur in self.modele.listeJoueur:
+                if isinstance(joueur,AI):
+                    retour.append((joueur.noJoueur, joueur.dictionaireAction))
+        return retour
 
     def gameLoop(self):
-        self.modele.gestion(self.client.pullAction()) #enlever pour test bouton dans la vue
-        self.client.pushAction( self.packAction2Server() ) #enlever pour test bouton dans la vue
-
+        #self.modele.gestion(self.client.pullAction()) #enlever pour test bouton dans la vue
+        #self.client.pushAction( self.packAction2Server() ) #enlever pour test bouton dans la vue
+        """if(self.vue.etatCreation==True):
+            self.vue.dessinerShadowBatiment()"""
         self.modele.bougerUnits()
+        self.modele.actualiser()
+        self.vue.displayRessources(self.modele.listeJoueur[self.modele.noJoueurLocal].listeRessource)
         self.vue.displayObject(self.modele.listeJoueur,[],self.modele.noJoueurLocal,self.modele.selection)
         self.vue.root.after(24,self.gameLoop)
 
@@ -107,11 +112,19 @@ class Controleur:
         offset = self.vue.getSurfacePos()#Obtenir la position du canvas
         self.modele.releasePosx = event.x+offset[0]
         self.modele.releasePosy = event.y+offset[1]
-        self.modele.gererMouseRelease(event)
+        self.modele.gererMouseRelease(event,self.vue.etatCreation) # A AJOUTER!!!!!!
         try:
             self.vue.displayInfoUnit(self.modele.selection[0])
         except Exception:
             print("Pas de selection!")
+        self.vue.etatCreation = False
+
+    def creationBatiment(self,nom):  # A AJOUTER!!!!!!
+        self.nomBatiment = nom
+        self.vue.etatCreation = True
+
+
+
 
     
 
