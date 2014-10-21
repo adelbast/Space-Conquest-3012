@@ -60,7 +60,7 @@ class Joueur():
                 return print("unite supprime")
             count +=1
     
-    def compterRessource(self): # a mettre dans le modele ??
+    def compterRessource(self): 
         for i in self.listeBatiment:
             if i.name == "ferme":
                 self.listeRessource[0]+= i.generate()*self.mods()   

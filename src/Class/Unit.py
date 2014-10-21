@@ -1,5 +1,5 @@
 import configparser
-
+from math import *
 
 class Unit:    ##Laurence
     def __init__(self, name, xy, owner, destination, attribut,idU):
@@ -73,10 +73,12 @@ class Unit:    ##Laurence
         
     
     def inRange(self,unit):
-        return True
+        if  math.sqrt(abs(self.position[0] - unit.position[0])**2 + abs(self.position[1] - unit.position[1])**2) < self.rangeAtt:
+            return True
+        return False
     
     def attack(self):
-        return 0
+        return self.force
 
 
 

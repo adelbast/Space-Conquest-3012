@@ -146,7 +146,7 @@ class Server(Thread):
         self.nameServerThread = Thread(target = Pyro4.naming.startNSloop,args=(self.ip, None, True)) #création de l'objet serveur
         self.nameServerThread.start()    #lance le nameServeur dans un thread
         ns = Pyro4.naming.locateNS(host=self.ip)
-        ns.register(name=self.nomServeur, uri=self.uri, safe=True)
+        ns.register(name=self.nomServeur, uri=self.uri)
 
     def close(self):
         sys.exit()
