@@ -20,7 +20,10 @@ class Joueur():
 
     def creerBatiment(self,position,worker,nom,attributs): #fr
         if self.assezRessources(attributs[1]): #pour savoir si assezRessource
-                self.listeBatiment.append(Batiment(self.noJoueur,nom,position,attributs,self.idCount ))
+                if nom == "ferme" or nom == "mine" or nom == "solarPanel":
+                    self.listeBatiment.append(Generator(self.noJoueur,nom,position,attributs,self.idCount))
+                else:
+                    self.listeBatiment.append(Batiment(self.noJoueur,nom,position,attributs,self.idCount ))
                 self.idCount+=1
                 self.listeRessource[0] -= attributs[1][0] #food
                 self.listeRessource[1] -= attributs[1][1] #metaux
