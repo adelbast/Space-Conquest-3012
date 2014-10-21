@@ -52,7 +52,7 @@ class Modele(object):
         print("Nom du joueur local : " + self.listeJoueur[self.noJoueurLocal].nom + ", numero : " + str(self.noJoueurLocal))
         
         self.listeJoueur[self.noJoueurLocal].creerBatiment((1000,400),True,"guardTower",self.dicBatiment["guardTower"])
-        self.listeJoueur[self.noJoueurLocal].creerBatiment((400,400),True,"wall",self.dicBatiment["wall"])
+        self.listeJoueur[self.noJoueurLocal].creerBatiment((400,400),True,"mine",self.dicBatiment["mine"])
         self.listeJoueur[self.noJoueurLocal].creerBatiment((1500,1500),True,"barrack",self.dicBatiment["barrack"])
         self.listeJoueur[self.noJoueurLocal].creerUnite("trooper", [400,400], self.dictUnit["trooper"])
         self.listeJoueur[self.noJoueurLocal].creerUnite("worker", [100,100], self.dictUnit["trooper"])
@@ -130,7 +130,6 @@ class Modele(object):
         self.dicAction2Server[clee] = tup
 
 
-    ############################
 
 
     def actualiser(self): #Appelle les fonctions de game loop du modele
@@ -148,10 +147,7 @@ class Modele(object):
 
 
 
-    #############################
-
-    def gererMouseRelease(self,event):
-
+    def gererMouseRelease(self,event,etat):
         if(event.num == 3): #clic droit
             if(self.selection): #Si le joueur a quelque chose de sélectionné, sinon inutile
                 if(self.selection[0].owner == self.noJoueurLocal):
@@ -171,7 +167,10 @@ class Modele(object):
             
         
         elif(event.num == 1): #clic gauche
-            self.selection[:] = [] #Vide la liste
+            if(etat==True):
+            	self.listeJoueur[self.noJoueurLocal].creerBatiment([event.x,event.y],True,"HQ",self.dicBatiment["HQ"])
+            
+            self.selection[:] = []
             if(self.clickPosx!=self.releasePosx or self.clickPosy!=self.releasePosy):#self.clickPosx+5 < self.releasePosx or self.clickPosx-5 > self.releasePosx or self.clickPosy+5 < self.releasePosy or self.clickPosy-5 > self.releasePosy
                 print(self.clickPosx,self.clickPosy,self.releasePosx,self.releasePosy)
                 for unit in self.listeJoueur[self.noJoueurLocal].listeUnite: #a changer a joueur actuel plutot que [0], je prends seulement les unites puisque selection multiple de batiment inutile
