@@ -129,11 +129,26 @@ class Modele(object):
     def ajoutAction(self,clee,tup):
         self.dicAction2Server[clee] = tup
 
+
+    ############################
+
+
+    def actualiser(self): #Appelle les fonctions de game loop du modele
+        self.bougerUnits()
+        self.incrementerRessource() 
+        
+    def incrementerRessource(self):
+        self.listeJoueur[self.noJoueurLocal].compterRessource() #Incremente les ressources du joueur local
+            
+        
     def bougerUnits(self):
         for ind in self.listeJoueur:            #Fait bouger toutes les unitées
             for uni in ind.listeUnite :
                 uni.move()
 
+
+
+    #############################
 
     def gererMouseRelease(self,event):
         if(event.num == 3): #clic droit
