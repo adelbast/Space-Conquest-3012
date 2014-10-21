@@ -54,8 +54,8 @@ class Modele(object):
         self.listeJoueur[self.noJoueurLocal].creerBatiment((1000,400),True,"guardTower",self.dicBatiment["guardTower"])
         self.listeJoueur[self.noJoueurLocal].creerBatiment((400,400),True,"wall",self.dicBatiment["wall"])
         self.listeJoueur[self.noJoueurLocal].creerBatiment((1500,1500),True,"barrack",self.dicBatiment["barrack"])
-        self.listeJoueur[self.noJoueurLocal].creerUnite("trooper", (400,400), self.dictUnit["trooper"])
-        self.listeJoueur[self.noJoueurLocal].creerUnite("worker", (100,100), self.dictUnit["trooper"])
+        self.listeJoueur[self.noJoueurLocal].creerUnite("trooper", [400,400], self.dictUnit["trooper"])
+        self.listeJoueur[self.noJoueurLocal].creerUnite("worker", [100,100], self.dictUnit["trooper"])
 
     def gestion(self,dicActionFromServer):
         self.listeJoueur[self.noJoueurLocal].compterRessource()
@@ -116,12 +116,15 @@ class Modele(object):
             ii+=1
 
 
-        for ind in self.listeJoueur:            #Fait bouger toutes les unitées
-            for uni in ind.listeUnite :
-                uni.move()
+        
 
     def ajoutAction(self,clee,tup):
         self.dicAction2Server[clee] = tup
+
+    def bougerUnits(self):
+        for ind in self.listeJoueur:            #Fait bouger toutes les unitées
+            for uni in ind.listeUnite :
+                uni.move()
 
 
     def gererMouseRelease(self,event):

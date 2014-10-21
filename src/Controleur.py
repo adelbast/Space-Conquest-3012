@@ -20,6 +20,9 @@ class Controleur:
         #self.vue.afficherMenu()
 
         self.vue.root.mainloop()
+        
+        if(self.serveur):
+            self.serveur.close()
 
     #Fonction qui crée le client local
     def creeClient(self,nom): 
@@ -76,6 +79,8 @@ class Controleur:
     def gameLoop(self):
         #self.modele.gestion(self.client.pullAction()) #enlever pour test bouton dans la vue
         #self.client.pushAction(self.modele.dicAction2Server) #enlever pour test bouton dans la vue
+
+        self.modele.bougerUnits()
         self.vue.displayObject(self.modele.listeJoueur,[],self.modele.noJoueurLocal,self.modele.selection)
         self.vue.root.after(24,self.gameLoop)
 
@@ -99,10 +104,7 @@ class Controleur:
         except Exception:
             print("Pas de selection!")
 
-    def fermeture(self):
-        if(self.serveur):
-            self.serveur.close()
-        self.vue.root.destroy()
+    
 
 if __name__ == "__main__":
     c = Controleur()
