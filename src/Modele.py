@@ -136,6 +136,9 @@ class Modele(object):
 
 
     def gererMouseRelease(self,event):
+
+        idList = []
+        
         if(event.num == 3): #clic droit
             if(self.selection): #Si le joueur a quelque chose de sélectionné, sinon inutile
                 if(self.selection[0].owner == self.noJoueurLocal):
@@ -148,9 +151,12 @@ class Modele(object):
                         cible = self.clickCibleOuTile(self.releasePosx,self.releasePosy)
                         if(not cible):
                             cible = (self.releasePosx,self.releasePosy)
-
-                        for unite in self.selection: #Donne un ordre de déplacement à la sélection
-                            unite.setDestination(cible)
+                        
+                        for unite in self.selection: #Donne un ordre de déplacement à la sélection  
+                            idList.append(unite.id)
+                            
+                            self.dicAction2Server['DeplacementCible']=(unite.id , cible.owner.noJoueur, owner.) 
+                            #unite.setDestination(cible)
                             print("Ordre de déplacement")
             
         
