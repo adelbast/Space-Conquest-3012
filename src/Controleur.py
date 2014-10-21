@@ -73,6 +73,7 @@ class Controleur:
         self.vue.generateSpriteSet(self.modele.noJoueurLocal)
         self.vue.displayObject(self.modele.listeJoueur,[],self.modele.noJoueurLocal,self.modele.selection)
         self.vue.displayHUD()
+        self.vue.displayRessources(self.modele.listeJoueur[self.modele.noJoueurLocal].listeRessource)
         
         self.gameLoop()
         
@@ -80,14 +81,11 @@ class Controleur:
     def gameLoop(self):
         #self.modele.gestion(self.client.pullAction()) #enlever pour test bouton dans la vue
         #self.client.pushAction(self.modele.dicAction2Server) #enlever pour test bouton dans la vue
-<<<<<<< HEAD
         """if(self.vue.etatCreation==True):
             self.vue.dessinerShadowBatiment()"""
-
-=======
-
         self.modele.bougerUnits()
->>>>>>> f85c2f6e0d0330ab553546a6b71779476e858325
+        self.modele.actualiser()
+        self.vue.displayRessources(self.modele.listeJoueur[self.modele.noJoueurLocal].listeRessource)
         self.vue.displayObject(self.modele.listeJoueur,[],self.modele.noJoueurLocal,self.modele.selection)
         self.vue.root.after(24,self.gameLoop)
 
