@@ -11,6 +11,7 @@ class Vue:
         self.root = Tk()
         self.root.resizable(0,0)
         self.root.title("Space Conquest 3012")
+        self.etatCreation = False
 
         #Creation du Tileset
         self.tileset = Tileset.Tileset("Image/tileset/tileset.png",64,64)
@@ -70,10 +71,17 @@ class Vue:
         self.surfaceJeu.bind("<ButtonRelease-1>",self.parent.gererMouseRelease)
         self.surfaceJeu.bind("<ButtonRelease-3>", self.parent.gererMouseRelease)
 
+
+
         #TEST BOUTON HUD JUSTE TEST, PAS DEFINITIF
-        boutonCreerUnit = Button(self.hud,text="creerUnite",command=lambda:self.parent.modele.listeJoueur[1].creerUnite("psychonaut",(300,300) , self.parent.modele.dictUnit["psychonaut"] ))
+        boutonCreerUnit = Button(self.hud,text="creerUnite",command=lambda:self.parent.modele.listeJoueur[0].creerUnite("psychonaut",(300,300) , self.parent.modele.dictUnit["psychonaut"] ))
         boutonCreerUnit.configure(width = 10, activebackground = "#33B5E5", relief = FLAT)
         boutonCreerUnit_window = self.hud.create_window(320, 40, anchor=NW, window=boutonCreerUnit)
+        
+        # BOUTON CREATION BATIMENT
+        boutonCreerBatiment = Button(self.hud,text="creerBatiment",command=lambda:self.parent.creationBatiment("HQ"))
+        boutonCreerBatiment.configure(width = 10, activebackground = "#33B5E5", relief = FLAT)
+        boutonCreerBatiment_window = self.hud.create_window(420, 40, anchor=NW, window=boutonCreerBatiment)
 
     #Deplacement de la map avec WASD
     def scroll_move(self, event):
@@ -101,6 +109,20 @@ class Vue:
 
     def getSurfacePos(self):
         return (self.surfaceJeu.canvasx(0), self.surfaceJeu.canvasy(0))
+
+    """def BindUnbindCreation(self):
+        if(self.etatCreation==True):
+            self.surfaceJeu.bind("<Enter>",self.dessinerShadowBatiment)
+        else:
+            self.surfaceJeu.unbind("<Enter>",self.dessinerShadowBatiment)"""
+
+    def dessinerShadowBatiment(self):
+        x = self.root.winfo_pointerx()
+        y = self.root.winfo_pointery()
+        print(x,y)
+        self.surfaceJeu.create_rectangle(x, y, x + 20, y + 20, outline='red')
+
+
 
     #Deplacer la camera lorsqu'on clique sur le canvas de la minimap
     def miniMapClick(self, event):
