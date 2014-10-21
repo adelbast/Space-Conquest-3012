@@ -3,7 +3,6 @@ from Pyro4 import core
 import socket
 from random import randint
 import pickle
-#from MyData import act
 import time
 from threading import Thread
 import traceback
@@ -46,14 +45,18 @@ class ServerObject(object):
                 return num           #retourne le numero donne
         except Exception as e:
             print(traceback.print_exc())    #code pour avoir le "FULL STACK TRACE" :D
-
-    def sendAction(self,package):
+    def sendMultiAction(self,packageTeamList):
+        for i in packageTeamList:
+            sendAction(i[0],i[1])
+            
+    def sendAction(self,package,num):
         if self.highestRead >= len(self.actions):# si la dernierre action dans le dictionnaire(leur cle est leur temps) est lue on en ajoute une nouvelle
             self.actions[self.highestRead] = Actions(self.client.__len__())
-        self.actions[self.highestRead].setAction(package,self.client.__len__()-1)# on ajoute le package representant l'action  a la derniere place du dictionnaire
+        self.actions[self.highestRead].setAction(package,num)# on ajoute le package representant l'action  a la derniere place du dictionnaire
 
 
     def readAction(self,num):
+        package = []
         #Note : Faire une Fonction Avec  +
         delagger =True     #si le temps entre le plus lent et celui qui veux lire l'action est trop grand, on le fait attendre
         while delagger:
@@ -71,7 +74,11 @@ class ServerObject(object):
         
         if self.highestRead < self.client[num].temps:     #sil est plus avancer dans le temps on enregistre son temps
             self.highestRead +=1
-        return self.actions[self.client[num].temps-1]     # le -1 est la ,parce quon a augmenter le temps avant d'envoyer le reponse
+
+        
+        for key in self.actions[self.client[num].temps-1]:
+            package.append(key)
+        return package     # le -1 est la ,parce quon a augmenter le temps avant d'envoyer le reponse
     
     def seekLowest(self): # cherche le client qui est le plus en retard dans la lecture des evenement
         #on trouve le temps le plus bas et on l'enregistre
@@ -146,7 +153,7 @@ class Server(Thread):
         self.nameServerThread = Thread(target = Pyro4.naming.startNSloop,args=(self.ip, None, True)) #création de l'objet serveur
         self.nameServerThread.start()    #lance le nameServeur dans un thread
         ns = Pyro4.naming.locateNS(host=self.ip)
-        ns.register(name=self.nomServeur, uri=self.uri, safe=True)
+        ns.register(name=self.nomServeur, uri=self.uri)
 
     def close(self):
         sys.exit()
