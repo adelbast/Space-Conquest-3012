@@ -178,8 +178,11 @@ class Vue:
         print(unit.name)
 
     #Affiche les ressources
-    def displayRessources(self, food, metal, power):
-        pass
+    def displayRessources(self, ressources):
+        self.hud.delete("ressources")
+        self.hud.create_text(400, 0, font=("Stencil", 12), text="Food : "+str(ressources[0]), anchor=NW, tags="ressources")
+        self.hud.create_text(600, 0, font=("Stencil", 12), text="Metal : "+str(ressources[1]), anchor=NW, tags="ressources")
+        self.hud.create_text(800, 0, font=("Stencil", 12), text="Power : "+str(ressources[2]), anchor=NW, tags="ressources")
 
     def displaySelection(self, initialClick, event):
         self.surfaceJeu.delete("selection")

@@ -72,6 +72,7 @@ class Controleur:
         self.vue.generateSpriteSet(self.modele.noJoueurLocal)
         self.vue.displayObject(self.modele.listeJoueur,[],self.modele.noJoueurLocal,self.modele.selection)
         self.vue.displayHUD()
+        self.vue.displayRessources(self.modele.listeJoueur[self.modele.noJoueurLocal].listeRessource)
         
         self.gameLoop()
         
@@ -80,7 +81,8 @@ class Controleur:
         #self.modele.gestion(self.client.pullAction()) #enlever pour test bouton dans la vue
         #self.client.pushAction(self.modele.dicAction2Server) #enlever pour test bouton dans la vue
 
-        self.modele.bougerUnits()
+        self.modele.actualiser()
+        self.vue.displayRessources(self.modele.listeJoueur[self.modele.noJoueurLocal].listeRessource)
         self.vue.displayObject(self.modele.listeJoueur,[],self.modele.noJoueurLocal,self.modele.selection)
         self.vue.root.after(24,self.gameLoop)
 
