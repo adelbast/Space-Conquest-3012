@@ -20,7 +20,10 @@ class Joueur():
 
     def creerBatiment(self,position,worker,nom,attributs): #fr
         if self.assezRessources(attributs[1]): #pour savoir si assezRessource
-                self.listeBatiment.append(Batiment(self.noJoueur,nom,position,attributs,self.idCount ))
+                if nom == "ferme" or nom == "mine" or nom == "solarPanel":
+                    self.listeBatiment.append(Generator(self.noJoueur,nom,position,attributs,self.idCount))
+                else:
+                    self.listeBatiment.append(Batiment(self.noJoueur,nom,position,attributs,self.idCount ))
                 self.idCount+=1
                 self.listeRessource[0] -= attributs[1][0] #food
                 self.listeRessource[1] -= attributs[1][1] #metaux
@@ -44,7 +47,7 @@ class Joueur():
 
     def creerUnite(self,nom,position, attributs):### donner une destination en arg par rapport a la pos du batiment qui l'a cree ou autre ?
         if(self.assezRessources(attributs[2])):
-            self.listeUnite.append(Unit(nom,position,self.noJoueur,[100,200],attributs,self.idCount))
+            self.listeUnite.append(Unit(nom,position,self.noJoueur,(position[0],position[1]),attributs,self.idCount))
             self.idCount+=1
             self.listeRessource[0] -= attributs[2][0] #food
             self.listeRessource[1] -= attributs[2][1] #metaux

@@ -56,7 +56,7 @@ class Vue:
         self.surfaceJeu.place(x=0, y=0)
         
         #Pour la fermeture de la fenetre de jeu (afin de pouvoir compléter des actions avant de quitter le programme)
-        self.root.protocol( "WM_DELETE_WINDOW", self.parent.fermeture )
+        #self.root.protocol( "WM_DELETE_WINDOW", self.parent.fermeture )
 
         #Pour que le canvas scroll lorsquon click
         self.root.bind("<Key>", self.scroll_move)
@@ -74,7 +74,11 @@ class Vue:
 
 
         #TEST BOUTON HUD JUSTE TEST, PAS DEFINITIF
+<<<<<<< HEAD
         boutonCreerUnit = Button(self.hud,text="creerUnite",command=lambda:self.parent.modele.listeJoueur[0].creerUnite("psychonaut",(300,300) , self.parent.modele.dictUnit["psychonaut"] ))
+=======
+        boutonCreerUnit = Button(self.hud,text="creerUnite",command=lambda:self.parent.modele.listeJoueur[0].creerUnite("psychonaut",[300,300] , self.parent.modele.dictUnit["psychonaut"] ))
+>>>>>>> f85c2f6e0d0330ab553546a6b71779476e858325
         boutonCreerUnit.configure(width = 10, activebackground = "#33B5E5", relief = FLAT)
         boutonCreerUnit_window = self.hud.create_window(320, 40, anchor=NW, window=boutonCreerUnit)
         

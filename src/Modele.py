@@ -54,8 +54,8 @@ class Modele(object):
         self.listeJoueur[self.noJoueurLocal].creerBatiment((1000,400),True,"guardTower",self.dicBatiment["guardTower"])
         self.listeJoueur[self.noJoueurLocal].creerBatiment((400,400),True,"wall",self.dicBatiment["wall"])
         self.listeJoueur[self.noJoueurLocal].creerBatiment((1500,1500),True,"barrack",self.dicBatiment["barrack"])
-        self.listeJoueur[self.noJoueurLocal].creerUnite("trooper", (400,400), self.dictUnit["trooper"])
-        self.listeJoueur[self.noJoueurLocal].creerUnite("worker", (100,100), self.dictUnit["trooper"])
+        self.listeJoueur[self.noJoueurLocal].creerUnite("trooper", [400,400], self.dictUnit["trooper"])
+        self.listeJoueur[self.noJoueurLocal].creerUnite("worker", [100,100], self.dictUnit["trooper"])
 
     def gestion(self,dicActionFromServer):
         self.listeJoueur[self.noJoueurLocal].compterRessource()
@@ -102,29 +102,59 @@ class Modele(object):
                             elif(clee == "SuppressionBatiment"):
                                 noBatiment = valeur
 
-                                supprimerBatiment(self.listeJoueur[ii].listeBatiment[noBatiment])
+                                self.listeJoueur[ii].supprimerBatiment[noBatiment]
+
+                                
                                 
                             elif(clee == "SuppressionUnit"):
                                 noUnit = valeur
 
-                                supprimerUnite(self.listeJoueur[ii].listeBatiment[noBatiment])
+                                self.listeJoueur[ii].supprimerUnite(noUnit)
                                 
                             elif(clee == "CaptureArtefact"):
                                 noArtefact = valeur
+
+                                self.listeJoueur[ii].listeArtefact.append(self.listeArtefact[noArtefact])
+
+                                
                             elif(clee == "PerteArtefact"):
                                 noArtefact = valeur
+
+                                self.listeJoueur[ii].listeArtefact.remove(self.listeArtefact[noArtefact])
             ii+=1
 
 
-        for ind in self.listeJoueur:            #Fait bouger toutes les unitées
-            for uni in ind.listeUnite :
-                uni.move()
+        
 
     def ajoutAction(self,clee,tup):
         self.dicAction2Server[clee] = tup
 
 
+    ############################
+
+
+    def actualiser(self): #Appelle les fonctions de game loop du modele
+        self.bougerUnits()
+        self.incrementerRessource() 
+        
+    def incrementerRessource(self):
+        self.listeJoueur[self.noJoueurLocal].compterRessource() #Incremente les ressources du joueur local
+            
+        
+    def bougerUnits(self):
+        for ind in self.listeJoueur:            #Fait bouger toutes les unitées
+            for uni in ind.listeUnite :
+                uni.move()
+
+
+
+<<<<<<< HEAD
     def gererMouseRelease(self,event,etat):
+=======
+    #############################
+
+    def gererMouseRelease(self,event):
+>>>>>>> f85c2f6e0d0330ab553546a6b71779476e858325
         if(event.num == 3): #clic droit
             if(self.selection): #Si le joueur a quelque chose de sélectionné, sinon inutile
                 if(self.selection[0].owner == self.noJoueurLocal):

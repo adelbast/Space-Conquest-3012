@@ -6,10 +6,17 @@ class Batiment (object):
         self.size = 128
         self.id = idB
         '''self.cost = cost
-        self.hp =hp
+        
         self.image =img
         self.size = size
         self.owner = owner'''
+        self.maxHp = attribut[0]
+        self.cost = attribut[1]
+        
+        self.hp = self.maxHp
+
+        self.size = attribut[3]
+        
 
     def selfDestroy(self):#Detruire le batiment 
         print("selfDestruct")
@@ -22,10 +29,9 @@ class Batiment (object):
 
 
 class Generator(Batiment):
-    def __init__(self, genType,amountGen,name,xy,cost,hp,img,size,owner):
-        super(Generator,self).__init__(name,xy,cost,hp,img,size,owner)
-        self.genType = genType
-        self.amountGen = amountGen
+    def __init__(self,owner,name,xy,attributs,idB, genType):
+        super(Generator,self).__init__(owner,name,xyxy,attributs,idB)
+        self.amountGen = attributs[2]
 
     def generate(self):#retourne le nombre de ressource  generer
         print("returning ",self.amountGen,"de type: ",genType)
