@@ -8,6 +8,7 @@ class Batiment (object):
         self.costMetal  = attributs[1][1]
         self.costPower  = attributs[1][2]
         self.size       = attributs[3]
+        self.canBuild   = attributs[4]
         self.id         = idB
         
 

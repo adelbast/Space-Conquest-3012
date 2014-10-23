@@ -279,7 +279,8 @@ class Modele(object):
             self.cost        = [int(parserBatiment.get(name,'costFood')), int(parserBatiment.get(name,'costMetal')), int(parserBatiment.get(name,'costPower'))]
             self.production  = int(parserBatiment.get(name, 'production'))
             self.size        = int(parserBatiment.get(name, 'size'))
-            self.dicBatiment[name] = [self.maxHp, self.cost, self.production, self.size]
+            self.canBuild	 = [parserBatiment.get(name, 'canBuild')]
+            self.dicBatiment[name] = [self.maxHp, self.cost, self.production, self.size, self.canBuild]
 
        
 
