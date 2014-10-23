@@ -1,6 +1,7 @@
 from Tile.Map import Map
 from Class.Joueur import Joueur
 from Class.AI import AI
+from Class.Structure import Batiment
 import configparser
 
 
@@ -166,19 +167,20 @@ class Modele(object):
                         if(not cible):
                             cible = (self.releasePosx,self.releasePosy)
                         
-                        for unite in self.selection: #Donne un ordre de déplacement à la sélection  
-                            idList.append(unite.id)
-                            if isinstance (unite, Batiments):
+                        for unite in self.selection: #Donne un ordre de déplacement à la sélection
+                            unite.setDestination(cible)
+                            """idList.append(unite.id)
+                            if isinstance (unite, Batiment):
                                 typeList.append(0)
                                                         #unite.setDestination(cible)
                             else:
                                 typeList.append(1)
                                 
                             print("Ordre de déplacement")
-                        if cible:
-                            self.dicAction2Server['DeplacementCible']=(idList, cible.owner.noJoueur, typeList)
-                        else:
-                            self.dicAction2Server['Deplacement']=(idList,self.releasePosx,self.releasePosy)
+                        try:
+                            self.dicAction2Server['DeplacementCible']=(idList, cible.owner, typeList)
+                        except:
+                            self.dicAction2Server['Deplacement']=(idList,self.releasePosx,self.releasePosy)"""
             
         elif(event.num == 1): #clic gauche
             if(etat==True):
