@@ -45,14 +45,14 @@ class ServerObject(object):
                 return num           #retourne le numero donne
         except Exception as e:
             print(traceback.print_exc())    #code pour avoir le "FULL STACK TRACE" :D
-    def sendMultiAction(self,packageTeamList):
-        for i in packageTeamList:
-            sendAction(i[0],i[1])
             
-    def sendAction(self,package,num):
-        if self.highestRead >= len(self.actions):# si la dernierre action dans le dictionnaire(leur cle est leur temps) est lue on en ajoute une nouvelle
-            self.actions[self.highestRead] = Actions(self.client.__len__())
-        self.actions[self.highestRead].setAction(package,num)# on ajoute le package representant l'action  a la derniere place du dictionnaire
+    def sendAction(self,listePackage):
+        for i in listePackage:
+            num =       i[0]
+            package =   i[1]
+            if self.highestRead >= len(self.actions):# si la dernierre action dans le dictionnaire(leur cle est leur temps) est lue on en ajoute une nouvelle
+                self.actions[self.highestRead] = Actions(self.client.__len__())
+            self.actions[self.highestRead].setAction(package,num)# on ajoute le package representant l'action  a la derniere place du dictionnaire
 
 
     def readAction(self,num):

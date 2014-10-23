@@ -27,6 +27,7 @@ class Unit:    ##Laurence
         self.orientation = "front"
 
         self.moving = False
+        self.attacking = False
 
         ###Pathfinder Later###
         #if self.destination[0] != self.position[0] or self.destination[1] != self.position[1]:  #Pour savoir s'il faut bouger
@@ -35,6 +36,11 @@ class Unit:    ##Laurence
     def setDestination(self, destination):
         if destination :
             self.destination = destination
+            
+            if isinstance(self.destination, tuple) is not True:
+                self.attacking = True
+                
+                
             self.calculatePath()
             self.moving = True
         
@@ -91,7 +97,15 @@ class Unit:    ##Laurence
         return False
     
     def attack(self):
-        return self.force
+        if self.destination != None:
+            if self.attacking is True:
+                if self.inRange(self.destination) is True:
+                    self.destination.takeDmg(self.force)
+                else:
+                    self.attacking = False 
+                    
+                
+    
 
 
 

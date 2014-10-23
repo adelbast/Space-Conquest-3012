@@ -22,9 +22,9 @@ class Client(object):
 				print(traceback.print_exc())	#code pour avoir le "FULL STACK TRACE" :D
 
 	#Envoie le (possiblement "les" pour le host) dictionaires au serveur
-	def pushAction(self,dicAction2Server):
+	def pushAction(self,listeDic):
 		try:
-			self.proxy.sendAction(dicAction2Server)
+			self.proxy.sendAction(listeDic)
 		except Exception as e:
 			print(e)
 
