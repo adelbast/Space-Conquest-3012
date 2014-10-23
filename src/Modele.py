@@ -148,6 +148,10 @@ class Modele(object):
 
 
     def gererMouseRelease(self,event,etat):
+
+        idList = []
+        typeList = []
+        
         if(event.num == 3): #clic droit
             if(self.selection): #Si le joueur a quelque chose de sélectionné, sinon inutile
                 if(self.selection[0].owner == self.noJoueurLocal):
@@ -161,15 +165,24 @@ class Modele(object):
                         if(not cible):
                             cible = (self.releasePosx,self.releasePosy)
                         
-                        for unite in self.selection: #Donne un ordre de déplacement à la sélection
-                            unite.setDestination(cible)
+                        for unite in self.selection: #Donne un ordre de déplacement à la sélection  
+                            idList.append(unite.id)
+                            if isinstance (unite, Batiments):
+                                typeList.append(0)
+                                                        #unite.setDestination(cible)
+                            else:
+                                typeList.append(1)
+                                
                             print("Ordre de déplacement")
+                        if cible:
+                            self.dicAction2Server['DeplacementCible']=(idList, cible.owner.noJoueur, typeList)
+                        else:
+                            self.dicAction2Server['Deplacement']=(idList,self.releasePosx,self.releasePosy)
             
-        
         elif(event.num == 1): #clic gauche
             if(etat==True):
             	self.listeJoueur[self.noJoueurLocal].creerBatiment([event.x,event.y],True,"HQ",self.dicBatiment["HQ"])
-            
+				self.dicAction2Server['NewBatiment']=("HQ",event.x,event.y) #packetage de creation batiment
             self.selection[:] = []
             if(self.clickPosx!=self.releasePosx or self.clickPosy!=self.releasePosy):#self.clickPosx+5 < self.releasePosx or self.clickPosx-5 > self.releasePosx or self.clickPosy+5 < self.releasePosy or self.clickPosy-5 > self.releasePosy
                 print(self.clickPosx,self.clickPosy,self.releasePosx,self.releasePosy)
