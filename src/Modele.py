@@ -182,8 +182,8 @@ class Modele(object):
             
         elif(event.num == 1): #clic gauche
             if(etat==True):
-            	self.listeJoueur[self.noJoueurLocal].creerBatiment([event.x,event.y],True,"HQ",self.dicBatiment["HQ"])
-				self.dicAction2Server['NewBatiment']=("HQ",event.x,event.y) #packetage de creation batiment
+                self.listeJoueur[self.noJoueurLocal].creerBatiment([event.x,event.y],True,"HQ",self.dicBatiment["HQ"])
+                self.dicAction2Server['NewBatiment']=("HQ",event.x,event.y) #packetage de creation batiment
             self.selection[:] = []
             if(self.clickPosx!=self.releasePosx or self.clickPosy!=self.releasePosy):#self.clickPosx+5 < self.releasePosx or self.clickPosx-5 > self.releasePosx or self.clickPosy+5 < self.releasePosy or self.clickPosy-5 > self.releasePosy
                 print(self.clickPosx,self.clickPosy,self.releasePosx,self.releasePosy)
