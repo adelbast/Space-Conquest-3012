@@ -3,11 +3,11 @@ class Batiment (object):
         self.owner      = owner
         self.name       = name
         self.position   = xy
-        self.hp         = attribut[0]
-        self.costFood   = attribut[1][0]
-        self.costMetal  = attribut[1][1]
-        self.costPower  = attribut[1][2]
-        self.size       = attribut[3]
+        self.hp         = attributs[0]
+        self.costFood   = attributs[1][0]
+        self.costMetal  = attributs[1][1]
+        self.costPower  = attributs[1][2]
+        self.size       = attributs[3]
         self.id         = idB
         
 
@@ -24,7 +24,7 @@ class Batiment (object):
 class Generator(Batiment):
     def __init__(self,owner,name,xy,attributs,idB):
         super(Generator,self).__init__(owner,name,xy,attributs,idB)
-        self.production = attribut[2]
+        self.production = attributs[2]
 
     def generate(self):#retourne le nombre de ressource  generer
         return self.production
