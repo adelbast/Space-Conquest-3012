@@ -20,17 +20,16 @@ class Modele(object):
         self.map = Map("Tile/map1.csv")
 
         self.dicAction2Server = {}
-        self.dicActionAI2Server = [{}]
         self.dicActionFromServer = [{#joueur1
-                                    "Deplacement":     (0, 500,500),#(noUnit, cibleX, cibleY)
-                                    "DeplacementCible":(1, 2, 1, 0),#(noUnit, noProprio, 0:unité/1:batiment , noUnitCible)
+                                    "Deplacement":   [(0, 500,500)],#(noUnit, cibleX, cibleY)
+                                    "DeplacementCible":[(1, 2, 1, 0)],#(noUnit, noProprio, 0:unité/1:batiment , noUnitCible)
                                     "RechercheAge": 1,          #si changement d'âge
-                                    "NewUnit":      (0,0),      #(type d'unité, noDuBatimentSpawner)
-                                    "NewBatiment":    (2,200,200),#(typeBatiment, posX, posY)
-                                    "SuppressionBatiment":1,    #noBatiment
-                                    "SuppressionUnit":2,        #noUnit
-                                    "CaptureArtefact":0,        #noArtefact
-                                    "PerteArtefact":1},
+                                    "NewUnit":      [(0,0)],      #(type d'unité, noDuBatimentSpawner)
+                                    "NewBatiment":   [(2,200,200)],#(typeBatiment, posX, posY)
+                                    "SuppressionBatiment":[1],    #noBatiment
+                                    "SuppressionUnit":[2],        #noUnit
+                                    "CaptureArtefact":[0],        #noArtefact
+                                    "PerteArtefact":[1]},
                                     
                                     {#joueur2
 
