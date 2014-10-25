@@ -17,11 +17,15 @@ class Controleur:
         #Section Temporaire
         self.listeTemporaireDeClient = ["Xavier","Antoine","AI","Laurence","Arnaud","Francis","Alexandre","AI"]
         self.leclient = 0    #changer le numero pour créé plusieur client
+
         self.autoCreateAndEnterLobby()#lorsque le menu sera fait, utiliser la fontion du bas plutôt que celle-ci
         self.lobbyLoop()
-        #self.vue.afficherMenu()
 
         self.vue.root.mainloop()
+
+        
+        #self.vue.afficherMenu()
+
         
         if(self.serveur):
             self.serveur.close()
@@ -29,6 +33,25 @@ class Controleur:
     #Fonction qui crée le client local
     def creeClient(self,nom): 
         self.client = Client(nom)
+
+    #Fonction qui permet de stopper le after de la recherche de serveur
+    def joinLobby(self):
+
+        #Pour obtenir le serveur selectionne dans la listbox
+        selectedServer = self.vue.serverList.get(self.vue.serverList.curselection()[0])
+
+        print("Connecting "+self.client.nom+" to "+selectedServer)
+
+        #Se connecter au serveur
+        self.client.connect(selectedServer)
+
+        #Remove le display du lobby
+        for child in self.vue.root.winfo_children():
+            child.place_forget()
+
+        self.lancerPartie()
+        
+        
 
     #Fonction qui crée le serveur. Un seul est nécéssaire par partie
     def creeServeur(self,nomPartie,nomJoueur):      
@@ -38,22 +61,27 @@ class Controleur:
 
     #TEMPORAIRE : Fonction qui crée le client local et un serveur s'il n'y en a pas déjà un sur le réseau
     def autoCreateAndEnterLobby(self):
-        print(self.listeTemporaireDeClient[self.leclient])
         self.creeClient(self.listeTemporaireDeClient[self.leclient])
         if(not self.client.nameServer):
             self.creeServeur("DestructionGalactique","Xavier")
-        self.client.connect([clee for clee, valeur in self.client.getServers().items() if clee != "Pyro.NameServer"][0])#Tente de se connecter sur la premiere clee retourner par getServers() qui n'est pas égale à Pyro.NameServer
+        
 
     #Contenu TEMPORAIRE : Fonction qui permet d'attendre que le host décide de démarrer la partie. (Pour attendre que les joueurs soient connectés)
     def lobbyLoop(self):
-        if(self.serveur):
+
+        print("Refreshed")
+        
+        #Affichage du lobby
+        self.vue.displayLobby(self.client.getServers())
+        
+        """if(self.serveur):
             thread = Thread(target = self.inputThread)
             thread.start()
         while(not self.client.proxy.isGameStarted()):
             time.sleep(0.5)
             #os.system('cls')
-            print(self.client.getStartingInfo(), "Si le serveur est sur cette machine, pesez sur Enter pour débuter la partie ou attendre les autres joueurs")
-        self.lancerPartie()
+            print(self.client.getStartingInfo(), "Si le serveur est sur cette machine, pesez sur Enter pour débuter la partie ou attendre les autres joueurs")"""
+        
 
     #Petite fonction qui attend que le host pèse sur ENTER (lancé comme thread dans lobbyLoop() )
     def inputThread(self):

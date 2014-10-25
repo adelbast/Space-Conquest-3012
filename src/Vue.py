@@ -53,7 +53,6 @@ class Vue:
         self.surfaceJeu = Canvas(self.root, width=self.surfaceW, height=self.surfaceH, bg='white', highlightthickness=0)
         self.surfaceJeu.configure(scrollregion=(0,0,len(self.parent.modele.map.map[0])*64,len(self.parent.modele.map.map)*64))
         print("Map size:", len(self.parent.modele.map.map[0])*64, len(self.parent.modele.map.map)*64)
-        self.surfaceJeu.place(x=0, y=0)
         
         #Pour la fermeture de la fenetre de jeu (afin de pouvoir compléter des actions avant de quitter le programme)
         #self.root.protocol( "WM_DELETE_WINDOW", self.parent.fermeture )
@@ -71,7 +70,9 @@ class Vue:
         self.surfaceJeu.bind("<ButtonRelease-1>",self.parent.gererMouseRelease)
         self.surfaceJeu.bind("<ButtonRelease-3>", self.parent.gererMouseRelease)
 
-
+        #Widgets pour l'affichage du lobby
+        self.buttonJoin = Button(self.root, width=40, text="Join Server", command=self.parent.joinLobby)
+        self.serverList = Listbox(self.root, width=50)
 
         #TEST BOUTON HUD JUSTE TEST, PAS DEFINITIF
         boutonCreerUnit = Button(self.hud,text="creerUnite",command=lambda:self.parent.modele.listeJoueur[0].creerUnite("psychonaut",[300,300] , self.parent.modele.dictUnit["psychonaut"] ))
@@ -212,9 +213,26 @@ class Vue:
         
     def eraseSelection(self):
         self.surfaceJeu.delete("selection")
+
+
+    #Affichage du Lobby
+    def displayLobby(self, serverList):
+        self.serverList.place(x=200, y=200)
+        self.buttonJoin.place(x=200, y=600)
+
+        self.serverList.delete(0, END)
+
+        for server in [clee for clee, valeur in serverList.items() if clee != "Pyro.NameServer"]:
+            print(server)
+            self.serverList.insert(END, server)
+
         
+
+        
+      
     #Affiche la map
     def displayMap(self, mapObj):
+        self.surfaceJeu.place(x=0, y=0)
 
         self.miniMapImage = Image.new('RGB', (len(mapObj.map[0])*64,len(mapObj.map)*64))
         
