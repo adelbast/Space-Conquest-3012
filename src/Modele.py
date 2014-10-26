@@ -4,6 +4,7 @@ from Class.AI import AI
 from Class.Structure import Batiment
 from Tile.Tileset import Tileset
 import configparser
+import math
 
 
 class Modele(object):
@@ -49,9 +50,6 @@ class Modele(object):
         self.init_grid_Pathfinding()
 
     def init_grid_Pathfinding(self): # test avec init sur map ( pas encore Tileset)
-        #print(self.map.numRow)
-        #print(self.map.numCol)
-        #print(self.map.map[2][1])
         for y in range(self.map.numCol):
             for x in range(self.map.numRow):
                 if self.map.map[x][y] == "4":
@@ -60,7 +58,6 @@ class Modele(object):
                 elif self.map.map[x][y] == "0":
                     walkable = True
                     flyable = True
-                #print(self.map.map[x][y] , x,y)
                 self.cells.append(Cell(x, y, walkable,flyable))
 
     def initPartie(self,noJoueur,listeNomJoueur,host=False):
@@ -175,11 +172,9 @@ class Modele(object):
         typeList = []
         
         if(event.num == 3): #clic droit
-            print(self.releasePosx, self.releasePosy)
-            print(int(event.x/64) , int(event.y/64))
-            print(self.cells[int(event.y/64) * self.map.numRow + int(event.x/64)].walkable,
-                self.cells[int(event.y/64) * self.map.numRow + int(event.x/64)].x,
-                self.cells[int(event.y/64) * self.map.numRow + int(event.x/64)].y)
+            print(self.cells[int(self.releasePosx/64) * self.map.numRow + int(self.releasePosy/64)].walkable,
+                self.cells[int(self.releasePosx/64) * self.map.numRow + int(self.releasePosy/64)].x,
+                self.cells[int(self.releasePosx/64) * self.map.numRow + int(self.releasePosy/64)].y)
             if(self.selection): #Si le joueur a quelque chose de sélectionné, sinon inutile
                 if(self.selection[0].owner == self.noJoueurLocal):
                     try:            #Duck typing
@@ -209,8 +204,8 @@ class Modele(object):
             
         elif(event.num == 1): #clic gauche
             if(etat==True):
-                self.listeJoueur[self.noJoueurLocal].creerBatiment([event.x,event.y],True,"HQ",self.dicBatiment["HQ"]) # pas bon, event.x,y doit etre changer pour map width et height 
-                self.dicAction2Server['NewBatiment']=("HQ",event.x,event.y) #packetage de creation batiment
+                self.listeJoueur[self.noJoueurLocal].creerBatiment([self.releasePosx,self.releasePosy],True,"HQ",self.dicBatiment["HQ"]) # pas bon, event.x,y doit etre changer pour map width et height 
+                self.dicAction2Server['NewBatiment']=("HQ",self.releasePosx,self.releasePosy) #packetage de creation batiment
             self.selection[:] = []
             if(self.clickPosx!=self.releasePosx or self.clickPosy!=self.releasePosy):#self.clickPosx+5 < self.releasePosx or self.clickPosx-5 > self.releasePosx or self.clickPosy+5 < self.releasePosy or self.clickPosy-5 > self.releasePosy
                 print(self.clickPosx,self.clickPosy,self.releasePosx,self.releasePosy)
