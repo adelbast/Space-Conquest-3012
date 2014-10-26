@@ -13,19 +13,15 @@ class Controleur:
         self.client = None
         self.serveur = None
         self.nomBatiment = None
-        
+        self.compteur = 0
         #Section Temporaire
         self.listeTemporaireDeClient = ["Xavier","Antoine","AI","Laurence","Arnaud","Francis","Alexandre","AI"]
-        self.leclient = 0    #changer le numero pour créé plusieur client
-
+        self.leclient = 1    #changer le numero pour créé plusieur client
         self.autoCreateAndEnterLobby()#lorsque le menu sera fait, utiliser la fontion du bas plutôt que celle-ci
-        self.lobbyLoop()
-
-        self.vue.root.mainloop()
-
-        
+        self.serverLobby()
         #self.vue.afficherMenu()
 
+        self.vue.root.mainloop()
         
         if(self.serveur):
             self.serveur.close()
@@ -50,8 +46,6 @@ class Controleur:
             child.place_forget()
 
         self.lancerPartie()
-        
-        
 
     #Fonction qui crée le serveur. Un seul est nécéssaire par partie
     def creeServeur(self,nomPartie,nomJoueur):      
@@ -64,24 +58,23 @@ class Controleur:
         self.creeClient(self.listeTemporaireDeClient[self.leclient])
         if(not self.client.nameServer):
             self.creeServeur("DestructionGalactique","Xavier")
-        
 
     #Contenu TEMPORAIRE : Fonction qui permet d'attendre que le host décide de démarrer la partie. (Pour attendre que les joueurs soient connectés)
-    def lobbyLoop(self):
+    def serverLobby(self):
 
         print("Refreshed")
         
         #Affichage du lobby
-        self.vue.displayLobby(self.client.getServers())
+        self.vue.displayServerLobby(self.client.getServers())
         
         """if(self.serveur):
             thread = Thread(target = self.inputThread)
             thread.start()
         while(not self.client.proxy.isGameStarted()):
             time.sleep(0.5)
-            #os.system('cls')
-            print(self.client.getStartingInfo(), "Si le serveur est sur cette machine, pesez sur Enter pour débuter la partie ou attendre les autres joueurs")"""
-        
+            #os.system('cls') 
+            print(self.client.getStartingInfo(), "Si le serveur est sur cette machine, pesez sur Enter pour débuter la partie ou attendre les autres joueurs")
+        self.lancerPartie()"""
 
     #Petite fonction qui attend que le host pèse sur ENTER (lancé comme thread dans lobbyLoop() )
     def inputThread(self):
@@ -116,15 +109,19 @@ class Controleur:
         return retour
 
     def gameLoop(self):
-        #self.modele.gestion(self.client.pullAction()) #enlever pour test bouton dans la vue
-        #self.client.pushAction( self.packAction2Server() ) #enlever pour test bouton dans la vue
+        print(self.compteur, "ENVOIE : ", self.packAction2Server())
+        self.client.pushAction( self.packAction2Server() )
+        self.modele.dicAction2Server.clear()
+        val = self.client.pullAction()
+        print("RECOIT : ", val, end="\n\n")
+        self.modele.gestion( val )
         """if(self.vue.etatCreation==True):
             self.vue.dessinerShadowBatiment()"""
-        self.modele.bougerUnits()
         self.modele.actualiser()
         self.vue.displayRessources(self.modele.listeJoueur[self.modele.noJoueurLocal].listeRessource)
         self.vue.displayObject(self.modele.listeJoueur,[],self.modele.noJoueurLocal,self.modele.selection)
-        self.vue.root.after(24,self.gameLoop)
+        self.compteur+=1
+        self.vue.root.after(1000,self.gameLoop)
 
     def gererMouseClick(self,event):
         offset = self.vue.getSurfacePos()#Obtenir la position du canvas

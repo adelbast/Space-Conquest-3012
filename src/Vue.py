@@ -159,8 +159,6 @@ class Vue:
         directories = os.listdir("Image/sprites")
 
         for d in directories:
-
-            print(d)
             
             s = Sprites()
             
@@ -189,8 +187,6 @@ class Vue:
                 
             else:
                 self.sprites.append(s)
-
-        print(self.sprites)
             
         
         
@@ -198,7 +194,6 @@ class Vue:
     #Affiche les informations sur l'unité
     def displayInfoUnit(self, unit):
         self.hud.create_rectangle(100,50,228,178,fill='black')
-        print(unit.name)
 
     #Affiche les ressources
     def displayRessources(self, ressources):
@@ -213,27 +208,21 @@ class Vue:
         
     def eraseSelection(self):
         self.surfaceJeu.delete("selection")
-
-
+    
     #Affichage du Lobby
-    def displayLobby(self, serverList):
+    def displayServerLobby(self, serverList):
         self.serverList.place(x=200, y=200)
         self.buttonJoin.place(x=200, y=600)
 
         self.serverList.delete(0, END)
 
-        for server in [clee for clee, valeur in serverList.items() if clee != "Pyro.NameServer"]:
+        for server in serverList:
             print(server)
             self.serverList.insert(END, server)
-
-        
-
-        
-      
+                
     #Affiche la map
     def displayMap(self, mapObj):
         self.surfaceJeu.place(x=0, y=0)
-
         self.miniMapImage = Image.new('RGB', (len(mapObj.map[0])*64,len(mapObj.map)*64))
         
         #Pour chaque ligne

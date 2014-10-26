@@ -9,7 +9,6 @@ class Client(object):
 		self.noJoueur = None
 		self.proxy = None
 		self.nameServer = None
-		self.temps = None #represente ou il est rendu dans sa lecture des evenements
 		self.getNameServer()
 		if(test):
 			s = self.getServers()
@@ -44,13 +43,20 @@ class Client(object):
 		except Exception as e:
 			print("Le nameServer n'a pas été trouvé")
 
+	def isNameServerAlive(self):
+		try:
+			self.nameServer.ping()	#Test que le nameserver est en ligne
+			return True
+		except:
+			return False
+
 	#Demande au nameServer la liste des serveurs enregister dans sa base de donné
 	def getServers(self):
-		if(not self.nameServer):
+		if( not self.isNameServerAlive() ):
 			self.getNameServer()
 		try:
-			return self.nameServer.list()	#retourne un dict d'adresse de forme Uri
-		except Exception as e:
+			return [clee for clee, valeur in self.nameServer.list().items() if clee != "Pyro.NameServer"]	#retourne un dict d'adresse de forme Uri
+		except:
 			print("Handling Error :")
 			print(traceback.print_exc())	#code pour avoir le "FULL STACK TRACE" :D
 			print("Still rollin!")
@@ -59,14 +65,16 @@ class Client(object):
 	#Crée l'objet serveur (dit Proxy) à partir du nom fournis et souscrit au serveur qui lui retourne un numero unique
 	def connect(self,nomDuServeur):
 		try:
-			self.nameServer.ping()						#Test que le nameserver est en ligne
 			uri = self.nameServer.lookup(nomDuServeur)	#Cherche sur le nameServer si un serveur correspond au nom recu en param
 			print("Connection en cours...")
 			self.proxy = Pyro4.Proxy(uri)				#Assigne l'adresse uri à l'objet pyro
 			self.noJoueur = self.proxy.seConnecter(self.nom)		#Signale au serveur qu'on est connecté et celui-ci nous assigne un numero unique
 			print("Connection établie!")
-		except Exception as e:
-			print(e)
+		except:
+			print("Handling Error :")
+			print(traceback.print_exc())	#code pour avoir le "FULL STACK TRACE" :D
+			print("Still rollin!")
+			return 1
 
 	#Getter des info que le serveur doit donner à chaque client pour démarrer la partie
 	def getStartingInfo(self):

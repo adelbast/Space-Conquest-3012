@@ -66,7 +66,5 @@ class Sprites:
             img = converter.enhance(brightness)
 
             self.spriteDict.update({building: ImageTk.PhotoImage(img)})
-
-        print(self.spriteDict)
             
             
