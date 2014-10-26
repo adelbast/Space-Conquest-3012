@@ -141,20 +141,25 @@ class Modele(object):
 
 
     def actualiser(self): #Appelle les fonctions de game loop du modele
-        self.gestionUnits()
-        self.incrementerRessource() 
+        self.gestionAuto()
+        self.incrementerRessource()
+
         
     def incrementerRessource(self):
         self.listeJoueur[self.noJoueurLocal].compterRessource() #Incremente les ressources du joueur local
             
         
-    def gestionUnits(self):
-        for joueur in self.listeJoueur:            #Fait bouger toutes les unitées
+    def gestionAuto(self):
+        for joueur in self.listeJoueur:
             for uni in joueur.listeUnite :
                 if(uni.actualHP > 0):
-                    uni.autoGestion(joueur.listeAllie)
+                    uni.autoGestion(joueur.listeAllie)#Fait bouger toutes les unitées
                 else:
                     del uni
+            try:
+                joueur.faireQqch() # AI
+            except:
+                pass
 
 
     def gererMouseRelease(self,event,etat):

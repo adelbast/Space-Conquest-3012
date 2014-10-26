@@ -90,7 +90,8 @@ class Controleur:
     def lancerPartie(self):
         os.system('cls')
         print(self.client.noJoueur)
-        self.modele.initPartie(self.client.noJoueur,self.client.getStartingInfo(),self.isHost())
+        #self.modele.initPartie(self.client.noJoueur,self.client.getStartingInfo(),self.isHost())
+        self.modele.initPartie(self.client.noJoueur,["Xavier","AI"],self.isHost())
         self.vue.displayMap(self.modele.map)
         self.vue.generateSpriteSet(self.modele.noJoueurLocal)
         self.vue.displayObject(self.modele.listeJoueur,[],self.modele.noJoueurLocal,self.modele.selection)
@@ -109,11 +110,13 @@ class Controleur:
         return retour
 
     def gameLoop(self):
+        reception = None
         print(self.compteur, "ENVOIE : ", self.packAction2Server())
         self.client.pushAction( self.packAction2Server() )
         self.modele.dicAction2Server.clear()
-        val = self.client.pullAction()
-        print("RECOIT : ", val, end="\n\n")
+        while not reception:
+            reception = self.client.pullAction()
+            print("RECOIT : ", reception, end="\n\n\n\n")
         self.modele.gestion( val )
         """if(self.vue.etatCreation==True):
             self.vue.dessinerShadowBatiment()"""
