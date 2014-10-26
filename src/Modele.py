@@ -175,6 +175,7 @@ class Modele(object):
         typeList = []
         
         if(event.num == 3): #clic droit
+            print(self.releasePosx, self.releasePosy)
             print(int(event.x/64) , int(event.y/64))
             print(self.cells[int(event.y/64) * self.map.numRow + int(event.x/64)].walkable,
                 self.cells[int(event.y/64) * self.map.numRow + int(event.x/64)].x,
