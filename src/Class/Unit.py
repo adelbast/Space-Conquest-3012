@@ -74,16 +74,19 @@ class Unit:    ##Laurence
     def autoGestion(self,listeJoueurAmi):
         try:
             if self.etat == self.IDLE:
+                print("IDLE")
                 pass
                 # Si c'est un banal déplacement      # Si déplacement vers batiment   # Si déplacement vers unité       # Si la cible est ami                     # Si la cible n'est pas en range
-            elif self.etat == self.GOTO_POSITION or self.etat == self.GOTO_BATIMENT or self.etat == self.FOLLOW or (self.destination.owner in listeJoueurAmi) or not self.inRange(self.destination):
+            else:
+                print("ici")
+                #if self.etat == self.GOTO_POSITION or self.etat == self.GOTO_BATIMENT or self.etat == self.FOLLOW or (self.destination.owner in listeJoueurAmi) or not self.inRange(self.destination):
                 self.move()
                 if self.etat == self.FOLLOW:
                     self.followModulator += 1
                     if not self.followModulator%self.MODULO:
                         self.calculatePath()
-            else:   # Ce n'est pas un ami et est en range (huhuhu...)
-                self.destination.takeDmg(self.force)
+            #else:   # Ce n'est pas un ami et est en range (huhuhu...)
+            #    self.destination.takeDmg(self.force)
         except:
             print("La cible n'existe plus pendant l'etat "+str(self.etat)+" du Unit \ ID \ noProprio : "+self.name+" \ "+str(self.id)+" \ "+str(self.owner))
             self.destination = None

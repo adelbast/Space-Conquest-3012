@@ -80,7 +80,6 @@ class ServerObject(object):
 
             for action in self.actions:
                 if (action[0] == self.client[num].temps-1): # le -1 est la parce quon a augmenté le temps avant d'envoyer le reponse
-                    print("ici")
                     return action[1]
         except:
             print(traceback.print_exc())
