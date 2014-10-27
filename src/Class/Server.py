@@ -21,6 +21,7 @@ class ServerObject(object):
         self.ip = ip
         self.highestRead = 0        #le temps le plus recent lue
         self.client = []            #la liste des client
+        self.cpuClient = 0
         self.actions = []           #[(temp,[package joueur 0][package joueur 1][][][])]la liste qui contient tous les evenements qui contiennent les actions
         self.maxTempsDecalage = 8
         self.gameStarted = False
@@ -48,12 +49,16 @@ class ServerObject(object):
                 num =       i[0]
                 package =   i[1]
                 self.highestRead = self.getHighestRead()
-                print("highestRead :",self.highestRead,len(self.actions))
+                #print("highestRead :",self.highestRead,len(self.actions))
+                
                 if self.highestRead >= len(self.actions):          # si la dernière action dans le dictionnaire(leur cle est leur temps) est lue on en ajoute une nouvelle
-                    print("Ajout d'un temps d'action")
-                    uneListe = [None]*len(self.client)
+                    #print("Ajout d'un temps d'action")
+                    uneListe = [None]*(len(self.client)+self.cpuClient)
                     self.actions.append( (self.highestRead, uneListe) )
+                
+                #print(self.actions[len(self.actions)-1][1])
                 self.actions[len(self.actions)-1][1][num] = package     # on ajoute le package representant l'action  a la derniere place du dictionnaire
+
         except:
             print(traceback.print_exc())
 
@@ -61,20 +66,21 @@ class ServerObject(object):
         try:
             for i in self.client:
                 if i.temps+self.maxTempsDecalage < self.client[num].temps:
+                    print("delagg")
                     return None
-            print("Longeuer client : ",len(self.client),"num : ",num,"longeur Action:",len(self.actions))
+            self.highestRead = self.getHighestRead()
+            
+            print("Longueur client : ",len(self.client),"num : ",num,"longeur Action:",len(self.actions))
+            
             if self.actions and self.client[num].temps-1 == self.actions[0][0]:
                 self.deleteLowest()
                 
             self.client[num].temps+=1     #augmente le temps de la personne qui veux les actions
-            
-            if self.highestRead <= self.client[num].temps:     #sil est plus avancer dans le temps on enregistre son temps
-                self.highestRead = self.client[num].temps
 
-            print(self.highestRead-(self.client[num].temps-1), len(self.actions))
             for action in self.actions:
                 if (action[0] == self.client[num].temps): # le -1 est la parce quon a augmenté le temps avant d'envoyer le reponse
-                    return action[1]  
+                    print("ici")
+                    return action[1]
         except:
             print(traceback.print_exc())
     
@@ -111,6 +117,9 @@ class ServerObject(object):
     #Getter qui retourne la liste du nom des client connecté au serveur
     def getStartingInfo(self):
         return [client.nom for client in self.client]
+
+    def setCpuClient(self,nombreDeAI):
+        self.cpuClient = nombreDeAI
 
     def getInfo(self):
         global VERSION

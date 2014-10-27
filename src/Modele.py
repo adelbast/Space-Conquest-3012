@@ -296,6 +296,13 @@ class Modele(object):
             self.canBuild	 = [parserBatiment.get(name, 'canBuild')]
             self.dicBatiment[name] = [self.maxHp, self.cost, self.production, self.size, self.canBuild]
 
+    def getAIcount(self):
+        retour = 0
+        for joueur in self.listeJoueur:
+            if(isinstance(joueur,AI)):
+                retour+=1
+        return retour
+
 
     class Cell(object):
         def __init__(self,x,y,walkable,flyable):

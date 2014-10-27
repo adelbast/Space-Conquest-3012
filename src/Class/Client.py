@@ -80,6 +80,9 @@ class Client(object):
 	def getStartingInfo(self):
 		return self.proxy.getStartingInfo()
 
+	def setCpuClient(self,nombreDeAI):
+		self.proxy.setCpuClient(nombreDeAI)
+
 
 if __name__ == '__main__':
 	m=Client(nom = "Bob",test = True)
