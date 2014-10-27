@@ -54,12 +54,12 @@ class Modele(object):
         if(self.noJoueurLocal == 0):
             self.listeJoueur[self.noJoueurLocal].creerBatiment((1000,400),True,"guardTower",self.dicBatiment["guardTower"])
             self.listeJoueur[self.noJoueurLocal].creerBatiment((400,400),True,"HQ",self.dicBatiment["HQ"])
-            self.listeJoueur[self.noJoueurLocal].creerUnite("worker", (200,100), self.dictUnit["worker"])   #nom,position, attributs
-            self.listeJoueur[self.noJoueurLocal].creerUnite("worker", (100,100), self.dictUnit["worker"])
+            #self.listeJoueur[self.noJoueurLocal].creerUnite("worker", (200,100), self.dictUnit["worker"])   #nom,position, attributs
+            self.listeJoueur[self.noJoueurLocal].creerUnite("worker", [100,100], self.dictUnit["worker"])
         elif(self.noJoueurLocal == 1):
             self.listeJoueur[self.noJoueurLocal].creerBatiment((2000,800),True,"guardTower",self.dicBatiment["guardTower"])
             self.listeJoueur[self.noJoueurLocal].creerBatiment((800,800),True,"HQ",self.dicBatiment["HQ"])
-            self.listeJoueur[self.noJoueurLocal].creerUnite("worker", (600,600), self.dictUnit["worker"])  #nom,position, attributs
+            #self.listeJoueur[self.noJoueurLocal].creerUnite("worker", (600,600), self.dictUnit["worker"])  #nom,position, attributs
             self.listeJoueur[self.noJoueurLocal].creerUnite("worker", (800,1000), self.dictUnit["worker"])
 
     def gestion(self,dicActionFromServer):
@@ -72,7 +72,7 @@ class Modele(object):
                     if(clee == "Deplacement"):
                         for valeur in listValeur:
                             noUnit, cibleX, cibleY = valeur
-                            self.listeJoueur[ii].listeUnite[noUnit].setDestination( unePosition = (cibleX,cibleY))
+                            self.listeJoueur[ii].listeUnite[noUnit].setDestination( unePosition = [cibleX,cibleY])
                             
                     elif(clee == "DeplacementCible"):
                         #noUnit, noProprio, UvB, noUnitCible

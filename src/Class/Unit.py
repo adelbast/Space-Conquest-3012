@@ -78,8 +78,8 @@ class Unit:    ##Laurence
                 pass
                 # Si c'est un banal déplacement      # Si déplacement vers batiment   # Si déplacement vers unité       # Si la cible est ami                     # Si la cible n'est pas en range
             else:
-                print("ici")
                 #if self.etat == self.GOTO_POSITION or self.etat == self.GOTO_BATIMENT or self.etat == self.FOLLOW or (self.destination.owner in listeJoueurAmi) or not self.inRange(self.destination):
+                
                 self.move()
                 if self.etat == self.FOLLOW:
                     self.followModulator += 1
@@ -87,7 +87,8 @@ class Unit:    ##Laurence
                         self.calculatePath()
             #else:   # Ce n'est pas un ami et est en range (huhuhu...)
             #    self.destination.takeDmg(self.force)
-        except:
+        except Exception as e:
+            print(traceback.print_exc())
             print("La cible n'existe plus pendant l'etat "+str(self.etat)+" du Unit \ ID \ noProprio : "+self.name+" \ "+str(self.id)+" \ "+str(self.owner))
             self.destination = None
             self.etat = self.IDLE
@@ -96,14 +97,14 @@ class Unit:    ##Laurence
     def move(self): # A modifier
         if self.etat == self.GOTO_POSITION:
             if self.position[0] > self.destination[0]:
-                self.position[0] -= 5
+                self.position = (self.position[0]-5,self.position[1])
             else:
-                self.position[0] += 5
+                self.position = (self.position[0]+5,self.position[1])
 
-            if self.position[1] > self.destination[1]:
-                self.position[1] -= 5
+            if (self.position[1] > self.destination[1]):
+                self.position = (self.position[0],self.position[1]-5)
             else:
-                self.position[1] += 5
+                self.position = (self.position[0],self.position[1]+5)
 
             if self.position[0] == self.destination[0] and self.position[1] == self.destination[1]:
                 self.etat = self.IDLE
@@ -111,14 +112,14 @@ class Unit:    ##Laurence
 
         else:
             if self.position[0] > self.destination.position[0]:
-                self.position[0] -= 5
+                self.position = (self.position[0]-5,self.position[1])
             else:
-                self.position[0] += 5
+                self.position = (self.position[0]+5,self.position[1])
 
             if self.position[1] > self.destination.position[1]:
-                self.position[1] -= 5
+                self.position = (self.position[0],self.position[1]-5)
             else:
-                self.position[1] += 5
+                self.position = (self.position[0],self.position[1]+5)
 
             if self.position[0] == self.destination.position[0] and self.position[1] == self.destination.position[1]:
                 self.etat = self.IDLE

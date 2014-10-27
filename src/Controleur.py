@@ -112,12 +112,12 @@ class Controleur:
 
     def gameLoop(self):
         reception = None
-        print(self.compteur, "ENVOIE : ", self.packAction2Server())
+        print("\n\n\n\n",self.compteur, "ENVOIE : ", self.packAction2Server())
         self.client.pushAction( self.packAction2Server() )
         self.modele.dicAction2Server.clear()
         while not reception:
             reception = self.client.pullAction()
-            print("RECOIT : ", reception, end="\n\n\n\n")
+            print("RECOIT : ", reception)
         self.modele.gestion( reception )
         """if(self.vue.etatCreation==True):
             self.vue.dessinerShadowBatiment()"""
@@ -125,7 +125,7 @@ class Controleur:
         self.vue.displayRessources(self.modele.listeJoueur[self.modele.noJoueurLocal].listeRessource)
         self.vue.displayObject(self.modele.listeJoueur,[],self.modele.noJoueurLocal,self.modele.selection)
         self.compteur+=1
-        self.vue.root.after(1000,self.gameLoop)
+        self.vue.root.after(20,self.gameLoop)
 
     def gererMouseClick(self,event):
         offset = self.vue.getSurfacePos()#Obtenir la position du canvas
