@@ -2,7 +2,6 @@ from Tile.Map import Map
 from Class.Joueur import Joueur
 from Class.AI import AI
 from Class.Structure import Batiment
-from Tile.Tileset import Tileset
 import configparser
 import math
 
@@ -16,28 +15,28 @@ class Modele(object):
         self.selection = []
         self.listeArtefact = []
         self.dictUnit = {}
-        self.dicBatiment = {}
+        self.dictBatiment = {}
         self.createDict()
         
         self.map = Map("Tile/map1.csv")
 
         self.dicAction2Server = {}
-        self.dicActionFromServer = [{#joueur1
-                                    "Deplacement":   [(0, 500,500)],#(noUnit, cibleX, cibleY)
-                                    "DeplacementCible":[(1, 2, 1, 0)],#(noUnit, noProprio, 0:unité/1:batiment , noUnitCible)
-                                    "RechercheAge": 1,          #si changement d'âge
-                                    "NewUnit":      [(0,0)],      #(type d'unité, noDuBatimentSpawner)
-                                    "NewBatiment":   [(2,200,200)],#(typeBatiment, posX, posY)
-                                    "SuppressionBatiment":[1],    #noBatiment
-                                    "SuppressionUnit":[2],        #noUnit
-                                    "CaptureArtefact":[0],        #noArtefact
-                                    "PerteArtefact":[1]},
-                                    
-                                    {#joueur2
+        self.dicActionFromServer = []
 
-                                    },
-                                    {},#joueur3
-                                    {}]#joueur4...
+        """Architecture du dictionaire se trouvant dans la liste dicActionFromServer:
+
+        "Deplacement":      [(0, 500,500)], # (noUnit, cibleX, cibleY)
+        "DeplacementCible": [(1, 2, 1, 0)], # (noUnit, noProprioCible, 0:unité/1:batiment , noUnitCible)
+        "RechercheAge":     [1],            # si changement d'âge
+        "NewUnit":          [(0,0)],        # (type d'unité, noDuBatimentSpawner)
+        "NewBatiment":      [(HQ,3,200,200)], # (typeBatiment, workerID, posX, posY)
+        "SuppressionBatiment":[1],          # noBatiment
+        "SuppressionUnit":  [2],            # noUnit
+        "CaptureArtefact":  [0],            # noArtefact
+        "PerteArtefact":    [1]"""
+
+
+
         # facilite la gestion de la souris
         self.clickPosx = 0
         self.clickPosy = 0
@@ -58,8 +57,9 @@ class Modele(object):
                 elif self.map.map[x][y] == "0":
                     walkable = True
                     flyable = True
-                self.cells.append(Cell(x, y, walkable,flyable))
+                self.cells.append(self.Cell(x, y, walkable,flyable))
 
+    
     def initPartie(self,noJoueur,listeNomJoueur,host=False):
         self.noJoueurLocal = noJoueur
         for nomJoueur in listeNomJoueur:
@@ -69,77 +69,83 @@ class Modele(object):
                 self.listeJoueur.append(Joueur(nomJoueur,len(self.listeJoueur)))
         self.host = host
         print("Nom du joueur local : " + self.listeJoueur[self.noJoueurLocal].nom + ", numero : " + str(self.noJoueurLocal))
-        
-        self.listeJoueur[self.noJoueurLocal].creerBatiment((1000,400),True,"guardTower",self.dicBatiment["guardTower"])
-        self.listeJoueur[self.noJoueurLocal].creerBatiment((400,400),True,"mine",self.dicBatiment["mine"])
-        self.listeJoueur[self.noJoueurLocal].creerBatiment((1500,1500),True,"barrack",self.dicBatiment["barrack"])
-        self.listeJoueur[self.noJoueurLocal].creerUnite("trooper", [400,400], self.dictUnit["trooper"])
-        self.listeJoueur[self.noJoueurLocal].creerUnite("worker", [100,100], self.dictUnit["trooper"])
+        if(self.noJoueurLocal == 0):
+            self.listeJoueur[self.noJoueurLocal].creerBatiment((1000,400),True,"guardTower",self.dictBatiment["guardTower"])
+            self.listeJoueur[self.noJoueurLocal].creerBatiment((400,400),True,"HQ",self.dictBatiment["HQ"])
+            #self.listeJoueur[self.noJoueurLocal].creerUnite("worker", (200,100), self.dictUnit["worker"])   #nom,position, attributs
+            self.listeJoueur[self.noJoueurLocal].creerUnite("worker", [100,100], self.dictUnit["worker"])
+        elif(self.noJoueurLocal == 1):
+            self.listeJoueur[self.noJoueurLocal].creerBatiment((2000,800),True,"guardTower",self.dictBatiment["guardTower"])
+            self.listeJoueur[self.noJoueurLocal].creerBatiment((800,800),True,"HQ",self.dictBatiment["HQ"])
+            #self.listeJoueur[self.noJoueurLocal].creerUnite("worker", (600,600), self.dictUnit["worker"])  #nom,position, attributs
+            self.listeJoueur[self.noJoueurLocal].creerUnite("worker", (800,1000), self.dictUnit["worker"])
 
     def gestion(self,dicActionFromServer):
         self.listeJoueur[self.noJoueurLocal].compterRessource()
         ii = 0
         for dic in dicActionFromServer:
             if(dic):
-                if(ii != noJoueurLocal):
-                    if(self.joueurPasMort(self.listeJoueur[ii])):
-                        for clee, valeur in d.items():
-                            if(clee == "Deplacement"):
-                                
-                                for i in valeur:            #i[0] = noUnit i[1] i [2] xy
-                                    self.listeJoueur[ii].listeUnite[i[0]].setDestination((i[1],i[2]))
-                                    
-                            elif(clee == "DeplacementCible"):
-                                #noUnit, noProprio, UvB, noUnitCible
-
-                                for i in valeur:
-                                    if i[2] == 0:
-                                        self.listeJoueur[ii].listeUnite[i[0]].setDestination(self.listeJoueur[1].listeUnite[3])
-                                    else:
-                                        self.listeJoueur[ii].listeUnite[i[0]].setDestination(self.listeJoueur[1].listeBatiment[3])
+                for clee, listValeur in dic.items():
+                    
+                    if(clee == "Deplacement"):
+                        for valeur in listValeur:
+                            noUnit, cibleX, cibleY = valeur
+                            self.listeJoueur[ii].listeUnite[noUnit].setDestination( unePosition = [cibleX,cibleY])
                             
-                            elif(clee == "RechercheAge"):
-                                age = valeur
+                    elif(clee == "DeplacementCible"):
+                        #noUnit, noProprio, UvB, noUnitCible
+                        for valeur in listValeur:
+                            noUnit, noProprio, uvB, noUnitCible = valeur
+                            if uvB == 0:
+                                self.listeJoueur[ii].listeUnite[ noUnit ].setDestination( unit = self.listeJoueur[ noProprio ].listeUnite[ noUnitCible ])
+                            else:
+                                self.listeJoueur[ii].listeUnite[ noUnit ].setDestination( batiment = self.listeJoueur[ noProprio ].listeBatiment[ noUnitCible ])
+                    
+                    elif(clee == "RechercheAge"):
+                        for valeur in listValeur:
+                            age = valeur
 
-                                self.listeJoueur[ii].ageRendu = age
+                            self.listeJoueur[ii].ageRendu = age
 
-                                
-                            elif(clee == "NewUnit"):
-                                
-                                typeUnit, noDuBatimentSpawner = valeur
+                        
+                    elif(clee == "NewUnit"):
+                        for valeur in listValeur:
+                            typeUnit, noDuBatimentSpawner = valeur
+                            print(self.listeJoueur,ii)
+                            print(self.listeJoueur[ii].listeBatiment)
+                            self.listeJoueur[ii].creerUnite(typeUnit, self.listeJoueur[ii].listeBatiment[0].position, self.dictUnit[typeUnit]) #nom, position, attributs
+                        
+                    elif(clee == "NewBatiment"):
+                        workerID = 0#TODO
+                        typeBatiment, x, y = listValeur
+                        self.listeJoueur[ii].creerBatiment((x,y), self.listeJoueur[ii].listeUnite[workerID], typeBatiment, self.dictBatiment[typeBatiment]) #position,worker,nom,attributs
+                        
+                    elif(clee == "SuppressionBatiment"):
+                        for valeur in listValeur:
+                            noBatiment = valeur
 
-                                self.listeJoueur[ii].creerUnit(typeUnit, self.listeJoueur[ii].listeBatiment[noDuBatimentSpawner].position,
-                                                               self.listeJoueur[ii].listeBatiment[noDuBatimentSpawner].position)
-                                
-                                
-                            elif(clee == "NewBatiment"):
-                                typeBatiment, x, y = valeur
+                            self.listeJoueur[ii].supprimerBatiment[noBatiment]
 
-                                self.listeJoueur[ii].creerBatiment(typeBatiment, (x,y))
+                        
+                        
+                    elif(clee == "SuppressionUnit"):
+                        for valeur in listValeur:
+                            noUnit = valeur
 
-                                
-                            elif(clee == "SuppressionBatiment"):
-                                noBatiment = valeur
+                            self.listeJoueur[ii].supprimerUnite(noUnit)
+                        
+                    elif(clee == "CaptureArtefact"):
+                        for valeur in listValeur:
+                            noArtefact = valeur
 
-                                self.listeJoueur[ii].supprimerBatiment[noBatiment]
+                            self.listeJoueur[ii].listeArtefact.append(self.listeArtefact[noArtefact])
 
-                                
-                                
-                            elif(clee == "SuppressionUnit"):
-                                noUnit = valeur
+                        
+                    elif(clee == "PerteArtefact"):
+                        for valeur in listValeur:
+                            noArtefact = valeur
 
-                                self.listeJoueur[ii].supprimerUnite(noUnit)
-                                
-                            elif(clee == "CaptureArtefact"):
-                                noArtefact = valeur
-
-                                self.listeJoueur[ii].listeArtefact.append(self.listeArtefact[noArtefact])
-
-                                
-                            elif(clee == "PerteArtefact"):
-                                noArtefact = valeur
-
-                                self.listeJoueur[ii].listeArtefact.remove(self.listeArtefact[noArtefact])
+                            self.listeJoueur[ii].listeArtefact.remove(self.listeArtefact[noArtefact])
             ii+=1
 
 
@@ -152,29 +158,33 @@ class Modele(object):
 
 
     def actualiser(self): #Appelle les fonctions de game loop du modele
-        self.bougerUnits()
-        self.incrementerRessource() 
+        self.gestionAuto()
+        self.incrementerRessource()
+
         
     def incrementerRessource(self):
         self.listeJoueur[self.noJoueurLocal].compterRessource() #Incremente les ressources du joueur local
             
         
-    def bougerUnits(self):
-        for ind in self.listeJoueur:            #Fait bouger toutes les unitées
-            for uni in ind.listeUnite :
-                uni.move()
-
+    def gestionAuto(self):
+        for joueur in self.listeJoueur:
+            for uni in joueur.listeUnite :
+                if(uni.actualHP > 0):
+                    uni.autoGestion(joueur.listeAllie)#Fait bouger toutes les unitées
+                else:
+                    del uni
+            try:
+                joueur.faireQqch() # AI
+            except:
+                pass
 
 
     def gererMouseRelease(self,event,etat):
-
-        idList = []
-        typeList = []
-        
         if(event.num == 3): #clic droit
             print(self.cells[int(self.releasePosx/64) * self.map.numRow + int(self.releasePosy/64)].walkable,
                 self.cells[int(self.releasePosx/64) * self.map.numRow + int(self.releasePosy/64)].x,
                 self.cells[int(self.releasePosx/64) * self.map.numRow + int(self.releasePosy/64)].y)
+
             if(self.selection): #Si le joueur a quelque chose de sélectionné, sinon inutile
                 if(self.selection[0].owner == self.noJoueurLocal):
                     try:            #Duck typing
@@ -188,28 +198,35 @@ class Modele(object):
                             cible = (self.releasePosx,self.releasePosy)
                         
                         for unite in self.selection: #Donne un ordre de déplacement à la sélection
-                            unite.setDestination(cible)
-                            """idList.append(unite.id)
-                            if isinstance (unite, Batiment):
-                                typeList.append(0)
-                                                        #unite.setDestination(cible)
-                            else:
-                                typeList.append(1)
-                                
+                            
                             print("Ordre de déplacement")
-                        try:
-                            self.dicAction2Server['DeplacementCible']=(idList, cible.owner, typeList)
-                        except:
-                            self.dicAction2Server['Deplacement']=(idList,self.releasePosx,self.releasePosy)"""
+                            
+                            try:
+                                if isinstance (cible, Batiment):
+                                    if 'DeplacementCible' not in self.dicAction2Server:
+                                        self.dicAction2Server['DeplacementCible'] = []
+                                    self.dicAction2Server['DeplacementCible'].append((unite.id, cible.owner, 1, cible.id))#(noUnit, noProprioCible, 0:unité/1:batiment , noUnitCible)
+                                    #unite.setDestination(batiment = cible)
+                                else:
+                                    cible.owner = cible.owner
+                                    if 'DeplacementCible' not in self.dicAction2Server:
+                                        self.dicAction2Server['DeplacementCible'] = []
+                                    self.dicAction2Server['DeplacementCible'].append((unite.id, cible.owner, 0, cible.id))
+                                    #unite.setDestination(unit = cible)
+                            except:
+                                if 'Deplacement' not in self.dicAction2Server:
+                                    self.dicAction2Server['Deplacement'] = []
+                                self.dicAction2Server['Deplacement'].append((unite.id, cible[0], cible[1]))
+                                #unite.setDestination(unePosition = cible)
             
         elif(event.num == 1): #clic gauche
             if(etat==True):
-                self.listeJoueur[self.noJoueurLocal].creerBatiment([self.releasePosx,self.releasePosy],True,"HQ",self.dicBatiment["HQ"]) # pas bon, event.x,y doit etre changer pour map width et height 
+                #self.listeJoueur[self.noJoueurLocal].creerBatiment([self.releasePosx,self.releasePosy],True,"HQ",self.dictBatiment["HQ"]) # pas bon, event.x,y doit etre changer pour map width et height 
                 self.dicAction2Server['NewBatiment']=("HQ",self.releasePosx,self.releasePosy) #packetage de creation batiment
             self.selection[:] = []
-            if(self.clickPosx!=self.releasePosx or self.clickPosy!=self.releasePosy):#self.clickPosx+5 < self.releasePosx or self.clickPosx-5 > self.releasePosx or self.clickPosy+5 < self.releasePosy or self.clickPosy-5 > self.releasePosy
+            if(self.clickPosx!=self.releasePosx or self.clickPosy!=self.releasePosy):   #self.clickPosx+5 < self.releasePosx or self.clickPosx-5 > self.releasePosx or self.clickPosy+5 < self.releasePosy or self.clickPosy-5 > self.releasePosy
                 print(self.clickPosx,self.clickPosy,self.releasePosx,self.releasePosy)
-                for unit in self.listeJoueur[self.noJoueurLocal].listeUnite: #a changer a joueur actuel plutot que [0], je prends seulement les unites puisque selection multiple de batiment inutile
+                for unit in self.listeJoueur[self.noJoueurLocal].listeUnite:            #Je prends seulement les unites puisque selection multiple de batiment inutile
                     if(self.pointDansForme([self.releasePosx,self.clickPosx,self.clickPosx,self.releasePosx],[self.clickPosy,self.clickPosy,self.releasePosy,self.releasePosy],unit.position[0],unit.position[1])):#La fonction dont je t'ai parlé sur ts frank...
                         self.selection.append(unit)
                         print(unit.name)
@@ -238,8 +255,7 @@ class Modele(object):
 
 
     def joueurPasMort(self,joueur):
-        joueur.compterBatiment()
-        if(not joueur.nbBatiment):
+        if(joueur.listeBatiment):
             print(joueur.nom+" est mort")
             return False
         return True
@@ -300,24 +316,31 @@ class Modele(object):
             self.production  = int(parserBatiment.get(name, 'production'))
             self.size        = int(parserBatiment.get(name, 'size'))
             self.canBuild	 = [parserBatiment.get(name, 'canBuild')]
-            self.dicBatiment[name] = [self.maxHp, self.cost, self.production, self.size, self.canBuild]
+            self.dictBatiment[name] = [self.maxHp, self.cost, self.production, self.size, self.canBuild]
 
-class Cell(object):
-    def __init__(self,x,y,walkable,flyable):
+    def getAIcount(self):
+        retour = 0
+        for joueur in self.listeJoueur:
+            if(isinstance(joueur,AI)):
+                retour+=1
+        return retour
 
-        self.walkable = walkable
-        self.x = x
-        self.y = y
-        self.parent = None
-        self.g = 0
-        self.h = 0
-        self.f = 0
 
-    def __lt__(self, other):
-        """ necessaire dans python 3.X dans le cas au on doit passer par des objets avant de comparer leur valeur
-    le heapq va donc venir voir ici pour determiner la valeur a passer en premier, dans ce cas ci cest les f de chaque cell """
-        return self.f < other.f
-       
+    class Cell(object):
+        def __init__(self,x,y,walkable,flyable):
+
+            self.walkable = walkable
+            self.x = x
+            self.y = y
+            self.parent = None
+            self.g = 0
+            self.h = 0
+            self.f = 0
+
+        def __lt__(self, other):
+            """ necessaire dans python 3.X dans le cas au on doit passer par des objets avant de comparer leur valeur
+            le heapq va donc venir voir ici pour determiner la valeur a passer en premier, dans ce cas ci cest les f de chaque cell """
+            return self.f < other.f
 
         
 

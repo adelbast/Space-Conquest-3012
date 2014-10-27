@@ -13,19 +13,14 @@ class Controleur:
         self.client = None
         self.serveur = None
         self.nomBatiment = None
-        
+        self.compteur = 0
         #Section Temporaire
-        self.listeTemporaireDeClient = ["Xavier","Antoine","AI","Laurence","Arnaud","Francis","Alexandre","AI"]
+        self.listeTemporaireDeClient = ["Xavier","Antoine","AI","Laurence","Arnaud","Francis","Alexandre","AI"]     
         self.leclient = 0    #changer le numero pour créé plusieur client
 
-
-        #self.autoCreateAndEnterLobby()#lorsque le menu sera fait, utiliser la fontion du bas plutôt que celle-ci
-        self.lobbyLoop()
-
-        self.vue.root.mainloop()
-
-        
+        self.serverLobby()#lorsque le menu sera fait, utiliser la fontion du bas plutôt que celle-ci
         #self.vue.afficherMenu()
+        self.vue.root.mainloop()
 
         if(self.serveur):
             self.serveur.close()
@@ -34,80 +29,45 @@ class Controleur:
     def creeClient(self,nom): 
         self.client = Client(nom)
 
-    #Fonction qui permet de rentrer dans un Lobby
-    def joinLobby(self):
-
-        #Pour obtenir le serveur selectionne dans la listbox
-        selectedServer = self.vue.serverList.get(self.vue.serverList.curselection()[0])
-
-        print("Connecting "+self.client.nom+" to "+selectedServer)
-
-        #Se connecter au serveur
-        self.client.connect(selectedServer)
-
-        #Remove le display du lobby
-        for child in self.vue.root.winfo_children():
-            child.grid_forget()
-
-        
-
-
-    #Creation d'un nouveau serveur
-    def createLobby(self):
-        
-        self.autoCreateAndEnterLobby()
-            
-        #Remove le display du lobby
-        for child in self.vue.root.winfo_children():
-            child.grid_forget()
-
-
-        self.client.connect(self.serveur.serverObject.getNomServeur())
-  
-        self.serveur.serverObject.getClients()
-        
-        self.vue.displayLobby(self.serveur.serverObject.getClients())
-
-        
-       
     #Fonction qui crée le serveur. Un seul est nécéssaire par partie
-    def creeServeur(self,nomPartie,nomJoueur):      
-        self.serveur = Server(nomPartie,nomJoueur) #Initialisation
+    def creeServeur(self,nameServer, nomPartie, nomJoueur):
+        print(nameServer)
+        self.serveur = Server(nameServer, nomPartie, nomJoueur) #Initialisation
         self.serveur.daemon = True
         self.serveur.start()    #Démarrage du serveur
 
-    #TEMPORAIRE : Fonction qui crée le client local et un serveur s'il n'y en a pas déjà un sur le réseau
-    def autoCreateAndEnterLobby(self):
-        self.creeClient(self.listeTemporaireDeClient[self.leclient])
-        if(not self.client.nameServer):
-            self.creeServeur("DestructionGalactique","Xavier")
-    
-        
+    #Fait afficher le lobby de choix de serveur
+    def serverLobby(self):
+        nomJoueur = "Bob avec cheveux"#TODO
 
-    #Contenu TEMPORAIRE : Fonction qui permet d'attendre que le host décide de démarrer la partie. (Pour attendre que les joueurs soient connectés)
-    def lobbyLoop(self):
-
-        print("Refreshed")
-
-        try:
-            #Affichage du lobby
-            self.vue.displayServers(self.client.getServers())
-        except:
+        self.creeClient(nomJoueur)
+        self.vue.removeAllDisplay()
+        if(self.client.findNameServer()):
+            self.vue.displayServers(self.client.getServers())#Affichage du lobby
+        else:
             self.vue.displayServers({})
-        
-        """if(self.serveur):
-            thread = Thread(target = self.inputThread)
-            thread.start()
-        while(not self.client.proxy.isGameStarted()):
-            time.sleep(0.5)
-            #os.system('cls')
-            print(self.client.getStartingInfo(), "Si le serveur est sur cette machine, pesez sur Enter pour débuter la partie ou attendre les autres joueurs")"""
-        
 
-    #Petite fonction qui attend que le host pèse sur ENTER (lancé comme thread dans lobbyLoop() )
-    def inputThread(self):
-        input()
-        self.client.proxy.startGame()
+    #Fonction qui permet d'entrer dans un Lobby et affiche le lobby de partie
+    def joinLobby(self):
+        selectedServer = self.vue.serverList.get(self.vue.serverList.curselection()[0])#Pour obtenir le serveur selectionne dans la listbox
+        if(selectedServer):
+            print("Connecting "+self.client.nom+" to "+selectedServer)
+            self.client.findNameServer()
+            self.client.connect(selectedServer)#Se connecter au serveur
+
+            self.vue.removeAllDisplay()#Remove le display du lobby
+            self.vue.displayLobby(self.client.proxy.getClients())
+
+    #Creation d'un nouveau serveur et affiche le lobby de partie
+    def createLobby(self):
+        unNomDePartie   = "Boom"#TODO
+        self.creeServeur(self.client.nameServer, unNomDePartie, self.client.nom)
+        self.client.findNameServer()
+        self.client.connect(unNomDePartie)
+        
+        self.vue.removeAllDisplay()        #Remove le display du lobby
+        self.vue.displayLobby(self.client.proxy.getClients())
+
 
     #Retourne si le client est aussi le host
     def isHost(self):
@@ -116,14 +76,12 @@ class Controleur:
 
     #Fonction qui démarre la partie
     def lancerPartie(self):
-
-        #Remove le display du lobby
-        for child in self.vue.root.winfo_children():
-            child.grid_forget()
-        
-        os.system('cls')
+        #os.system('cls')
+        self.vue.removeAllDisplay()
         print(self.client.noJoueur)
-        self.modele.initPartie(self.client.noJoueur,self.client.getStartingInfo(),self.isHost())
+        #self.modele.initPartie(self.client.noJoueur,self.client.getStartingInfo(),self.isHost())
+        self.modele.initPartie(self.client.noJoueur,["Xavier","AI"],self.isHost())
+        self.client.setCpuClient(self.modele.getAIcount())
         self.vue.displayMap(self.modele.map)
         self.vue.generateSpriteSet(self.modele.noJoueurLocal)
         self.vue.displayObject(self.modele.listeJoueur,[],self.modele.noJoueurLocal,self.modele.selection)
@@ -142,15 +100,21 @@ class Controleur:
         return retour
 
     def gameLoop(self):
-        #self.modele.gestion(self.client.pullAction()) #enlever pour test bouton dans la vue
-        #self.client.pushAction( self.packAction2Server() ) #enlever pour test bouton dans la vue
+        reception = None
+        print("\n\n\n\n",self.compteur, "ENVOIE : ", self.packAction2Server())
+        self.client.pushAction( self.packAction2Server() )
+        self.modele.dicAction2Server.clear()
+        while not reception:
+            reception = self.client.pullAction()
+            print("RECOIT : ", reception)
+        self.modele.gestion( reception )
         """if(self.vue.etatCreation==True):
             self.vue.dessinerShadowBatiment()"""
-        self.modele.bougerUnits()
         self.modele.actualiser()
         self.vue.displayRessources(self.modele.listeJoueur[self.modele.noJoueurLocal].listeRessource)
         self.vue.displayObject(self.modele.listeJoueur,[],self.modele.noJoueurLocal,self.modele.selection)
-        self.vue.root.after(24,self.gameLoop)
+        self.compteur+=1
+        self.vue.root.after(20,self.gameLoop)
 
     def gererMouseClick(self,event):
         offset = self.vue.getSurfacePos()#Obtenir la position du canvas

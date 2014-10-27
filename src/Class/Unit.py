@@ -2,7 +2,7 @@ import configparser
 from math import *
 
 class Unit:    ##Laurence
-    def __init__(self, name, xy, owner, destination, attribut,idU):
+    def __init__(self, name, xy, owner, attribut, idU, destination = None):
         
         self.owner    = owner
         self.name     = name
@@ -17,33 +17,50 @@ class Unit:    ##Laurence
         self.rangeVision = attribut[5]
         self.rangeAtt    = attribut[6]
         self.size        = attribut[7]
+
+        self.actualHP    = self.maxHp
                       
                       
         ###Variables Temporaires
         self.currentHp   = self.maxHp
-        self.destination = destination  ##Soit un tuple (x,y), un batiment ou un Unit
+        self.destination = None  # Unit, Bâtiment ou Position(Un tuple)
+
         self.path        = []
 
         self.orientation = "front"
 
-        self.moving = False
-        self.attacking = False
+        #Différents constantes d'états de l'unité et son etat
+        self.IDLE = 0
+        self.GOTO_POSITION = 1
+        self.GOTO_BATIMENT = 2
+        self.FOLLOW = 3
+        self.ATTACK = 4
+        self.etat = self.IDLE
+
+        self.MODULO = 20
+        self.followModulator = 0
 
         ###Pathfinder Later###
         #if self.destination[0] != self.position[0] or self.destination[1] != self.position[1]:  #Pour savoir s'il faut bouger
          #self.path = definePath()
 
-    def setDestination(self, destination):
-        if destination :
-            self.destination = destination
-            
-            if isinstance(self.destination, tuple) is not True:
-                self.attacking = True
-                
-                
-            self.calculatePath()
-            self.moving = True
-        
+    def setDestination(self, unit = None, batiment = None, unePosition = None):
+        if unit:
+            print("Deplacement vers unit")
+            self.destination = unit         # Un Unit
+            self.etat = self.FOLLOW
+        elif batiment:
+            print("Deplacement vers batiment")
+            self.destination = batiment     # Un Batiment
+            self.etat = self.GOTO_BATIMENT
+        elif unePosition:
+            print("Deplacement vers tile")
+            self.destination = unePosition  # Un Tuple
+            self.etat = self.GOTO_POSITION
+        else:
+            return None
+        self.calculatePath()
+    
     def takeDmg(self,dmg):
         print("Damage Taken")
 
@@ -53,83 +70,63 @@ class Unit:    ##Laurence
 
     def calculatePath(self):
         print("Path Calculated")
-        
-    def move(self):   #A modifier
-        if self.moving is True:
 
-            if isinstance(self.destination, tuple):
-                if self.position[0] > self.destination[0]:
-                    self.position[0] -= 5
-                else:
-                    self.position[0] += 5
-
-                if self.position[1] > self.destination[1]:
-                    self.position[1] -= 5
-                else:
-                    self.position[1] += 5
-
-                if self.position[0] == self.destination[0] and self.position[1] == self.destination[1]:
-                    self.moving = False
-
+    def autoGestion(self,listeJoueurAmi):
+        try:
+            if self.etat == self.IDLE:
+                print("IDLE")
+                pass
+                # Si c'est un banal déplacement      # Si déplacement vers batiment   # Si déplacement vers unité       # Si la cible est ami                     # Si la cible n'est pas en range
             else:
-                if self.position[0] > self.destination.position[0]:
-                    self.position[0] -= 5
-                else:
-                    self.position[0] += 5
-
-                if self.position[1] > self.destination.position[1]:
-                    self.position[1] -= 5
-                else:
-                    self.position[1] += 5
-
-                if self.position[0] == self.destination.position[0] and self.position[1] == self.destination.position[1]:
-                    self.moving = False
-
+                #if self.etat == self.GOTO_POSITION or self.etat == self.GOTO_BATIMENT or self.etat == self.FOLLOW or (self.destination.owner in listeJoueurAmi) or not self.inRange(self.destination):
                 
-            
+                self.move()
+                if self.etat == self.FOLLOW:
+                    self.followModulator += 1
+                    if not self.followModulator%self.MODULO:
+                        self.calculatePath()
+            #else:   # Ce n'est pas un ami et est en range (huhuhu...)
+            #    self.destination.takeDmg(self.force)
+        except Exception as e:
+            print(traceback.print_exc())
+            print("La cible n'existe plus pendant l'etat "+str(self.etat)+" du Unit \ ID \ noProprio : "+self.name+" \ "+str(self.id)+" \ "+str(self.owner))
+            self.destination = None
+            self.etat = self.IDLE
+            self.followModulator = 0
 
+    def move(self): # A modifier
+        if self.etat == self.GOTO_POSITION:
+            if self.position[0] > self.destination[0]:
+                self.position = (self.position[0]-5,self.position[1])
+            else:
+                self.position = (self.position[0]+5,self.position[1])
 
-        
+            if (self.position[1] > self.destination[1]):
+                self.position = (self.position[0],self.position[1]-5)
+            else:
+                self.position = (self.position[0],self.position[1]+5)
+
+            if self.position[0] == self.destination[0] and self.position[1] == self.destination[1]:
+                self.etat = self.IDLE
+                print("Arrivé tile")
+
+        else:
+            if self.position[0] > self.destination.position[0]:
+                self.position = (self.position[0]-5,self.position[1])
+            else:
+                self.position = (self.position[0]+5,self.position[1])
+
+            if self.position[1] > self.destination.position[1]:
+                self.position = (self.position[0],self.position[1]-5)
+            else:
+                self.position = (self.position[0],self.position[1]+5)
+
+            if self.position[0] == self.destination.position[0] and self.position[1] == self.destination.position[1]:
+                self.etat = self.IDLE
+                print("Arrivé sur cible")
+
     
     def inRange(self,unit):
         if  math.sqrt(abs(self.position[0] - unit.position[0])**2 + abs(self.position[1] - unit.position[1])**2) < self.rangeAtt:
             return True
         return False
-    
-    def attack(self):
-        if self.destination != None:
-            if self.attacking is True:
-                if self.inRange(self.destination) is True:
-                    self.destination.takeDmg(self.force)
-                else:
-                    self.attacking = False 
-                    
-                
-    
-
-
-
-
-
-
-
-
-
-
-
-
-                            
-                            
-                            
-                            
-
-        
-            
-        
-
-
-        
-        
-
-
-

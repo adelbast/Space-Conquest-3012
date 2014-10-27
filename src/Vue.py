@@ -165,8 +165,6 @@ class Vue:
         directories = os.listdir("Image/sprites")
 
         for d in directories:
-
-            print(d)
             
             s = Sprites()
             
@@ -195,8 +193,6 @@ class Vue:
                 
             else:
                 self.sprites.append(s)
-
-        print(self.sprites)
             
         
         
@@ -204,7 +200,6 @@ class Vue:
     #Affiche les informations sur l'unité
     def displayInfoUnit(self, unit):
         self.hud.create_rectangle(100,50,228,178,fill='black')
-        print(unit.name)
 
     #Affiche les ressources
     def displayRessources(self, ressources):
@@ -220,6 +215,9 @@ class Vue:
     def eraseSelection(self):
         self.surfaceJeu.delete("selection")
 
+    def removeAllDisplay(self):
+        for child in self.root.winfo_children():
+            child.grid_forget()
 
     #Affichage de la liste de serveur disponible
     def displayServers(self, serverList):
@@ -231,26 +229,23 @@ class Vue:
 
         self.serverList.delete(0, END)
 
-        for server in [clee for clee, valeur in serverList.items() if clee != "Pyro.NameServer"]:
+        for server in serverList:
             print(server)
             self.serverList.insert(END, server)
 
         
     #Affichage du Lobby avant de debuter une partie
-    def displayLobby(self, clients):
+    def displayLobby(self, listeClients):
         self.playerList.grid(row=0, column=0)
         self.buttonStart.grid(row=1, column=0)
 
-        for c in clients:
-            print(c)
-            self.playerList.insert(END, c.nom)
+        for numero, nom in listeClients:
+            self.playerList.insert(END, nom)
 
-        
-      
+
     #Affiche la map
     def displayMap(self, mapObj):
         self.surfaceJeu.place(x=0, y=0)
-
         self.miniMapImage = Image.new('RGB', (len(mapObj.map[0])*64,len(mapObj.map)*64))
         
         #Pour chaque ligne

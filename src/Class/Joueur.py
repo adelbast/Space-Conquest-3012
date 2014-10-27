@@ -15,16 +15,18 @@ class Joueur():
         self.diplomatieStatus=False
         self.nbBatiment=0
         self.nbUnite=0
-        self.idCount=0
+        self.idCountBatiment=0
+        self.idCountUnit=0
+        self.listeAllie = []
         
 
     def creerBatiment(self,position,worker,nom,attributs): #fr
         if self.assezRessources(attributs[1]): #pour savoir si assezRessource
                 if nom == "ferme" or nom == "mine" or nom == "solarPanel":
-                    self.listeBatiment.append(Generator(self.noJoueur,nom,position,attributs,self.idCount))
+                    self.listeBatiment.append(Generator(self.noJoueur,nom,position,attributs,self.idCountBatiment))
                 else:
-                    self.listeBatiment.append(Batiment(self.noJoueur,nom,position,attributs,self.idCount ))
-                self.idCount+=1
+                    self.listeBatiment.append(Batiment(self.noJoueur,nom,position,attributs,self.idCountBatiment ))
+                self.idCountBatiment+=1
                 self.listeRessource[0] -= attributs[1][0] #food
                 self.listeRessource[1] -= attributs[1][1] #metaux
                 self.listeRessource[2] -= attributs[1][2] #energie
@@ -48,13 +50,16 @@ class Joueur():
 
     def creerUnite(self,nom,position, attributs):### donner une destination en arg par rapport a la pos du batiment qui l'a cree ou autre ?
         if(self.assezRessources(attributs[2])):
-            self.listeUnite.append(Unit(nom,position,self.noJoueur,(position[0],position[1]),attributs,self.idCount))
-            self.idCount+=1
+            self.listeUnite.append(Unit(nom, (position[0],position[1]), self.noJoueur, attributs, self.idCountUnit))   #name, xy, owner, attribut, idU, destination = None
+            self.idCountUnit+=1
             self.listeRessource[0] -= attributs[2][0] #food
             self.listeRessource[1] -= attributs[2][1] #metaux
             self.listeRessource[2] -= attributs[2][2] #energie
-            return print("unite cree")
-
+            print("unite cree")
+            return 1
+        else:
+            print("Ressource insuffisante")
+            return 0
 
     def supprimerUnite(self,idUnite):
         count = 0
@@ -79,6 +84,12 @@ class Joueur():
         
     def mods(self):
         return 1
+
+    def ajoutAllier(self,idAllier):
+        self.listeAllier.append(idAllier)
+
+    def retirerAllier(self,idAllier):
+        self.listeAllier.remove(idAllier)
         
         
  
