@@ -236,6 +236,8 @@ class Vue:
         
     #Affichage du Lobby avant de debuter une partie
     def displayLobby(self, listeClients):
+        self.playerList.delete(0, END)
+        
         self.playerList.grid(row=0, column=0)
         self.buttonStart.grid(row=1, column=0)
 
