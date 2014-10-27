@@ -18,8 +18,7 @@ class Controleur:
         self.listeTemporaireDeClient = ["Xavier","Antoine","AI","Laurence","Arnaud","Francis","Alexandre","AI"]
         self.leclient = 0    #changer le numero pour créé plusieur client
 
-
-        #self.autoCreateAndEnterLobby()#lorsque le menu sera fait, utiliser la fontion du bas plutôt que celle-ci
+        self.autoCreateAndEnterLobby()#lorsque le menu sera fait, utiliser la fontion du bas plutôt que celle-ci
         self.lobbyLoop()
 
         self.vue.root.mainloop()
@@ -27,6 +26,7 @@ class Controleur:
         
         #self.vue.afficherMenu()
 
+        
         if(self.serveur):
             self.serveur.close()
 
@@ -34,7 +34,7 @@ class Controleur:
     def creeClient(self,nom): 
         self.client = Client(nom)
 
-    #Fonction qui permet de rentrer dans un Lobby
+    #Fonction qui permet de stopper le after de la recherche de serveur
     def joinLobby(self):
 
         #Pour obtenir le serveur selectionne dans la listbox
@@ -47,30 +47,15 @@ class Controleur:
 
         #Remove le display du lobby
         for child in self.vue.root.winfo_children():
-            child.grid_forget()
+            child.place_forget()
 
+        self.lancerPartie()
+        
         
 
-
-    #Creation d'un nouveau serveur
-    def createLobby(self):
-        
-        self.autoCreateAndEnterLobby()
-            
-        #Remove le display du lobby
-        for child in self.vue.root.winfo_children():
-            child.grid_forget()
-                
-        self.serveur.serverObject.getClients()
-        
-        self.vue.displayLobby(self.serveur.serverObject.getClients())
-
-        self.client.connect(self.serveur.serverObject.nomServeur)
-        
-       
     #Fonction qui crée le serveur. Un seul est nécéssaire par partie
     def creeServeur(self,nomPartie,nomJoueur):      
-        self.serveur = Server(nomPartie,nomJoueur) #Initialisation
+        self.serveur = Server(nomPartie,nomJoueur) #Inicialisation
         self.serveur.daemon = True
         self.serveur.start()    #Démarrage du serveur
 
@@ -79,19 +64,15 @@ class Controleur:
         self.creeClient(self.listeTemporaireDeClient[self.leclient])
         if(not self.client.nameServer):
             self.creeServeur("DestructionGalactique","Xavier")
-    
         
 
     #Contenu TEMPORAIRE : Fonction qui permet d'attendre que le host décide de démarrer la partie. (Pour attendre que les joueurs soient connectés)
     def lobbyLoop(self):
 
         print("Refreshed")
-
-        try:
-            #Affichage du lobby
-            self.vue.displayServers(self.client.getServers())
-        except:
-            self.vue.displayServers({})
+        
+        #Affichage du lobby
+        self.vue.displayLobby(self.client.getServers())
         
         """if(self.serveur):
             thread = Thread(target = self.inputThread)

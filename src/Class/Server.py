@@ -115,14 +115,6 @@ class ServerObject(object):
         }
         return info
 
-    def getClients(self):
-        for c in self.client:
-            print("Number : ", c.num)
-            print("Number : ", c.nom)
-        return self.client
-
-    def getNomServeur(self):
-        return self.nomServeur
 
 
 class InternalClient(object):

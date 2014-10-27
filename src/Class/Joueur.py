@@ -28,6 +28,7 @@ class Joueur():
                 self.listeRessource[0] -= attributs[1][0] #food
                 self.listeRessource[1] -= attributs[1][1] #metaux
                 self.listeRessource[2] -= attributs[1][2] #energie
+                #changer value des tiles sur lequel le batiment est ici ?? ou dans modele?
                 return print("batiment cree")
 
     def assezRessources(self,couts): #fr

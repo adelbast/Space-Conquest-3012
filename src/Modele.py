@@ -2,7 +2,9 @@ from Tile.Map import Map
 from Class.Joueur import Joueur
 from Class.AI import AI
 from Class.Structure import Batiment
+from Tile.Tileset import Tileset
 import configparser
+import math
 
 
 class Modele(object):
@@ -41,7 +43,23 @@ class Modele(object):
         self.clickPosy = 0
         self.releasePosx = 0
         self.releasePosy = 0
-    
+
+        self.cells = []
+        self.mapWidth = self.map.numRow*64
+        self.mapHeight = self.map.numCol*64
+        self.init_grid_Pathfinding()
+
+    def init_grid_Pathfinding(self): # test avec init sur map ( pas encore Tileset)
+        for y in range(self.map.numCol):
+            for x in range(self.map.numRow):
+                if self.map.map[x][y] == "4":
+                    walkable = False
+                    flyable = False
+                elif self.map.map[x][y] == "0":
+                    walkable = True
+                    flyable = True
+                self.cells.append(Cell(x, y, walkable,flyable))
+
     def initPartie(self,noJoueur,listeNomJoueur,host=False):
         self.noJoueurLocal = noJoueur
         for nomJoueur in listeNomJoueur:
@@ -154,6 +172,9 @@ class Modele(object):
         typeList = []
         
         if(event.num == 3): #clic droit
+            print(self.cells[int(self.releasePosx/64) * self.map.numRow + int(self.releasePosy/64)].walkable,
+                self.cells[int(self.releasePosx/64) * self.map.numRow + int(self.releasePosy/64)].x,
+                self.cells[int(self.releasePosx/64) * self.map.numRow + int(self.releasePosy/64)].y)
             if(self.selection): #Si le joueur a quelque chose de sélectionné, sinon inutile
                 if(self.selection[0].owner == self.noJoueurLocal):
                     try:            #Duck typing
@@ -183,8 +204,8 @@ class Modele(object):
             
         elif(event.num == 1): #clic gauche
             if(etat==True):
-                self.listeJoueur[self.noJoueurLocal].creerBatiment([event.x,event.y],True,"HQ",self.dicBatiment["HQ"])
-                self.dicAction2Server['NewBatiment']=("HQ",event.x,event.y) #packetage de creation batiment
+                self.listeJoueur[self.noJoueurLocal].creerBatiment([self.releasePosx,self.releasePosy],True,"HQ",self.dicBatiment["HQ"]) # pas bon, event.x,y doit etre changer pour map width et height 
+                self.dicAction2Server['NewBatiment']=("HQ",self.releasePosx,self.releasePosy) #packetage de creation batiment
             self.selection[:] = []
             if(self.clickPosx!=self.releasePosx or self.clickPosy!=self.releasePosy):#self.clickPosx+5 < self.releasePosx or self.clickPosx-5 > self.releasePosx or self.clickPosy+5 < self.releasePosy or self.clickPosy-5 > self.releasePosy
                 print(self.clickPosx,self.clickPosy,self.releasePosx,self.releasePosy)
@@ -281,6 +302,21 @@ class Modele(object):
             self.canBuild	 = [parserBatiment.get(name, 'canBuild')]
             self.dicBatiment[name] = [self.maxHp, self.cost, self.production, self.size, self.canBuild]
 
+class Cell(object):
+    def __init__(self,x,y,walkable,flyable):
+
+        self.walkable = walkable
+        self.x = x
+        self.y = y
+        self.parent = None
+        self.g = 0
+        self.h = 0
+        self.f = 0
+
+    def __lt__(self, other):
+        """ necessaire dans python 3.X dans le cas au on doit passer par des objets avant de comparer leur valeur
+    le heapq va donc venir voir ici pour determiner la valeur a passer en premier, dans ce cas ci cest les f de chaque cell """
+        return self.f < other.f
        
 
         
