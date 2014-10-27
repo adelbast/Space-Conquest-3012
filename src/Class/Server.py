@@ -116,7 +116,7 @@ class ServerObject(object):
 
     #Getter qui retourne la liste du nom des client connecté au serveur
     def getStartingInfo(self):
-        return [client.nom for client in self.client]
+        return [client.nom for client in self.client]+["AI" for _ in range(cpuClient)]
 
     def setCpuClient(self,nombreDeAI):
         self.cpuClient = nombreDeAI

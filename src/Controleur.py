@@ -94,7 +94,7 @@ class Controleur:
         os.system('cls')
         print(self.client.noJoueur)
         #self.modele.initPartie(self.client.noJoueur,self.client.getStartingInfo(),self.isHost())
-        self.modele.initPartie(self.client.noJoueur,["Xavier","AI"],self.isHost())
+        self.modele.initPartie(self.client.noJoueur,self.client.getStartingInfo(),self.isHost())
         self.client.setCpuClient(self.modele.getAIcount())
         self.vue.displayMap(self.modele.map)
         self.vue.generateSpriteSet(self.modele.noJoueurLocal)
