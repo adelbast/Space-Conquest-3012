@@ -115,12 +115,12 @@ class Controleur:
 
     def gameLoop(self):
         reception = None
-        print("\n\n\n\n",self.compteur, "ENVOIE : ", self.packAction2Server())
+        #print("\n\n\n\n",self.compteur, "ENVOIE : ", self.packAction2Server())
         self.client.pushAction( self.packAction2Server() )
         self.modele.dicAction2Server.clear()
         while not reception:
             reception = self.client.pullAction()
-            print("RECOIT : ", reception)
+            #print("RECOIT : ", reception)
         self.modele.gestion( reception )
         """if(self.vue.etatCreation==True):
             self.vue.dessinerShadowBatiment()"""

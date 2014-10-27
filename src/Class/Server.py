@@ -71,7 +71,7 @@ class ServerObject(object):
             
             self.highestRead = self.getHighestRead()
             
-            print("Longueur client : ",len(self.client),"num : ",num,"longeur Action:",len(self.actions))
+            #print("Longueur client : ",len(self.client),"num : ",num,"longeur Action:",len(self.actions))
             
             if self.actions and self.client[num].temps-1 == self.actions[0][0]:
                 self.deleteLowest()
@@ -101,7 +101,7 @@ class ServerObject(object):
                     lowest = i.temps
 
             if lowest > self.actions[0][0]: #[element en orde chronologique][le temps de cette action]
-                print("suppression : ",self.actions[0])
+                #print("suppression : ",self.actions[0])
                 del self.actions[0]     # on enleve levenement avant le plus bas
         except:
             print(traceback.print_exc())
