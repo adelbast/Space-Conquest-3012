@@ -70,9 +70,15 @@ class Vue:
         self.surfaceJeu.bind("<ButtonRelease-1>",self.parent.gererMouseRelease)
         self.surfaceJeu.bind("<ButtonRelease-3>", self.parent.gererMouseRelease)
 
-        #Widgets pour l'affichage du lobby
-        self.buttonJoin = Button(self.root, width=40, text="Join Server", command=self.parent.joinLobby)
-        self.serverList = Listbox(self.root, width=50)
+        #Widgets pour l'affichage de la liste de serveur
+        self.buttonJoin = Button(self.root, width=100, text="Join Server", command=self.parent.joinLobby)
+        self.serverList = Listbox(self.root, width=100)
+        self.buttonCreate = Button(self.root, width=100, text="Create Server", command=self.parent.createLobby)
+
+        #Widgets pour l'affichage du Lobby
+        self.playerList = Listbox(self.root, width=100)
+        self.buttonStart = Button(self.root, width=100, text="Start Game", command=self.parent.lancerPartie)
+        
 
         #TEST BOUTON HUD JUSTE TEST, PAS DEFINITIF
         boutonCreerUnit = Button(self.hud,text="creerUnite",command=lambda:self.parent.modele.listeJoueur[0].creerUnite("psychonaut",[300,300] , self.parent.modele.dictUnit["psychonaut"] ))
@@ -215,10 +221,13 @@ class Vue:
         self.surfaceJeu.delete("selection")
 
 
-    #Affichage du Lobby
-    def displayLobby(self, serverList):
-        self.serverList.place(x=200, y=200)
-        self.buttonJoin.place(x=200, y=600)
+    #Affichage de la liste de serveur disponible
+    def displayServers(self, serverList):
+        #self.root.grid_propagate(0)
+        
+        self.serverList.grid(row=0, column=0)
+        self.buttonJoin.grid(row=1, column=0)
+        self.buttonCreate.grid(row=1, column=1)
 
         self.serverList.delete(0, END)
 
@@ -227,6 +236,14 @@ class Vue:
             self.serverList.insert(END, server)
 
         
+    #Affichage du Lobby avant de debuter une partie
+    def displayLobby(self, clients):
+        self.playerList.grid(row=0, column=0)
+        self.buttonStart.grid(row=1, column=0)
+
+        for c in clients:
+            print(c)
+            self.playerList.insert(END, c.nom)
 
         
       

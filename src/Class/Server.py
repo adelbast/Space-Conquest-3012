@@ -115,6 +115,14 @@ class ServerObject(object):
         }
         return info
 
+    def getClients(self):
+        for c in self.client:
+            print("Number : ", c.num)
+            print("Nom: ", c.nom)
+        return self.client
+
+    def getNomServeur(self):
+        return self.nomServeur
 
 
 class InternalClient(object):
@@ -130,6 +138,7 @@ class InternalClient(object):
 class Server(Thread):
     def __init__(self, nomServeur = "SpaceConquest3012", nomJoueurHost = "xavier", test = False):
         super(Server, self).__init__()
+        self.isReady = False
         self.nomServeur = nomServeur
         self.uri = None        #adresse utiliser par pyro pour se connecter au objets distants
         self.port = 9992
@@ -154,6 +163,7 @@ class Server(Thread):
         self.nameServerThread.start()    #lance le nameServeur dans un thread
         ns = Pyro4.naming.locateNS(host=self.ip)
         ns.register(name=self.nomServeur, uri=self.uri)
+        
 
     def close(self):
         sys.exit()
