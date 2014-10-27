@@ -60,12 +60,14 @@ class Controleur:
         #Remove le display du lobby
         for child in self.vue.root.winfo_children():
             child.grid_forget()
-                
+
+
+        self.client.connect(self.serveur.serverObject.getNomServeur())
+  
         self.serveur.serverObject.getClients()
         
         self.vue.displayLobby(self.serveur.serverObject.getClients())
 
-        self.client.connect(self.serveur.serverObject.nomServeur)
         
        
     #Fonction qui crée le serveur. Un seul est nécéssaire par partie
@@ -114,6 +116,11 @@ class Controleur:
 
     #Fonction qui démarre la partie
     def lancerPartie(self):
+
+        #Remove le display du lobby
+        for child in self.vue.root.winfo_children():
+            child.grid_forget()
+        
         os.system('cls')
         print(self.client.noJoueur)
         self.modele.initPartie(self.client.noJoueur,self.client.getStartingInfo(),self.isHost())

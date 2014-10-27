@@ -243,7 +243,7 @@ class Vue:
 
         for c in clients:
             print(c)
-            self.playerList.insert(END, c)
+            self.playerList.insert(END, c.nom)
 
         
       

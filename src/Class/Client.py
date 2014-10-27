@@ -59,6 +59,9 @@ class Client(object):
 	#Crée l'objet serveur (dit Proxy) à partir du nom fournis et souscrit au serveur qui lui retourne un numero unique
 	def connect(self,nomDuServeur):
 		try:
+			if(not self.nameServer):
+				self.getNameServer()
+				
 			self.nameServer.ping()						#Test que le nameserver est en ligne
 			uri = self.nameServer.lookup(nomDuServeur)	#Cherche sur le nameServer si un serveur correspond au nom recu en param
 			print("Connection en cours...")
