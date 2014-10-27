@@ -20,7 +20,6 @@ class Controleur:
         self.choixServeur = False
 
         self.creeClient(self.listeTemporaireDeClient[self.leclient])#TODO
-        self.client.findNameServer()#TODO
         self.serverLobby()#lorsque le menu sera fait, utiliser la fontion du bas plutôt que celle-ci
         #self.vue.afficherMenu()
         self.vue.root.mainloop()
@@ -75,11 +74,13 @@ class Controleur:
     def playerLobby(self):
         self.vue.removeAllDisplay()
         self.vue.displayLobby(self.client.proxy.getClients())
-        if(self.client.proxy.isGameStarted()):
-            self.vue.removeAllDisplay()
-            self.lancerPartie()
-        else:
-            self.vue.root.after(300,self.playerLobby)
+        if(not self.modele.listeJoueur):
+            if(self.client.proxy.isGameStarted()):
+                self.vue.removeAllDisplay()
+                self.lancerPartie()
+            else:
+                self.vue.root.after(300,self.playerLobby)
+        else:self.vue.removeAllDisplay()
 
 
     #Retourne si le client est aussi le host
@@ -91,7 +92,6 @@ class Controleur:
     def lancerPartie(self):
         self.client.proxy.startGame()
         os.system('cls')
-        self.vue.removeAllDisplay()
         print(self.client.noJoueur)
         #self.modele.initPartie(self.client.noJoueur,self.client.getStartingInfo(),self.isHost())
         self.modele.initPartie(self.client.noJoueur,["Xavier","AI"],self.isHost())
