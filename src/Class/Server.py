@@ -68,6 +68,7 @@ class ServerObject(object):
                 if i.temps+self.maxTempsDecalage < self.client[num].temps:
                     print("delagg")
                     return None
+            
             self.highestRead = self.getHighestRead()
             
             print("Longueur client : ",len(self.client),"num : ",num,"longeur Action:",len(self.actions))
@@ -78,7 +79,7 @@ class ServerObject(object):
             self.client[num].temps+=1     #augmente le temps de la personne qui veux les actions
 
             for action in self.actions:
-                if (action[0] == self.client[num].temps): # le -1 est la parce quon a augmenté le temps avant d'envoyer le reponse
+                if (action[0] == self.client[num].temps-1): # le -1 est la parce quon a augmenté le temps avant d'envoyer le reponse
                     print("ici")
                     return action[1]
         except:

@@ -118,7 +118,7 @@ class Controleur:
         while not reception:
             reception = self.client.pullAction()
             print("RECOIT : ", reception, end="\n\n\n\n")
-        self.modele.gestion( val )
+        self.modele.gestion( reception )
         """if(self.vue.etatCreation==True):
             self.vue.dessinerShadowBatiment()"""
         self.modele.actualiser()
