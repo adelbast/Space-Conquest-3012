@@ -3,22 +3,23 @@ class Batiment (object):
         self.owner      = owner
         self.name       = name
         self.position   = xy
-        self.hp         = attributs[0]
+        self.maxHp      = attributs[0]
         self.costFood   = attributs[1][0]
         self.costMetal  = attributs[1][1]
         self.costPower  = attributs[1][2]
         self.size       = attributs[3]
         self.canBuild   = attributs[4]
         self.id         = idB
+        self.currentHp = self.maxHp
         
 
     def selfDestroy(self):#Detruire le batiment 
         print("selfDestruct")
-        self.hp = 0
+        self.currentHP = 0
 
     def takeDamage(self,damage):# Faire prendre de degats a un batiment
         print(self.name,"took ", damage, "damage")
-        self.hp -= 0
+        self.currentHp -= 0
 
 
 

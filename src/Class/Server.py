@@ -42,6 +42,10 @@ class ServerObject(object):
                 return num           #retourne le numero donne
         except Exception as e:
             print(traceback.print_exc())    #code pour avoir le "FULL STACK TRACE" :D
+
+    def seDeconnecter(self, noClient):
+        self.client[noClient].estConnecte = False
+        print(self.client[noClient].nom + " c'est déconnecté !!!!")
             
     def sendAction(self,listePackage):
         try:
@@ -65,7 +69,7 @@ class ServerObject(object):
     def readAction(self,num):
         try:
             for i in self.client:
-                if i.temps+self.maxTempsDecalage < self.client[num].temps:
+                if i.estConnecte and i.temps+self.maxTempsDecalage < self.client[num].temps:
                     print("delagg")
                     return None
             
@@ -147,6 +151,7 @@ class InternalClient(object):
         self.num = num
         self.nom = nom
         self.temps = 0
+        self.estConnecte = True
 
 
 
@@ -190,6 +195,8 @@ class Server(Thread):
         
 
     def close(self):
+        if(self.nameServer):
+            self.nameServer.remove(self.nomServeur)
         sys.exit()
  
 
