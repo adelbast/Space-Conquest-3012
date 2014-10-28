@@ -78,6 +78,12 @@ class Client(object):
 			print("Still rollin!")
 			return 1
 
+	def disconnect(self):
+		try:
+			self.proxy.seDeconnecter(self.noJoueur)
+		except Exception as e:
+			print(e)
+
 	#Getter des info que le serveur doit donner à chaque client pour démarrer la partie
 	def getStartingInfo(self):
 		return self.proxy.getStartingInfo()
