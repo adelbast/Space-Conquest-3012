@@ -21,12 +21,9 @@ class Modele(object):
         self.dictUnit = {}            #dicte combiencoute chaque unit
         self.dictBatiment = {}        #dicte combiencoute chaque batiment  
         self.createDict()
-<<<<<<< HEAD
 
         
-=======
         self.idB=0
->>>>>>> 479deeef13af3848d9983863c44ce7820965e629
         self.map = Map("Tile/map1.csv")
 
         self.dicAction2Server = {}
