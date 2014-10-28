@@ -8,27 +8,23 @@ import time,os
 
 class Controleur:
     def __init__(self):
-        
         self.modele = Modele(self)
         self.vue = Vue(self)
-
         self.modele.init_grid_Pathfinding(self)
-        
         self.client = None
         self.serveur = None
         self.nomBatiment = None
         self.compteur = 0
         #Section Temporaire
         self.listeTemporaireDeClient = ["Xavier","Antoine","AI","Laurence","Arnaud","Francis","Alexandre","AI"]     
-        self.leclient = 5    #changer le numero pour créé plusieur client
+        self.leclient = 0    #changer le numero pour créé plusieur client
         self.choixServeur = False
 
         self.creeClient(self.listeTemporaireDeClient[self.leclient])#TODO
         self.serverLobby()#lorsque le menu sera fait, utiliser la fontion du bas plutôt que celle-ci
         #self.vue.afficherMenu()
         self.vue.root.mainloop()
-        if(self.client and self.client.proxy):
-            self.client.disconnect()
+
         if(self.serveur):
             self.serveur.close()
 
@@ -132,7 +128,7 @@ class Controleur:
         self.vue.displayRessources(self.modele.listeJoueur[self.modele.noJoueurLocal].listeRessource)
         self.vue.displayObject(self.modele.listeJoueur,[],self.modele.noJoueurLocal,self.modele.selection)
         self.compteur+=1
-        self.vue.root.after(60,self.gameLoop)
+        self.vue.root.after(20,self.gameLoop)
 
     def gererMouseClick(self,event):
         offset = self.vue.getSurfacePos()#Obtenir la position du canvas
@@ -149,17 +145,22 @@ class Controleur:
         self.modele.releasePosx = event.x+offset[0]
         self.modele.releasePosy = event.y+offset[1]
         self.modele.gererMouseRelease(event,self.vue.etatCreation) # A AJOUTER!!!!!!
-        #try:
-        self.vue.displayInfoUnit(self.modele.selection[0],self.modele.noJoueurLocal)
-        #except Exception:
-            #self.vue.hud.delete("infos")
-            #print("Pas de selection!")
+        try:
+            self.vue.displayInfoUnit(self.modele.selection[0],self.modele.noJoueurLocal)
+        except Exception:
+            self.vue.hud.delete("infos")
+            self.vue.hud.delete("build")
+            print("Pas de selection!")
         self.vue.etatCreation = False
 
     def creationBatiment(self,nom):  # A AJOUTER!!!!!!
         self.nomBatiment = nom
         self.vue.etatCreation = True
 
+
+
+
+    
 
 if __name__ == "__main__":
     c = Controleur()

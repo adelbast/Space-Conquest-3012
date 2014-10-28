@@ -19,6 +19,7 @@ class Unit:    ##Laurence
         self.rangeVision = attribut[5]
         self.rangeAtt    = attribut[6]
         self.size        = attribut[7]
+        self.canBuild    = attribut[8]
 
         self.currentHp    = self.maxHp
                       
@@ -274,7 +275,7 @@ class Unit:    ##Laurence
                         heapq.heappush(self.listeOuverte, (adj_cell.f, adj_cell) )
 
     def getNode(self, x, y):
-        return self.parent.graph[x*48+y]
+        return self.parent.graph[x*self.parent.map.numRow+y]
 
     def heuristic(self, a, b):
        x1 = a.x

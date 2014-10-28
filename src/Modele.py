@@ -73,9 +73,11 @@ class Modele(object):
         self.host = host
         print("Nom du joueur local : " + self.listeJoueur[self.noJoueurLocal].nom + ", numero : " + str(self.noJoueurLocal))
         self.listeJoueur[0].creerBatiment((100,100),True,"guardTower",self.dictBatiment["guardTower"])
-        self.listeJoueur[0].creerBatiment((300,400),True,"HQ",self.dictBatiment["HQ"])
+        self.listeJoueur[0].creerBatiment((300,400),True,"barrack",self.dictBatiment["barrack"])
+        print("canbuild : ",self.listeJoueur[0].listeBatiment[1].canBuild)
         #self.listeJoueur[self.noJoueurLocal].creerUnite("worker", (200,100), self.dictUnit["worker"])   #nom,position, attributs
         self.listeJoueur[0].creerUnite("worker", (100,300), self.dictUnit["worker"])
+        print("canbuild : ",self.listeJoueur[0].listeUnite[0].canBuild)
         if(len(self.listeJoueur) > 1):
             self.listeJoueur[1].creerBatiment((800,800),True,"guardTower",self.dictBatiment["guardTower"])
             self.listeJoueur[1].creerBatiment((600,800),True,"HQ",self.dictBatiment["HQ"])
@@ -318,7 +320,13 @@ class Modele(object):
             self.rangeVision = int(parser.get(name, 'rangeVision'))
             self.rangeAtt    = int(parser.get(name, 'rangeAtt'))
             self.size        = int(parser.get(name, 'size'))
-            self.dictUnit[name] = [self.type, self.maxHp, self.cost, self.force, self.vitesse, self.rangeVision, self.rangeAtt,self.size]
+            
+            try:
+                self.canBuild    = parser.get(name, 'canBuild').split(",")
+            except:
+                self.canBuild    = []
+
+            self.dictUnit[name] = [self.type, self.maxHp, self.cost, self.force, self.vitesse, self.rangeVision, self.rangeAtt,self.size, self.canBuild]
 
         for name in unitVe:
             self.type        = parserVehicule.get(name, 'type')
@@ -336,7 +344,12 @@ class Modele(object):
             self.cost        = [int(parserBatiment.get(name,'costFood')), int(parserBatiment.get(name,'costMetal')), int(parserBatiment.get(name,'costPower'))]
             self.production  = int(parserBatiment.get(name, 'production'))
             self.size        = int(parserBatiment.get(name, 'size'))
-            self.canBuild    = [parserBatiment.get(name, 'canBuild')]
+            
+            try:
+                self.canBuild    = parserBatiment.get(name, 'canBuild').split(",")
+            except:
+                self.canBuild    = []
+                
             self.dictBatiment[name] = [self.maxHp, self.cost, self.production, self.size, self.canBuild]
 
     def getAIcount(self):
@@ -370,7 +383,7 @@ class Modele(object):
     def perteArtefact(self,noArtefact):
         self.dicAction2Serveur["PerteArtefact"].append(noArtefact)
 
-
+#######################################################################################
     def init_grid_Pathfinding(self,parent): # test avec init sur map ( pas encore Tileset)
         for x in range(self.map.numCol):
             for y in range(self.map.numRow):
