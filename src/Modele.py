@@ -2,12 +2,16 @@ from Tile.Map import Map
 from Class.Joueur import Joueur
 from Class.AI import AI
 from Class.Structure import Batiment
+from Class.Unit import *
+
+
 import configparser
 import math
 
 
+
 class Modele(object):
-    def __init__(self):
+    def __init__(self,parent):
         self.host = False
         self.listeJoueur = []
         self.noJoueurLocal = None
@@ -17,6 +21,7 @@ class Modele(object):
         self.dictUnit = {}
         self.dictBatiment = {}
         self.createDict()
+
         
         self.map = Map("Tile/map1.csv")
 
@@ -43,21 +48,18 @@ class Modele(object):
         self.releasePosx = 0
         self.releasePosy = 0
 
+
+        self.height =  self.map.numRow
+        self.width = self.map.numCol
+          
+
+        self.graph = []
+        self.cutNodes = []
         self.cells = []
         self.mapWidth = self.map.numRow*64
         self.mapHeight = self.map.numCol*64
-        self.init_grid_Pathfinding()
+        
 
-    def init_grid_Pathfinding(self): # test avec init sur map ( pas encore Tileset)
-        for y in range(self.map.numCol):
-            for x in range(self.map.numRow):
-                if self.map.map[x][y] == "4":
-                    walkable = False
-                    flyable = False
-                elif self.map.map[x][y] == "0":
-                    walkable = True
-                    flyable = True
-                self.cells.append(self.Cell(x, y, walkable,flyable))
 
     
     def initPartie(self,noJoueur,listeNomJoueur,host=False):
@@ -174,9 +176,6 @@ class Modele(object):
     def ajoutAction(self,clee,tup):
         self.dicAction2Server[clee] = tup
 
-
-
-
     def actualiser(self): #Appelle les fonctions de game loop du modele
         self.gestionAuto()
         self.incrementerRessource()
@@ -201,9 +200,10 @@ class Modele(object):
 
     def gererMouseRelease(self,event,etat):
         if(event.num == 3): #clic droit
-            print(self.cells[int(self.releasePosx/64) * self.map.numRow + int(self.releasePosy/64)].walkable,
-                self.cells[int(self.releasePosx/64) * self.map.numRow + int(self.releasePosy/64)].x,
-                self.cells[int(self.releasePosx/64) * self.map.numRow + int(self.releasePosy/64)].y)
+           # print(self.graph[int(self.releasePosx/64) * self.map.numRow + int(self.releasePosy/64)].walkable,
+            #    self.graph[int(self.releasePosx/64) * self.map.numRow + int(self.releasePosy/64)].x,
+             #   self.graph[int(self.releasePosx/64) * self.map.numRow + int(self.releasePosy/64)].y)
+            print((int)(self.releasePosx/64), (int)(self.releasePosy/64))
 
             if(self.selection): #Si le joueur a quelque chose de sélectionné, sinon inutile
                 if(self.selection[0].owner == self.noJoueurLocal):
@@ -335,7 +335,7 @@ class Modele(object):
             self.cost        = [int(parserBatiment.get(name,'costFood')), int(parserBatiment.get(name,'costMetal')), int(parserBatiment.get(name,'costPower'))]
             self.production  = int(parserBatiment.get(name, 'production'))
             self.size        = int(parserBatiment.get(name, 'size'))
-            self.canBuild	 = [parserBatiment.get(name, 'canBuild')]
+            self.canBuild    = [parserBatiment.get(name, 'canBuild')]
             self.dictBatiment[name] = [self.maxHp, self.cost, self.production, self.size, self.canBuild]
 
     def getAIcount(self):
@@ -345,23 +345,62 @@ class Modele(object):
                 retour+=1
         return retour
 
+#######################################################################################
 
-    class Cell(object):
-        def __init__(self,x,y,walkable,flyable):
+    def init_grid_Pathfinding(self,parent): # test avec init sur map ( pas encore Tileset)
+        for x in range(self.map.numCol):
+            for y in range(self.map.numRow):
+                self.graph.append(Node(x,y))
+        print("row and col")
+        print(self.map.numCol, self.map.numRow)
 
-            self.walkable = walkable
-            self.x = x
-            self.y = y
-            self.parent = None
-            self.g = 0
-            self.h = 0
-            self.f = 0
+        
+        for y in range(self.map.numCol):
+            for x in range(self.map.numRow):
+                if parent.vue.tileset.tileset[(int)(self.map.map[x][y])].isWalkable is False:
+                    self.cutNode(self.getNode(y,x))
+        for v in parent.vue.tileset.tileset :
+            print(v.isWalkable)
+    def getNode(self, x, y):
+        return self.graph[x*self.height+y]
+                    
 
-        def __lt__(self, other):
-            """ necessaire dans python 3.X dans le cas au on doit passer par des objets avant de comparer leur valeur
-            le heapq va donc venir voir ici pour determiner la valeur a passer en premier, dans ce cas ci cest les f de chaque cell """
-            return self.f < other.f
+    def cutNode(self, node):            #Makes a Node become an obstacle
+        x = 0 
+        if node.voisins[x] != 0:
+           self.getNode(node.voisins[0][0], node.voisins[0][1]).voisins[2] = 0
+           x+=1
+        if node.voisins[x]!= 0:
+           self.getNode(node.voisins[1][0], node.voisins[1][1]).voisins[3] = 0
+           x+=1
+        if node.voisins[x]!= 0:
+           self.getNode(node.voisins[2][0], node.voisins[2][1]).voisins[0] = 0
+           x+=1
+        if node.voisins[x]!= 0:
+           self.getNode(node.voisins[3][0], node.voisins[3][1]).voisins[1] = 0
+           x+=1
+        if node.voisins[x]!= 0:
+           self.getNode(node.voisins[4][0], node.voisins[4][1]).voisins[6] = 0
+           x+=1
+        if node.voisins[x]!= 0:
+           self.getNode(node.voisins[5][0], node.voisins[5][1]).voisins[7] = 0
+           x+=1
+        if node.voisins[x]!= 0:
+           self.getNode(node.voisins[6][0], node.voisins[6][1]).voisins[4] = 0
+           x+=1
+        if node.voisins[x]!= 0:
+           self.getNode(node.voisins[7][0], node.voisins[7][1]).voisins[5] = 0
+
+        print("Node cut")
+        print(node.x, node.y)
+        node.voisins = None
+        self.cutNodes.append(node)
+
+
+#######################################################################################
+
+
 
         
 
-        
+#######################################################################################  
