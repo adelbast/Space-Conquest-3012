@@ -8,8 +8,12 @@ import time,os
 
 class Controleur:
     def __init__(self):
-        self.modele = Modele()
+        
+        self.modele = Modele(self)
         self.vue = Vue(self)
+
+        self.modele.init_grid_Pathfinding(self)
+        
         self.client = None
         self.serveur = None
         self.nomBatiment = None
@@ -155,10 +159,6 @@ class Controleur:
         self.nomBatiment = nom
         self.vue.etatCreation = True
 
-
-
-
-    
 
 if __name__ == "__main__":
     c = Controleur()
