@@ -14,10 +14,10 @@ class Modele(object):
         self.maxUnite = 20  #???
         self.selection = []
         self.listeArtefact = []
-        self.dictUnit = {}
-        self.dictBatiment = {}
+        self.dictUnit = {}            #dicte combiencoute chaque unit
+        self.dictBatiment = {}        #dicte combiencoute chaque batiment  
         self.createDict()
-        
+        self.idB=0
         self.map = Map("Tile/map1.csv")
 
         self.dicAction2Server = {}
@@ -325,6 +325,31 @@ class Modele(object):
                 retour+=1
         return retour
 
+    def creationBatiment(self, nom,owner,xy):     #bâtiment crée mais pas affiché
+        self.listeJoueur[owner].creerBatiment(xy,True,nom,self.dictBatiment[nom] )
+        if (owner == self.noJoueurLocal):
+            self.dicAction2Server["NewBatiment"].append(nom, 0, xy[0],xy[1])   #doit verifier ce que veut dire workerID et si ca a du sens
+            
+        
+    def creationUnit(self, nom,owner,xy):     
+        self.listeJoueur[owner].creerUnite(nom, xy, self.dictUnit[nom])    #va falloir manipuler un peu pour que le unit spawne a cote et non pas SUR le batiment
+        if (owner == self.noJoueurLocal):
+            self.dicAction2Server["NewUnite"].append(nom, xy)   
+
+    def supprimerBatiment (self,idBatiment,owner):
+        self.listeJoueur[owner].supprimerBatiment(idBatiment)
+        if (owner == self.noJoueurLocal):
+            self.dicAction2Server["SuppressionBatiment"].append(idBatiment)
+
+    def supprimerUnit (self,idUnite,owner):
+        self.listeJoueur[owner].supprimerUnite(idUnite)
+        if (owner == self.noJoueurLocal):
+            self.dicAction2Server["SuppressionUnite"].append(idUnite)
+            
+    def changerAge (self,owner):
+        self.listeJoueur[owner].changerAge()
+        if (owner == self.noJoueurLocal):
+            self.dicAction2Server["RechercheAge"]+= 1
 
     class Cell(object):
         def __init__(self,x,y,walkable,flyable):
@@ -341,6 +366,8 @@ class Modele(object):
             """ necessaire dans python 3.X dans le cas au on doit passer par des objets avant de comparer leur valeur
             le heapq va donc venir voir ici pour determiner la valeur a passer en premier, dans ce cas ci cest les f de chaque cell """
             return self.f < other.f
+
+    
 
         
 

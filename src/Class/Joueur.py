@@ -68,6 +68,10 @@ class Joueur():
                 self.listeUnite.pop(count)
                 return print("unite supprime")
             count +=1
+
+    def changerAge(self):
+        self.ageRendu += 1
+        maxPop += maxPop
     
     def compterRessource(self): 
         for i in self.listeBatiment:
