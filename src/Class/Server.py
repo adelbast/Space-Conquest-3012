@@ -71,7 +71,7 @@ class ServerObject(object):
             
             self.highestRead = self.getHighestRead()
             
-            print("Longueur client : ",len(self.client),"num : ",num,"longeur Action:",len(self.actions))
+            #print("Longueur client : ",len(self.client),"num : ",num,"longeur Action:",len(self.actions))
             
             if self.actions and self.client[num].temps-1 == self.actions[0][0]:
                 self.deleteLowest()
@@ -136,7 +136,6 @@ class ServerObject(object):
         retour = []
         for c in self.client:
             retour.append((c.num, c.nom))
-            print("Number : ", c.num,"/Nom: ", c.nom)
         return retour
 
     def getNomServeur(self):

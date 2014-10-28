@@ -93,7 +93,6 @@ class Controleur:
         self.client.proxy.startGame()
         os.system('cls')
         print(self.client.noJoueur)
-        #self.modele.initPartie(self.client.noJoueur,self.client.getStartingInfo(),self.isHost())
         self.modele.initPartie(self.client.noJoueur,self.client.getStartingInfo(),self.isHost())
         self.client.setCpuClient(self.modele.getAIcount())
         self.vue.displayMap(self.modele.map)
@@ -115,7 +114,7 @@ class Controleur:
 
     def gameLoop(self):
         reception = None
-        print("\n\n\n\n",self.compteur, "ENVOIE : ", self.packAction2Server())
+        print("\n----------------------------\n",self.compteur, "ENVOIE : ", self.packAction2Server())
         self.client.pushAction( self.packAction2Server() )
         self.modele.dicAction2Server.clear()
         while not reception:
