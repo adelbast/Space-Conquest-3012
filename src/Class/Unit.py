@@ -62,7 +62,7 @@ class Unit:    ##Laurence
         else:
             return None
         self.calculatePath()
-        #self.process()
+        self.process()
     
     def takeDmg(self,dmg):
         print("Damage Taken")
@@ -171,9 +171,10 @@ class Unit:    ##Laurence
 
     def display_path(self):
         cell = self.arrive
-        while cell.parent is not self.arrive:
+        while cell.parent is not self.depart:
+            print(cell.parent.x,cell.parent.y)
             cell = cell.parent
-            print ('path: cell: %d,%d' % (cell.x, cell.y))
+            #print ('path: cell: %d,%d' % (cell.x, cell.y))
             #print ("valeur de f :" + str(cell.f))
             #print ("valeur de g :" + str(cell.g))
         print("done")
@@ -197,11 +198,16 @@ class Unit:    ##Laurence
         self.cells = self.parent.cells
         self.grid_height = self.parent.map.numRow
         self.grid_width = self.parent.map.numCol
+        #print(int(self.position[0]/64),int(self.position[1]/64))
+        #print(int(self.destination[0]/64),int(self.destination[1]/64))
         self.depart = self.get_cell(int(self.position[0]/64),int(self.position[1]/64))
+        print(self.depart.x , self.depart.y)
         self.arrive = self.get_cell(int(self.destination[0]/64),int(self.destination[1]/64))
+        print(self.arrive.x , self.arrive.y)
         self.listeOuverte=[]
         heapq.heapify(self.listeOuverte) # ordonne la liste ouverte en arbre binaire
         self.listeFermee = set()
+        
         heapq.heappush(self.listeOuverte, (self.depart.f,self.depart))
         while len(self.listeOuverte):
             f,cell = heapq.heappop(self.listeOuverte)
