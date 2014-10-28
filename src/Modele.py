@@ -20,8 +20,9 @@ class Modele(object):
         self.listeArtefact = []
         self.dictUnit = {}            #dicte combiencoute chaque unit
         self.dictBatiment = {}        #dicte combiencoute chaque batiment  
+        self.dictArtefact= {}
         self.createDict()
-
+    
         
         self.idB=0
         self.map = Map("Tile/map1.csv")
@@ -304,11 +305,16 @@ class Modele(object):
         
         parserBatiment = configparser.ConfigParser()
         parserBatiment.read('Config/AttributeBuilding.cfg')
+
+        parserArtefact = configparser.ConfigParser()
+        parserArtefact.read('Config/AttributeArtefact.cfg')
+        
         
         unit = parser.sections()
         unitVe = parserVehicule.sections()
         batiments = parserBatiment.sections()
-
+        artefacts = parserArtefact.sections()
+        
         for name in unit:
             self.type        = parser.get(name, 'type')
             self.maxHp       = int(parser.get(name, 'hp'))
@@ -336,9 +342,15 @@ class Modele(object):
             self.cost        = [int(parserBatiment.get(name,'costFood')), int(parserBatiment.get(name,'costMetal')), int(parserBatiment.get(name,'costPower'))]
             self.production  = int(parserBatiment.get(name, 'production'))
             self.size        = int(parserBatiment.get(name, 'size'))
-            self.canBuild    = [parserBatiment.get(name, 'canBuild')]
+            self.canBuild	 = [parserBatiment.get(name, 'canBuild')]
             self.dictBatiment[name] = [self.maxHp, self.cost, self.production, self.size, self.canBuild]
 
+        for name in artefacts:
+            self.position = int (parserArtefact.get('position'))
+            self.size = int (parserArtefact.get('size'))
+            self.modif = int (parserArtefact.get('modif'))
+            self.dictArtefact [name] = [self.position, self.size,self.modif]
+            
     def getAIcount(self):
         retour = 0
         for joueur in self.listeJoueur:
