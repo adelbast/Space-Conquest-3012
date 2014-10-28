@@ -67,9 +67,9 @@ class Modele(object):
         self.noJoueurLocal = noJoueur
         for nomJoueur in listeNomJoueur:
             if(nomJoueur == "AI"):
-                self.listeJoueur.append(AI(len(self.listeJoueur)))
+                self.listeJoueur.append(AI(self, len(self.listeJoueur)))
             else:
-                self.listeJoueur.append(Joueur(self,nomJoueur,len(self.listeJoueur)))
+                self.listeJoueur.append(Joueur(self, nomJoueur, len(self.listeJoueur)))
         self.host = host
         print("Nom du joueur local : " + self.listeJoueur[self.noJoueurLocal].nom + ", numero : " + str(self.noJoueurLocal))
         self.listeJoueur[0].creerBatiment((100,100),True,"guardTower",self.dictBatiment["guardTower"])

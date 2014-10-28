@@ -1,8 +1,9 @@
 from Class.Joueur import Joueur
 
 class AI(Joueur):
-    def __init__(self,noJoueur):
-        super(AI, self).__init__("AI",noJoueur)
+    def __init__(self, parent, noJoueur):
+        super(AI, self).__init__(parent, "AI", noJoueur)
+        self.parent = parent
         self.noJoueur = noJoueur
         self.dictionaireAction = {}
         self.compteur = 0

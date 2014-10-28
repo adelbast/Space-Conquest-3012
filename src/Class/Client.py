@@ -57,9 +57,9 @@ class Client(object):
 			try:
 				return [clee for clee, valeur in self.nameServer.list().items() if clee != "Pyro.NameServer"]	#retourne un dict d'adresse de forme Uri
 			except:
-				print("Handling Error :")
+				"""print("Handling Error :")
 				print(traceback.print_exc())	#code pour avoir le "FULL STACK TRACE" :D
-				print("Still rollin!")
+				print("Still rollin!")"""
 				return None
 		return None
 

@@ -70,7 +70,6 @@ class ServerObject(object):
         try:
             for i in self.client:
                 if i.estConnecte and i.temps+self.maxTempsDecalage < self.client[num].temps:
-                    print("delagg")
                     return None
             
             self.highestRead = self.getHighestRead()
@@ -192,11 +191,13 @@ class Server(Thread):
         except:
             print(traceback.print_exc())
         
-        
+    def removeServerBroadcast(self):
+        if(self.nameServer):
+            self.nameServer.remove(self.nomServeur)
 
     def close(self):
         if(self.nameServer):
-            self.nameServer.remove(self.nomServeur)
+            self.removeServerBroadcast()
         sys.exit()
  
 

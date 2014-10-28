@@ -9,9 +9,11 @@ import time,os
 class Controleur:
     def __init__(self):
         
-        self.modele = Modele(self)
-        self.vue = Vue(self)
-
+        self.modele         = Modele(self)
+        self.nom            = input("Entrez votre nom : ")#TODO
+        self.unNomDePartie  = input("Entrez le nom du serveur que vous allez possiblement créé : ")#TODO
+        self.vue            = Vue(self)
+        
         self.modele.init_grid_Pathfinding(self)
         
         self.client = None
@@ -19,11 +21,9 @@ class Controleur:
         self.nomBatiment = None
         self.compteur = 0
         #Section Temporaire
-        self.listeTemporaireDeClient = ["Xavier","Antoine","AI","Laurence","Arnaud","Francis","Alexandre","AI"]     
-        self.leclient = 5    #changer le numero pour créé plusieur client
         self.choixServeur = False
-
-        self.creeClient(self.listeTemporaireDeClient[self.leclient])#TODO
+        
+        self.creeClient(self.nom)
         self.serverLobby()#lorsque le menu sera fait, utiliser la fontion du bas plutôt que celle-ci
         #self.vue.afficherMenu()
         self.vue.root.mainloop()
@@ -47,7 +47,11 @@ class Controleur:
         if(not self.choixServeur):
             self.vue.removeAllDisplay()
             if(self.client.nameServer):
-                self.vue.displayServers(self.client.getServers())#Affichage du lobby
+                try:
+                    self.vue.displayServers(self.client.getServers())#Affichage du lobby
+                except:
+                    print("oups le nameServer ne répond plus...")
+                    self.client.nameServer = None
             else:
                 self.vue.displayServers({})
                 t = Thread(target = self.client.findNameServer)
@@ -68,10 +72,9 @@ class Controleur:
 
     #Creation d'un nouveau serveur et affiche le lobby de partie
     def createLobby(self):
-        unNomDePartie   = "Alpha"#TODO
-        self.creeServeur(self.client.nameServer, unNomDePartie, self.client.nom)
+        self.creeServeur(self.client.nameServer, self.unNomDePartie, self.client.nom)
         self.client.findNameServer()
-        self.client.connect(unNomDePartie)
+        self.client.connect(self.unNomDePartie)
         self.choixServeur = True
         self.playerLobby()
         
@@ -84,8 +87,11 @@ class Controleur:
                 self.vue.removeAllDisplay()
                 self.lancerPartie()
             else:
+                if(self.serveur and not self.client.isNameServerAlive()):
+                    self.server.startNameServer()
                 self.vue.root.after(300,self.playerLobby)
-        else:self.vue.removeAllDisplay()
+        else:
+            self.vue.removeAllDisplay()
 
 
     #Retourne si le client est aussi le host
@@ -95,6 +101,7 @@ class Controleur:
 
     #Fonction qui démarre la partie
     def lancerPartie(self):
+        self.serveur.removeServerBroadcast()
         self.client.proxy.startGame()
         os.system('cls')
         print(self.client.noJoueur)
@@ -124,7 +131,8 @@ class Controleur:
         self.modele.dicAction2Server.clear()
         while not reception:
             reception = self.client.pullAction()
-            #print("RECOIT : ", reception)
+            if(not reception):
+                print("laaaaag!")
         self.modele.gestion( reception )
         """if(self.vue.etatCreation==True):
             self.vue.dessinerShadowBatiment()"""
