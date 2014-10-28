@@ -73,19 +73,19 @@ class Unit:    ##Laurence
 
     def calculatePath(self):
         if isinstance(self.destination, tuple) or isinstance(self.destination, list):
-            self.goal = self.getNode(math.trunc(self.destination[0]/64)
-                                     ,math.trunc(self.destination[1]/64))
+            self.goal = self.getNode(math.trunc(self.destination[0]/32)
+                                     ,math.trunc(self.destination[1]/32))
         else:
-            self.goal = self.getNode(math.trunc(self.destination.position[0]/64),
-                                     math.trunc(self.destination.position[1]/64))
+            self.goal = self.getNode(math.trunc(self.destination.position[0]/32),
+                                     math.trunc(self.destination.position[1]/32))
         
-        cf, cost_so_far = self.a_star_search(self.parent.graph, self.getNode(math.trunc(self.position[0]/64),
-                                                                             math.trunc(self.position[1]/64)),
+        cf, cost_so_far = self.a_star_search(self.parent.graph, self.getNode(math.trunc(self.position[0]/32),
+                                                                             math.trunc(self.position[1]/32)),
                                              self.goal)
         self.liste = [] 
         self.liste1 = cost_so_far
-        self.liste2 = self.reconstruct_path(cf, self.getNode(math.trunc(self.position[0]/64),
-                                                             math.trunc(self.position[1]/64)),
+        self.liste2 = self.reconstruct_path(cf, self.getNode(math.trunc(self.position[0]/32),
+                                                             math.trunc(self.position[1]/32)),
                                              self.goal)
 
         for i in self.liste2:
@@ -151,10 +151,9 @@ class Unit:    ##Laurence
                 self.etat = self.IDLE
                 print("Arrivé sur cible")'''
         if self.path :
-           self.position[0] = self.path[0].x*64
-           self.position[1] = self.path[0].y*64
+           self.position[0] = self.path[0].x*32
+           self.position[1] = self.path[0].y*32
 
-           print(self.path[0].x, self.path[0].y)
 
            self.path.pop(0)
         else:
@@ -275,7 +274,11 @@ class Unit:    ##Laurence
                         heapq.heappush(self.listeOuverte, (adj_cell.f, adj_cell) )
 
     def getNode(self, x, y):
+<<<<<<< HEAD
         return self.parent.graph[x*self.parent.map.numRow+y]
+=======
+        return self.parent.graph[x*(48*2)+y]
+>>>>>>> f4586518e286ca5eeb030fdf93d74691e9122805
 
     def heuristic(self, a, b):
        x1 = a.x
