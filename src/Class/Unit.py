@@ -172,16 +172,22 @@ class Unit:    ##Laurence
     def display_path(self):
         cell = self.arrive
         while cell.parent is not self.depart:
-            print(cell.parent.x,cell.parent.y)
             cell = cell.parent
-            #print ('path: cell: %d,%d' % (cell.x, cell.y))
+            print (cell.x,cell.y)
             #print ("valeur de f :" + str(cell.f))
             #print ("valeur de g :" + str(cell.g))
         print("done")
 
     def get_path(self):
         #reverse display path pour faire debut jusqu'a fin plutot que fin jusqu'a debut
+        cell = self.arrive
         path = []
+        while cell.parent is not self.depart:
+            cell = cell.parent
+            path.append(cell)
+        path.reverse()
+        for i in path:
+            print(i.x,i.y)
         return path
 
     def update_cell(self,adj,cell):
@@ -191,6 +197,7 @@ class Unit:    ##Laurence
         else:
             adj.g = cell.g+10
         adj.h = self.get_heuristic(adj)
+        print(cell.x,cell.y)
         adj.parent = cell
         adj.f = adj.h + adj.g
 
@@ -201,9 +208,9 @@ class Unit:    ##Laurence
         #print(int(self.position[0]/64),int(self.position[1]/64))
         #print(int(self.destination[0]/64),int(self.destination[1]/64))
         self.depart = self.get_cell(int(self.position[0]/64),int(self.position[1]/64))
-        print(self.depart.x , self.depart.y)
+        #print(self.depart.x , self.depart.y)
         self.arrive = self.get_cell(int(self.destination[0]/64),int(self.destination[1]/64))
-        print(self.arrive.x , self.arrive.y)
+        #print(self.arrive.x , self.arrive.y)
         self.listeOuverte=[]
         heapq.heapify(self.listeOuverte) # ordonne la liste ouverte en arbre binaire
         self.listeFermee = set()
@@ -213,7 +220,8 @@ class Unit:    ##Laurence
             f,cell = heapq.heappop(self.listeOuverte)
             self.listeFermee.add(cell)
             if cell is self.arrive:
-                self.display_path()
+                #self.display_path()
+                self.get_path()
                 break
             adj_cells = self.get_adjacent_cells(cell)
             for adj_cell in adj_cells:
