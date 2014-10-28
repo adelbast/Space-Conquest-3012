@@ -19,9 +19,9 @@ class Cell(object):
 
 class AStar(object):
     def __init__(self,tabCells,grid_height,grid_width):
-        self.listeOuverte=[]
-        heapq.heapify(self.listeOuverte) # ordonne la liste ouverte en arbre binaire
-        self.listeFermee = set()
+        #self.listeOuverte=[]
+        #heapq.heapify(self.listeOuverte) # ordonne la liste ouverte en arbre binaire
+        #self.listeFermee = set()
         self.cells = tabCells
         self.size = self.gameBoard.size
         self.fait = False
@@ -85,8 +85,11 @@ class AStar(object):
         adj.parent = cell
         adj.f = adj.h + adj.g
 
-    def process(self):
-
+    def process(self,tabCells):
+        self.cells = tabCells
+        self.listeOuverte=[]
+        heapq.heapify(self.listeOuverte) # ordonne la liste ouverte en arbre binaire
+        self.listeFermee = set()
         heapq.heappush(self.listeOuverte, (self.startingCell.f,self.startingCell))
         while len(self.listeOuverte):
             f,cell = heapq.heappop(self.listeOuverte)

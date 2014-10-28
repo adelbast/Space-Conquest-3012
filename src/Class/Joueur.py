@@ -3,8 +3,9 @@ from Class.Structure import *
 from Class.Unit import Unit
 
 class Joueur():
-    def __init__(self,nom,noJoueur):
+    def __init__(self, parent,nom,noJoueur):
         self.nom = nom
+        self.parent = parent
         self.noJoueur = noJoueur
         self.listeUnite=[]
         self.listeBatiment=[]
@@ -50,7 +51,7 @@ class Joueur():
 
     def creerUnite(self,nom,position, attributs):### donner une destination en arg par rapport a la pos du batiment qui l'a cree ou autre ?
         if(self.assezRessources(attributs[2])):
-            self.listeUnite.append(Unit(nom, (position[0],position[1]), self.noJoueur, attributs, self.idCountUnit))   #name, xy, owner, attribut, idU, destination = None
+            self.listeUnite.append(Unit(self.parent,nom, (position[0],position[1]), self.noJoueur, attributs, self.idCountUnit))   #name, xy, owner, attribut, idU, destination = None
             self.idCountUnit+=1
             self.listeRessource[0] -= attributs[2][0] #food
             self.listeRessource[1] -= attributs[2][1] #metaux

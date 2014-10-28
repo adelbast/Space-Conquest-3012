@@ -66,19 +66,38 @@ class Modele(object):
             if(nomJoueur == "AI"):
                 self.listeJoueur.append(AI(len(self.listeJoueur)))
             else:
-                self.listeJoueur.append(Joueur(nomJoueur,len(self.listeJoueur)))
+                self.listeJoueur.append(Joueur(self,nomJoueur,len(self.listeJoueur)))
         self.host = host
         print("Nom du joueur local : " + self.listeJoueur[self.noJoueurLocal].nom + ", numero : " + str(self.noJoueurLocal))
-        if(self.noJoueurLocal == 0):
-            self.listeJoueur[self.noJoueurLocal].creerBatiment((1000,400),True,"guardTower",self.dictBatiment["guardTower"])
-            self.listeJoueur[self.noJoueurLocal].creerBatiment((400,400),True,"HQ",self.dictBatiment["HQ"])
-            #self.listeJoueur[self.noJoueurLocal].creerUnite("worker", (200,100), self.dictUnit["worker"])   #nom,position, attributs
-            self.listeJoueur[self.noJoueurLocal].creerUnite("worker", [100,100], self.dictUnit["worker"])
-        elif(self.noJoueurLocal == 1):
-            self.listeJoueur[self.noJoueurLocal].creerBatiment((2000,800),True,"guardTower",self.dictBatiment["guardTower"])
-            self.listeJoueur[self.noJoueurLocal].creerBatiment((800,800),True,"HQ",self.dictBatiment["HQ"])
+        self.listeJoueur[0].creerBatiment((100,100),True,"guardTower",self.dictBatiment["guardTower"])
+        self.listeJoueur[0].creerBatiment((300,400),True,"HQ",self.dictBatiment["HQ"])
+        #self.listeJoueur[self.noJoueurLocal].creerUnite("worker", (200,100), self.dictUnit["worker"])   #nom,position, attributs
+        self.listeJoueur[0].creerUnite("worker", (100,300), self.dictUnit["worker"])
+        if(len(self.listeJoueur) > 1):
+            self.listeJoueur[1].creerBatiment((800,800),True,"guardTower",self.dictBatiment["guardTower"])
+            self.listeJoueur[1].creerBatiment((600,800),True,"HQ",self.dictBatiment["HQ"])
             #self.listeJoueur[self.noJoueurLocal].creerUnite("worker", (600,600), self.dictUnit["worker"])  #nom,position, attributs
-            self.listeJoueur[self.noJoueurLocal].creerUnite("worker", (800,1000), self.dictUnit["worker"])
+            self.listeJoueur[1].creerUnite("worker", (600,600), self.dictUnit["worker"])
+        if(len(self.listeJoueur) > 2):
+            self.listeJoueur[2].creerBatiment((800,800),True,"guardTower",self.dictBatiment["guardTower"])
+            self.listeJoueur[2].creerBatiment((600,800),True,"HQ",self.dictBatiment["HQ"])
+            #self.listeJoueur[self.noJoueurLocal].creerUnite("worker", (600,600), self.dictUnit["worker"])  #nom,position, attributs
+            self.listeJoueur[2].creerUnite("worker", (600,600), self.dictUnit["worker"])
+        if(len(self.listeJoueur) > 3):
+            self.listeJoueur[3].creerBatiment((800,800),True,"guardTower",self.dictBatiment["guardTower"])
+            self.listeJoueur[3].creerBatiment((600,800),True,"HQ",self.dictBatiment["HQ"])
+            #self.listeJoueur[self.noJoueurLocal].creerUnite("worker", (600,600), self.dictUnit["worker"])  #nom,position, attributs
+            self.listeJoueur[3].creerUnite("worker", (600,600), self.dictUnit["worker"])
+        if(len(self.listeJoueur) > 4):
+            self.listeJoueur[4].creerBatiment((800,800),True,"guardTower",self.dictBatiment["guardTower"])
+            self.listeJoueur[4].creerBatiment((600,800),True,"HQ",self.dictBatiment["HQ"])
+            #self.listeJoueur[self.noJoueurLocal].creerUnite("worker", (600,600), self.dictUnit["worker"])  #nom,position, attributs
+            self.listeJoueur[4].creerUnite("worker", (600,600), self.dictUnit["worker"])
+        if(len(self.listeJoueur) > 5):
+            self.listeJoueur[5].creerBatiment((800,800),True,"guardTower",self.dictBatiment["guardTower"])
+            self.listeJoueur[5].creerBatiment((600,800),True,"HQ",self.dictBatiment["HQ"])
+            #self.listeJoueur[self.noJoueurLocal].creerUnite("worker", (600,600), self.dictUnit["worker"])  #nom,position, attributs
+            self.listeJoueur[5].creerUnite("worker", (600,600), self.dictUnit["worker"])
 
     def gestion(self,dicActionFromServer):
         self.listeJoueur[self.noJoueurLocal].compterRessource()
@@ -90,6 +109,7 @@ class Modele(object):
                     if(clee == "Deplacement"):
                         for valeur in listValeur:
                             noUnit, cibleX, cibleY = valeur
+                            print("NbUnit =",len(self.listeJoueur[ii].listeUnite),"NoUnit =", noUnit)
                             self.listeJoueur[ii].listeUnite[noUnit].setDestination( unePosition = [cibleX,cibleY])
                             
                     elif(clee == "DeplacementCible"):
