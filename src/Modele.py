@@ -5,7 +5,7 @@ from Class.Structure import Batiment
 import configparser
 import math
 
- #
+ #test app git hub windows
 
 class Modele(object):
     def __init__(self):
@@ -345,32 +345,27 @@ class Modele(object):
             if(isinstance(joueur,AI)):
                 retour+=1
         return retour
-
-    def creationBatiment(self, nom,owner,xy):     #bâtiment crée mais pas affiché
-        self.listeJoueur[owner].creerBatiment(xy,True,nom,self.dictBatiment[nom] )
-        if (owner == self.noJoueurLocal):
-            self.dicAction2Server["NewBatiment"].append(nom, 0, xy[0],xy[1])   #doit verifier ce que veut dire workerID et si ca a du sens
+                                                    #ces fonctions servent a envoyer les actions au serveur
+    def creationBatiment(self, nom,xy):     
+        self.dicAction2Server["NewBatiment"].append(nom, 0, xy[0],xy[1])   #doit verifier ce que veut dire workerID et si ca a du sens
             
-        
-    def creationUnit(self, nom,owner,xy):     
-        self.listeJoueur[owner].creerUnite(nom, xy, self.dictUnit[nom])    #va falloir manipuler un peu pour que le unit spawne a cote et non pas SUR le batiment
-        if (owner == self.noJoueurLocal):
-            self.dicAction2Server["NewUnite"].append(nom, xy)   
+    def creationUnit(self, nom,xy):     
+        self.dicAction2Server["NewUnite"].append(nom, xy)   
 
-    def supprimerBatiment (self,idBatiment,owner):
-        self.listeJoueur[owner].supprimerBatiment(idBatiment)
-        if (owner == self.noJoueurLocal):
-            self.dicAction2Server["SuppressionBatiment"].append(idBatiment)
+    def supprimerBatiment (self,idBatiment):
+        self.dicAction2Server["SuppressionBatiment"].append(idBatiment)
 
-    def supprimerUnit (self,idUnite,owner):
-        self.listeJoueur[owner].supprimerUnite(idUnite)
-        if (owner == self.noJoueurLocal):
-            self.dicAction2Server["SuppressionUnite"].append(idUnite)
+    def supprimerUnit (self,idUnite):
+        self.dicAction2Server["SuppressionUnite"].append(idUnite)
             
-    def changerAge (self,owner):
-        self.listeJoueur[owner].changerAge()
-        if (owner == self.noJoueurLocal):
-            self.dicAction2Server["RechercheAge"]+= 1
+    def changerAge (self):
+        self.dicAction2Server["RechercheAge"]+= 1
+
+    def capturerArtefact(self,noArtefact):
+        self.dicAction2Serveur["captureArtefact"].append(noArtefact)
+
+    def perteArtefact(self,noArtefact):
+        self.dicAction2Serveur["PerteArtefact"].append(noArtefact)
 
     class Cell(object):
         def __init__(self,x,y,walkable,flyable):
