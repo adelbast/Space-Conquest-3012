@@ -77,18 +77,23 @@ class Joueur():
     def compterRessource(self): 
         for i in self.listeBatiment:
             if i.name == "ferme":
-                self.listeRessource[0]+= i.generate()*self.mods()   
+                self.listeRessource[0]+= i.generate() 
             if i.name == "mine":
-                self.listeRessource[1]+= i.generate()*self.mods()
+                self.listeRessource[1]+= i.generate()
             if i.name == "solarPanel":
-                self.listeRessource[2]+= i.generate()*self.mods()
+                self.listeRessource[2]+= i.generate()
                 
 
     def compterUnite(self):
         return self.unite.__len__()
         
     def mods(self):
-        return 1
+        for i in listeArtefact:
+            if (i == "Statue_de_Hera"):
+                for ii in listeUnite:
+                    force *= 1.5
+            if (i == "Corne_abondance"):
+                self.listeRessource[0] += 100
 
     def ajoutAllier(self,idAllier):
         self.listeAllier.append(idAllier)

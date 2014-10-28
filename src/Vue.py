@@ -42,6 +42,8 @@ class Vue:
         #Image pour le HUD
         self.imageHUD = Image.open("image/gui/gui.png")
         self.photoImageHUD = ImageTk.PhotoImage(self.imageHUD)
+        self.boutonUP = Image.open("image/gui/boutonUP.png")
+        self.photoImageBoutonUP = ImageTk.PhotoImage(self.boutonUP)
 
         #Pour transferer les images en PhotoImage
         for tile in self.tileset.tileset: 
@@ -81,14 +83,14 @@ class Vue:
         
 
         #TEST BOUTON HUD JUSTE TEST, PAS DEFINITIF
-        boutonCreerUnit = Button(self.hud,text="creerUnite",command=lambda:self.parent.modele.listeJoueur[0].creerUnite("psychonaut",[300,300] , self.parent.modele.dictUnit["psychonaut"] ))
+        """boutonCreerUnit = Button(self.hud,text="creerUnite",command=lambda:self.parent.modele.listeJoueur[0].creerUnite("psychonaut",[300,300] , self.parent.modele.dictUnit["psychonaut"] ))
         boutonCreerUnit.configure(width = 10, activebackground = "#33B5E5", relief = FLAT)
-        boutonCreerUnit_window = self.hud.create_window(600, 40, anchor=NW, window=boutonCreerUnit)
+        boutonCreerUnit_window = self.hud.create_window(600, 40, anchor=NW, window=boutonCreerUnit)"""
         
         # BOUTON CREATION BATIMENT
-        boutonCreerBatiment = Button(self.hud,text="creerBatiment",command=lambda:self.parent.creationBatiment("HQ"))
+        """boutonCreerBatiment = Button(self.hud,text="creerBatiment",command=lambda:self.parent.creationBatiment("HQ"))
         boutonCreerBatiment.configure(width = 10, activebackground = "#33B5E5", relief = FLAT)
-        boutonCreerBatiment_window = self.hud.create_window(700, 40, anchor=NW, window=boutonCreerBatiment)
+        boutonCreerBatiment_window = self.hud.create_window(700, 40, anchor=NW, window=boutonCreerBatiment)"""
 
     #Deplacement de la map avec WASD
     def scroll_move(self, event):
@@ -200,6 +202,9 @@ class Vue:
     #Affiche les informations sur l'unité
     def displayInfoUnit(self, unit, noLocal):
 
+        self.hud.delete("build")
+        self.hud.delete("infos")
+
         offset=0
 
         #Affichage de l'image de l'unité
@@ -223,6 +228,34 @@ class Vue:
         self.hud.create_rectangle(350, 200, 350+conversionVie, 210, fill='green', tags="infos")
 
         #Afficher les unités qui peuvent être produites
+        if(len(unit.canBuild) > 0):
+
+            margin = 5
+            startX = 600
+            startY = 25
+            size = 64
+            row = 0
+            column = 0
+
+            self.hud.create_rectangle(600, 25, 881, 237, fill='black', tags="infos")
+            
+            for u in unit.canBuild:
+                print(u)
+                self.hud.create_image(startX+((column*size)+margin*(column+1)), startY+((row*size)+margin*(row+1)), anchor=NW, image=self.photoImageBoutonUP, tags="build")
+                
+                if(column%3 == 0 and column != 0):
+                    print("row : ",row)
+                    row +=1
+                    print("column : ", column)
+                    column = 0
+                else:
+                    column += 1
+                    
+                
+        else:
+            self.hud.delete("build")
+            print("Aucune production possible")
+        
         
         
     #Affiche les ressources
