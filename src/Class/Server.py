@@ -101,7 +101,7 @@ class ServerObject(object):
                     lowest = i.temps
 
             if lowest > self.actions[0][0]: #[element en orde chronologique][le temps de cette action]
-                print("suppression : ",self.actions[0])
+                #print("suppression : ",self.actions[0])
                 del self.actions[0]     # on enleve levenement avant le plus bas
         except:
             print(traceback.print_exc())
