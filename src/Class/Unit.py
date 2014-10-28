@@ -144,29 +144,35 @@ class Unit:    ##Laurence
         """ on fait * la hauteur de la grid pour aller chercher dans la bonne "rangee" """
 
     # pour optimisation, calculer une seule fois pour toute les cases avec le init_grid... a voir
-    def get_adjacent_cells(self,cell):
+    def get_adjacent_cells(self,cell): # X et Y inverser pour ca que ca ne fonctionne pas!! a regler demain
         cells=[]
         if cell.x < self.grid_width-1:
             cells.append(self.get_cell(cell.x+1,cell.y))
+            #print(self.get_cell(cell.x+1,cell.y).x , self.get_cell(cell.x+1,cell.y).y )
         if cell.x < self.grid_width-1 and cell.y < self.grid_height-1:
             cells.append(self.get_cell(cell.x+1,cell.y+1))
-            #print("hd")
+            #print(self.get_cell(cell.x+1,cell.y+1).x, self.get_cell(cell.x+1,cell.y+1).y)
         if cell.x < self.grid_width-1 and cell.y > 0 :
             cells.append(self.get_cell(cell.x+1,cell.y-1))
-            #print("bd")
+            #print(self.get_cell(cell.x+1,cell.y-1).x, self.get_cell(cell.x+1,cell.y-1).y)
         if cell.x > 0 and cell.y > 0 :
             cells.append(self.get_cell(cell.x-1,cell.y-1))
-            #print("bg")
+            #print(self.get_cell(cell.x-1,cell.y-1).x, self.get_cell(cell.x-1,cell.y-1).y)
         if cell.x > 0 and cell.y < self.grid_height-1:
             cells.append(self.get_cell(cell.x-1,cell.y+1))
-            #print("hg")
+            #print(self.get_cell(cell.x-1,cell.y+1).x, self.get_cell(cell.x-1,cell.y+1).y)
+        
         if cell.y > 0:
             cells.append(self.get_cell(cell.x,cell.y-1))
+            #print(self.get_cell(cell.x,cell.y-1).x, self.get_cell(cell.x,cell.y-1).y)
         if cell.x > 0:
             cells.append(self.get_cell(cell.x-1,cell.y))
+            #print(self.get_cell(cell.x-1,cell.y).x, self.get_cell(cell.x-1,cell.y).y)
         if cell.y < self.grid_height-1:
             cells.append(self.get_cell(cell.x,cell.y+1))
+            #print(self.get_cell(cell.x,cell.y+1).x, self.get_cell(cell.x,cell.y+1).y)
 
+        #print("------------------------------")
         return cells
 
     def display_path(self):
@@ -187,7 +193,8 @@ class Unit:    ##Laurence
             path.append(cell)
         path.reverse()
         for i in path:
-            print(i.x,i.y)
+            pass
+            #print(i.x,i.y)
         return path
 
     def update_cell(self,adj,cell):
@@ -197,7 +204,6 @@ class Unit:    ##Laurence
         else:
             adj.g = cell.g+10
         adj.h = self.get_heuristic(adj)
-        print(cell.x,cell.y)
         adj.parent = cell
         adj.f = adj.h + adj.g
 
@@ -208,9 +214,9 @@ class Unit:    ##Laurence
         #print(int(self.position[0]/64),int(self.position[1]/64))
         #print(int(self.destination[0]/64),int(self.destination[1]/64))
         self.depart = self.get_cell(int(self.position[0]/64),int(self.position[1]/64))
-        #print(self.depart.x , self.depart.y)
+        print(self.depart.x , self.depart.y)
         self.arrive = self.get_cell(int(self.destination[0]/64),int(self.destination[1]/64))
-        #print(self.arrive.x , self.arrive.y)
+        print(self.arrive.x , self.arrive.y)
         self.listeOuverte=[]
         heapq.heapify(self.listeOuverte) # ordonne la liste ouverte en arbre binaire
         self.listeFermee = set()
