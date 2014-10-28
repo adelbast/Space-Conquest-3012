@@ -5,6 +5,7 @@ from Class.Structure import Batiment
 import configparser
 import math
 
+ #
 
 class Modele(object):
     def __init__(self):
