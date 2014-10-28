@@ -18,15 +18,11 @@ class Modele(object):
         self.maxUnite = 20  #???
         self.selection = []
         self.listeArtefact = []
-        self.dictUnit = {}            #dicte combiencoute chaque unit
-        self.dictBatiment = {}        #dicte combiencoute chaque batiment  
+        self.dictUnit = {}
+        self.dictBatiment = {}
         self.createDict()
-<<<<<<< HEAD
 
         
-=======
-        self.idB=0
->>>>>>> 479deeef13af3848d9983863c44ce7820965e629
         self.map = Map("Tile/map1.csv")
 
         self.dicAction2Server = {}
@@ -53,8 +49,8 @@ class Modele(object):
         self.releasePosy = 0
 
 
-        self.height =  self.map.numRow
-        self.width = self.map.numCol
+        self.height =  self.map.numRow*2
+        self.width = self.map.numCol*2
           
 
         self.graph = []
@@ -207,7 +203,7 @@ class Modele(object):
            # print(self.graph[int(self.releasePosx/64) * self.map.numRow + int(self.releasePosy/64)].walkable,
             #    self.graph[int(self.releasePosx/64) * self.map.numRow + int(self.releasePosy/64)].x,
              #   self.graph[int(self.releasePosx/64) * self.map.numRow + int(self.releasePosy/64)].y)
-            print((int)(self.releasePosx/64), (int)(self.releasePosy/64))
+            print((int)(self.releasePosx/32), (int)(self.releasePosy/32))
 
             if(self.selection): #Si le joueur a quelque chose de sélectionné, sinon inutile
                 if(self.selection[0].owner == self.noJoueurLocal):
@@ -348,80 +344,73 @@ class Modele(object):
             if(isinstance(joueur,AI)):
                 retour+=1
         return retour
-                                                    #ces fonctions servent a envoyer les actions au serveur
-    def creationBatiment(self, nom,xy):     
-        self.dicAction2Server["NewBatiment"].append(nom, 0, xy[0],xy[1])   #doit verifier ce que veut dire workerID et si ca a du sens
-            
-    def creationUnit(self, nom,xy):     
-        self.dicAction2Server["NewUnite"].append(nom, xy)   
-
 
 #######################################################################################
 
-    def supprimerBatiment (self,idBatiment):
-        self.dicAction2Server["SuppressionBatiment"].append(idBatiment)
-
-    def supprimerUnit (self,idUnite):
-        self.dicAction2Server["SuppressionUnite"].append(idUnite)
-            
-    def changerAge (self):
-        self.dicAction2Server["RechercheAge"]+= 1
-
-    def capturerArtefact(self,noArtefact):
-        self.dicAction2Serveur["captureArtefact"].append(noArtefact)
-
-    def perteArtefact(self,noArtefact):
-        self.dicAction2Serveur["PerteArtefact"].append(noArtefact)
-
-
     def init_grid_Pathfinding(self,parent): # test avec init sur map ( pas encore Tileset)
-        for x in range(self.map.numCol):
-            for y in range(self.map.numRow):
+        for x in range(self.map.numCol*2):
+            for y in range(self.map.numRow*2):
                 self.graph.append(Node(x,y))
+                
+                
         print("row and col")
         print(self.map.numCol, self.map.numRow)
 
-        
+
+                    
         for y in range(self.map.numCol):
             for x in range(self.map.numRow):
                 if parent.vue.tileset.tileset[(int)(self.map.map[x][y])].isWalkable is False:
-                    self.cutNode(self.getNode(y,x))
-        for v in parent.vue.tileset.tileset :
-            print(v.isWalkable)
+                    print("Nodes Cutting")
+                    print(x, y)
+                    self.cutNode(self.getNode(y*2,x*2))
+                    self.cutNode(self.getNode(y*2+1,x*2))
+                    self.cutNode(self.getNode(y*2,x*2+1))
+                    self.cutNode(self.getNode(y*2+1,x*2+1))
+        print("Cut Nodes")
+        print(len(self.cutNodes))
+                    
+                    
+      
     def getNode(self, x, y):
         return self.graph[x*self.height+y]
                     
 
     def cutNode(self, node):            #Makes a Node become an obstacle
-        x = 0 
-        if node.voisins[x] != 0:
-           self.getNode(node.voisins[0][0], node.voisins[0][1]).voisins[2] = 0
-           x+=1
-        if node.voisins[x]!= 0:
-           self.getNode(node.voisins[1][0], node.voisins[1][1]).voisins[3] = 0
-           x+=1
-        if node.voisins[x]!= 0:
-           self.getNode(node.voisins[2][0], node.voisins[2][1]).voisins[0] = 0
-           x+=1
-        if node.voisins[x]!= 0:
-           self.getNode(node.voisins[3][0], node.voisins[3][1]).voisins[1] = 0
-           x+=1
-        if node.voisins[x]!= 0:
-           self.getNode(node.voisins[4][0], node.voisins[4][1]).voisins[6] = 0
-           x+=1
-        if node.voisins[x]!= 0:
-           self.getNode(node.voisins[5][0], node.voisins[5][1]).voisins[7] = 0
-           x+=1
-        if node.voisins[x]!= 0:
-           self.getNode(node.voisins[6][0], node.voisins[6][1]).voisins[4] = 0
-           x+=1
-        if node.voisins[x]!= 0:
-           self.getNode(node.voisins[7][0], node.voisins[7][1]).voisins[5] = 0
+        x = 0
+        if isinstance(node.voisins, list) :
+                if isinstance(self.getNode(node.voisins[0][0], node.voisins[0][1]).voisins, list) and node.voisins[x] != [0,0]:
+                   self.getNode(node.voisins[0][0], node.voisins[0][1]).voisins[2] = [0,0]
+                   x+=1
+                if isinstance(self.getNode(node.voisins[1][0], node.voisins[1][1]).voisins, list) and node.voisins[x]!= [0,0]:
+                   self.getNode(node.voisins[1][0], node.voisins[1][1]).voisins[3] = [0,0]
+                   x+=1
+                if isinstance(self.getNode(node.voisins[2][0], node.voisins[2][1]).voisins, list) and node.voisins[x]!= [0,0]:
+                   self.getNode(node.voisins[2][0], node.voisins[2][1]).voisins[0] = [0,0]
+                   x+=1
+                if isinstance(self.getNode(node.voisins[3][0], node.voisins[3][1]).voisins, list) and node.voisins[x]!= [0,0]:
+                   self.getNode(node.voisins[3][0], node.voisins[3][1]).voisins[1] = [0,0]
+                   x+=1
+                if isinstance(self.getNode(node.voisins[4][0], node.voisins[4][1]).voisins, list) and node.voisins[x]!= [0,0]:
+                   self.getNode(node.voisins[4][0], node.voisins[4][1]).voisins[6] = [0,0]
+                   x+=1
+                if isinstance(self.getNode(node.voisins[5][0], node.voisins[5][1]).voisins, list) and node.voisins[x]!= [0,0]:
+                   self.getNode(node.voisins[5][0], node.voisins[5][1]).voisins[7] = [0,0]
+                   x+=1
+                if isinstance(self.getNode(node.voisins[6][0], node.voisins[6][1]).voisins, list) and node.voisins[x]!= [0,0]:
+                   self.getNode(node.voisins[6][0], node.voisins[6][1]).voisins[4] = [0,0]
+                   x+=1
+                if isinstance(self.getNode(node.voisins[7][0], node.voisins[7][1]).voisins, list) and node.voisins[x]!= [0,0]:
+                   self.getNode(node.voisins[7][0], node.voisins[7][1]).voisins[5] = [0,0]
 
-        print("Node cut")
+                print("Node cut")
+                print(node.x, node.y)
+                node.voisins = None
+                self.cutNodes.append(node)
+            
+        print("Node failed to cut")
         print(node.x, node.y)
-        node.voisins = None
-        self.cutNodes.append(node)
+        
 
 
 #######################################################################################
