@@ -83,12 +83,12 @@ class Vue:
         #TEST BOUTON HUD JUSTE TEST, PAS DEFINITIF
         boutonCreerUnit = Button(self.hud,text="creerUnite",command=lambda:self.parent.modele.listeJoueur[0].creerUnite("psychonaut",[300,300] , self.parent.modele.dictUnit["psychonaut"] ))
         boutonCreerUnit.configure(width = 10, activebackground = "#33B5E5", relief = FLAT)
-        boutonCreerUnit_window = self.hud.create_window(320, 40, anchor=NW, window=boutonCreerUnit)
+        boutonCreerUnit_window = self.hud.create_window(600, 40, anchor=NW, window=boutonCreerUnit)
         
         # BOUTON CREATION BATIMENT
         boutonCreerBatiment = Button(self.hud,text="creerBatiment",command=lambda:self.parent.creationBatiment("HQ"))
         boutonCreerBatiment.configure(width = 10, activebackground = "#33B5E5", relief = FLAT)
-        boutonCreerBatiment_window = self.hud.create_window(420, 40, anchor=NW, window=boutonCreerBatiment)
+        boutonCreerBatiment_window = self.hud.create_window(700, 40, anchor=NW, window=boutonCreerBatiment)
 
     #Deplacement de la map avec WASD
     def scroll_move(self, event):
@@ -198,9 +198,33 @@ class Vue:
         
 
     #Affiche les informations sur l'unité
-    def displayInfoUnit(self, unit):
-        self.hud.create_rectangle(100,50,228,178,fill='black')
+    def displayInfoUnit(self, unit, noLocal):
 
+        offset=0
+
+        #Affichage de l'image de l'unité
+        try:
+            thumbnail = self.sprites[noLocal][0].spriteDict[unit.name]['front']['1']
+        except:
+           thumbnail = self.sprites[noLocal][0].spriteDict[unit.name]
+        
+        if(thumbnail.width() != 128):
+            print(thumbnail.width())
+            offset = (128-thumbnail.width())/2
+            
+        self.hud.create_rectangle(350, 60, 478, 188, fill='red')
+        
+        self.hud.create_image(350+offset,60+offset, anchor=NW, image=thumbnail, tags="infos")
+
+        #Affichage de la barre de vie
+        conversionVie = (128*unit.currentHp)/unit.maxHp
+        
+        self.hud.create_rectangle(350, 200, 478, 210, fill='black', tags="infos")
+        self.hud.create_rectangle(350, 200, 350+conversionVie, 210, fill='green', tags="infos")
+
+        #Afficher les unités qui peuvent être produites
+        
+        
     #Affiche les ressources
     def displayRessources(self, ressources):
         self.hud.delete("ressources")

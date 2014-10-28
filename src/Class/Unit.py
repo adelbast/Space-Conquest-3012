@@ -20,11 +20,10 @@ class Unit:    ##Laurence
         self.rangeAtt    = attribut[6]
         self.size        = attribut[7]
 
-        self.actualHP    = self.maxHp
+        self.currentHp    = self.maxHp
                       
                       
         ###Variables Temporaires
-        self.currentHp   = self.maxHp
         self.destination = None  # Unit, Bâtiment ou Position(Un tuple)
 
         self.path        = []

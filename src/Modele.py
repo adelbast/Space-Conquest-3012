@@ -190,7 +190,7 @@ class Modele(object):
     def gestionAuto(self):
         for joueur in self.listeJoueur:
             for uni in joueur.listeUnite :
-                if(uni.actualHP > 0):
+                if(uni.currentHp > 0):
                     uni.autoGestion(joueur.listeAllie)#Fait bouger toutes les unitées
                 else:
                     del uni

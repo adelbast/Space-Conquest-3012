@@ -63,7 +63,7 @@ class Controleur:
 
     #Creation d'un nouveau serveur et affiche le lobby de partie
     def createLobby(self):
-        unNomDePartie   = "Boom"#TODO
+        unNomDePartie   = "Alpha"#TODO
         self.creeServeur(self.client.nameServer, unNomDePartie, self.client.nom)
         self.client.findNameServer()
         self.client.connect(unNomDePartie)
@@ -144,10 +144,11 @@ class Controleur:
         self.modele.releasePosx = event.x+offset[0]
         self.modele.releasePosy = event.y+offset[1]
         self.modele.gererMouseRelease(event,self.vue.etatCreation) # A AJOUTER!!!!!!
-        try:
-            self.vue.displayInfoUnit(self.modele.selection[0])
-        except Exception:
-            print("Pas de selection!")
+        #try:
+        self.vue.displayInfoUnit(self.modele.selection[0],self.modele.noJoueurLocal)
+        #except Exception:
+            #self.vue.hud.delete("infos")
+            #print("Pas de selection!")
         self.vue.etatCreation = False
 
     def creationBatiment(self,nom):  # A AJOUTER!!!!!!
