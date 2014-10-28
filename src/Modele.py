@@ -18,11 +18,15 @@ class Modele(object):
         self.maxUnite = 20  #???
         self.selection = []
         self.listeArtefact = []
-        self.dictUnit = {}
-        self.dictBatiment = {}
+        self.dictUnit = {}            #dicte combiencoute chaque unit
+        self.dictBatiment = {}        #dicte combiencoute chaque batiment  
         self.createDict()
+<<<<<<< HEAD
 
         
+=======
+        self.idB=0
+>>>>>>> 479deeef13af3848d9983863c44ce7820965e629
         self.map = Map("Tile/map1.csv")
 
         self.dicAction2Server = {}
@@ -344,8 +348,31 @@ class Modele(object):
             if(isinstance(joueur,AI)):
                 retour+=1
         return retour
+                                                    #ces fonctions servent a envoyer les actions au serveur
+    def creationBatiment(self, nom,xy):     
+        self.dicAction2Server["NewBatiment"].append(nom, 0, xy[0],xy[1])   #doit verifier ce que veut dire workerID et si ca a du sens
+            
+    def creationUnit(self, nom,xy):     
+        self.dicAction2Server["NewUnite"].append(nom, xy)   
+
 
 #######################################################################################
+
+    def supprimerBatiment (self,idBatiment):
+        self.dicAction2Server["SuppressionBatiment"].append(idBatiment)
+
+    def supprimerUnit (self,idUnite):
+        self.dicAction2Server["SuppressionUnite"].append(idUnite)
+            
+    def changerAge (self):
+        self.dicAction2Server["RechercheAge"]+= 1
+
+    def capturerArtefact(self,noArtefact):
+        self.dicAction2Serveur["captureArtefact"].append(noArtefact)
+
+    def perteArtefact(self,noArtefact):
+        self.dicAction2Serveur["PerteArtefact"].append(noArtefact)
+
 
     def init_grid_Pathfinding(self,parent): # test avec init sur map ( pas encore Tileset)
         for x in range(self.map.numCol):
