@@ -16,14 +16,15 @@ class Controleur:
         self.compteur = 0
         #Section Temporaire
         self.listeTemporaireDeClient = ["Xavier","Antoine","AI","Laurence","Arnaud","Francis","Alexandre","AI"]     
-        self.leclient = 0    #changer le numero pour créé plusieur client
+        self.leclient = 5    #changer le numero pour créé plusieur client
         self.choixServeur = False
 
         self.creeClient(self.listeTemporaireDeClient[self.leclient])#TODO
         self.serverLobby()#lorsque le menu sera fait, utiliser la fontion du bas plutôt que celle-ci
         #self.vue.afficherMenu()
         self.vue.root.mainloop()
-
+        if(self.client and self.client.proxy):
+            self.client.disconnect()
         if(self.serveur):
             self.serveur.close()
 
@@ -127,7 +128,7 @@ class Controleur:
         self.vue.displayRessources(self.modele.listeJoueur[self.modele.noJoueurLocal].listeRessource)
         self.vue.displayObject(self.modele.listeJoueur,[],self.modele.noJoueurLocal,self.modele.selection)
         self.compteur+=1
-        self.vue.root.after(20,self.gameLoop)
+        self.vue.root.after(60,self.gameLoop)
 
     def gererMouseClick(self,event):
         offset = self.vue.getSurfacePos()#Obtenir la position du canvas
