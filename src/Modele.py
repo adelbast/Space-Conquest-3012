@@ -355,16 +355,12 @@ class Modele(object):
             self.cost        = [int(parserBatiment.get(name,'costFood')), int(parserBatiment.get(name,'costMetal')), int(parserBatiment.get(name,'costPower'))]
             self.production  = int(parserBatiment.get(name, 'production'))
             self.size        = int(parserBatiment.get(name, 'size'))
-<<<<<<< HEAD
             
             try:
                 self.canBuild    = parserBatiment.get(name, 'canBuild').split(",")
             except:
                 self.canBuild    = []
                 
-=======
-            self.canBuild	 = [parserBatiment.get(name, 'canBuild')]
->>>>>>> f4586518e286ca5eeb030fdf93d74691e9122805
             self.dictBatiment[name] = [self.maxHp, self.cost, self.production, self.size, self.canBuild]
 
         for name in artefacts:
@@ -382,7 +378,6 @@ class Modele(object):
 
 #######################################################################################
 
-<<<<<<< HEAD
     def supprimerBatiment (self,idBatiment):
         self.dicAction2Server["SuppressionBatiment"].append(idBatiment)
 
@@ -399,8 +394,6 @@ class Modele(object):
         self.dicAction2Serveur["PerteArtefact"].append(noArtefact)
 
 #######################################################################################
-=======
->>>>>>> f4586518e286ca5eeb030fdf93d74691e9122805
     def init_grid_Pathfinding(self,parent): # test avec init sur map ( pas encore Tileset)
         for x in range(self.map.numCol*2):
             for y in range(self.map.numRow*2):

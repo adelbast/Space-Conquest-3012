@@ -274,11 +274,8 @@ class Unit:    ##Laurence
                         heapq.heappush(self.listeOuverte, (adj_cell.f, adj_cell) )
 
     def getNode(self, x, y):
-<<<<<<< HEAD
         return self.parent.graph[x*self.parent.map.numRow+y]
-=======
-        return self.parent.graph[x*(48*2)+y]
->>>>>>> f4586518e286ca5eeb030fdf93d74691e9122805
+
 
     def heuristic(self, a, b):
        x1 = a.x
