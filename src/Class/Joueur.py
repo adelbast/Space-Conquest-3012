@@ -78,9 +78,9 @@ class Joueur():
         for i in self.listeBatiment:
             if i.name == "ferme":
                 self.listeRessource[0]+= i.generate() 
-            if i.name == "mine":
+            elif i.name == "mine":
                 self.listeRessource[1]+= i.generate()
-            if i.name == "solarPanel":
+            elif i.name == "solarPanel":
                 self.listeRessource[2]+= i.generate()
                 
 
@@ -92,7 +92,7 @@ class Joueur():
             if (i == "Statue_de_Hera"):
                 for ii in listeUnite:
                     force *= 1.5
-            if (i == "Corne_abondance"):
+            elif (i == "Corne_abondance"):
                 self.listeRessource[0] += 100
 
     def ajoutAllier(self,idAllier):

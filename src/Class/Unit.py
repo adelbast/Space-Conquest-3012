@@ -342,7 +342,7 @@ class Node:
 
     def defineNeighbors(self):
         dirs = [[1, 0], [0, 1], [-1, 0], [0, -1], [1, 1], [-1, 1], [-1, -1],[1, -1]]
-        for dir in dirs:
+        for dir in dirs:    #attention, dir est un keyword de python...
             if self.x + dir[0] >= 0:
                 if  self.y + dir[1] >= 0:
                     self.voisins.append([self.x + dir[0], self.y + dir[1]])

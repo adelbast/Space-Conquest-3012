@@ -89,23 +89,12 @@ class ServerObject(object):
     
 
     def getHighestRead(self):
-        highest = 0
-        for c in self.client:
-            if(c.temps>highest):
-                highest = c.temps
-        return highest
+        return max([c.temps for c in self.client])
 
     def deleteLowest(self): # cherche le client qui est le plus en retard dans la lecture des evenement
         try:
-            #on trouve le temps le plus bas et on l'enregistre
-            lowest = self.client[0].temps
-            for i in self.client:
-                if i.temps < lowest:
-                    lowest = i.temps
-
-            if lowest > self.actions[0][0]: #[element en orde chronologique][le temps de cette action]
-                #print("suppression : ",self.actions[0])
-                del self.actions[0]     # on enleve levenement avant le plus bas
+            if min([c.temps for c in self.client]) > self.actions[0][0]: #[element en orde chronologique][le temps de cette action]
+                del self.actions[0]     # on enleve levenement le plus bas
         except:
             print(traceback.print_exc())
 
@@ -136,10 +125,8 @@ class ServerObject(object):
         return info
 
     def getClients(self):
-        retour = []
-        for c in self.client:
-            retour.append((c.num, c.nom))
-        return retour
+        return [(c.num, c.nom) for c in self.client]
+        
 
     def getNomServeur(self):
         return self.nomServeur
