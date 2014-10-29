@@ -25,7 +25,7 @@ class Controleur:
         self.serverLobby()#lorsque le menu sera fait, utiliser la fontion du bas plutôt que celle-ci
         #self.vue.afficherMenu()
         self.vue.root.mainloop()
-        
+
         if(self.client and self.client.proxy):
             self.client.disconnect()
 
@@ -126,15 +126,16 @@ class Controleur:
         return retour
 
     def gameLoop(self):
-        reception = None
-        #print("\n----------------------------\n",self.compteur, "ENVOIE : ", self.packAction2Server())
-        self.client.pushAction( self.packAction2Server() )
-        self.modele.dicAction2Server.clear()
-        while not reception:
-            reception = self.client.pullAction()
-            if(not reception):
-                print("laaaaag!")
-        self.modele.gestion( reception )
+        if(self.compteur%5):
+            reception = None
+            #print("\n----------------------------\n",self.compteur, "ENVOIE : ", self.packAction2Server())
+            self.client.pushAction( self.packAction2Server() )
+            self.modele.dicAction2Server.clear()
+            while not reception:
+                reception = self.client.pullAction()
+                if(not reception):
+                    print("laaaaag!")
+            self.modele.gestion( reception )
         """if(self.vue.etatCreation==True):
             self.vue.dessinerShadowBatiment()"""
         self.modele.actualiser()
