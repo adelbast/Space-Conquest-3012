@@ -292,11 +292,12 @@ class Vue:
 
         
     #Affichage du Lobby avant de debuter une partie
-    def displayLobby(self, listeClients):
+    def displayLobby(self, listeClients, isHost):
         self.playerList.delete(0, END)
         
         self.playerList.grid(row=0, column=0)
-        self.buttonStart.grid(row=1, column=0)
+        if(isHost):
+            self.buttonStart.grid(row=1, column=0)
 
         for numero, nom in listeClients:
             self.playerList.insert(END, nom)

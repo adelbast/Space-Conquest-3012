@@ -78,7 +78,7 @@ class Controleur:
 
     def playerLobby(self):
         self.vue.removeAllDisplay()
-        self.vue.displayLobby(self.client.proxy.getClients())
+        self.vue.displayLobby(self.client.proxy.getClients(), self.serveur)
         if(not self.modele.listeJoueur):
             if(self.client.proxy.isGameStarted()):
                 self.vue.removeAllDisplay()
@@ -98,8 +98,9 @@ class Controleur:
 
     #Fonction qui démarre la partie
     def lancerPartie(self):
-        self.serveur.removeServerBroadcast()
-        self.client.proxy.startGame()
+        if(self.serveur):
+            self.serveur.removeServerBroadcast()
+            self.client.proxy.startGame()
         os.system('cls')
         print(self.client.noJoueur)
         self.modele.initPartie(self.client.noJoueur,self.client.getStartingInfo(),self.isHost())
