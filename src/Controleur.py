@@ -25,6 +25,9 @@ class Controleur:
         self.serverLobby()#lorsque le menu sera fait, utiliser la fontion du bas plutôt que celle-ci
         #self.vue.afficherMenu()
         self.vue.root.mainloop()
+        
+        if(self.client and self.client.proxy):
+            self.client.disconnect()
 
         if(self.serveur):
             self.serveur.close()
