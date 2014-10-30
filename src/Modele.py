@@ -25,7 +25,7 @@ class Modele(object):
 
         self.dictUnit = {}            #dicte combiencoute chaque unit
         self.dictBatiment = {}        #dicte combiencoute chaque batiment  
-        self.dictArtefact= {}
+        self.dictArtefact = {}
         self.createDict()
     
         
@@ -363,11 +363,12 @@ class Modele(object):
                 
             self.dictBatiment[name] = [self.maxHp, self.cost, self.production, self.size, self.canBuild]
 
-        """for name in artefacts:
-            self.position = int (parserArtefact.get(name,'position'))
+        for name in artefacts:
+            self.positionX = int (parserArtefact.get(name,'positionX'))
+            self.positionY = int (parserArtefact.get(name,'positionY'))
             self.size = int (parserArtefact.get(name, 'size'))
-            self.modif = int (parserArtefact.get(name, 'modif'))
-            self.dictArtefact [name] = [self.position, self.size,self.modif]"""
+            self.modif = float (parserArtefact.get(name, 'modif'))
+            self.dictArtefact[name] = [self.positionX,self.positionX, self.size,self.modif]
             
     def getAIcount(self):
         retour = 0
@@ -376,7 +377,7 @@ class Modele(object):
                 retour+=1
         return retour
 
-#######################################################################################
+
 
     def supprimerBatiment (self,idBatiment):
         self.dicAction2Server["SuppressionBatiment"].append(idBatiment)
@@ -393,7 +394,7 @@ class Modele(object):
     def perteArtefact(self,noArtefact):
         self.dicAction2Serveur["PerteArtefact"].append(noArtefact)
 
-#######################################################################################
+
     def init_grid_Pathfinding(self,parent): # test avec init sur map ( pas encore Tileset)
         for x in range(self.map.numCol*2):
             for y in range(self.map.numRow*2):
@@ -459,11 +460,4 @@ class Modele(object):
         print(node.x, node.y)
         
 
-
-#######################################################################################
-
-
-
-        
-
-#######################################################################################  
+ 
