@@ -74,16 +74,40 @@ class Joueur():
         self.ageRendu += 1
         maxPop += maxPop
     
-    def compterRessource(self): 
+	def compterRessource (self):
         for i in self.listeBatiment:
             if i.name == "ferme":
-                self.listeRessource[0]+= i.generate() 
+                self.listeRessource[0]+= self.generateFerme(i)
             elif i.name == "mine":
-                self.listeRessource[1]+= i.generate()
+                self.listeRessource[1]+= self.generateMine(i)
             elif i.name == "solarPanel":
-                self.listeRessource[2]+= i.generate()
-                
+                self.listeRessource[2]+= self.generateSolar(i)
 
+
+
+    def generateFerme(self,ferme):
+        self.ressource=ferme.generate()
+        for i in listeArtefact:
+            if (i == "Corne_abondance"):
+                self.ressource = self.ressource * 1.5
+        return self.ressource
+
+    def generateMine(self,mine):
+        self.ressource=mine.generate()
+        for i in listeArtefact:
+            if (i == "Marteau_de_gnome"):
+                self.ressource = self.ressource * 1.5
+        return self.ressource
+
+    def generateSolar(self,solar):
+        self.ressource=solar.generate()
+        for i in listeArtefact:
+            if (i == "Miroir_des_dieux"):
+                self.ressource = self.ressource * 1.5
+        return self.ressource
+
+    
+        
     def compterUnite(self):
         return self.unite.__len__()
         
@@ -94,6 +118,7 @@ class Joueur():
                     force *= 1.5
             elif (i == "Corne_abondance"):
                 self.listeRessource[0] += 100
+
 
     def ajoutAllier(self,idAllier):
         self.listeAllier.append(idAllier)
