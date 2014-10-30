@@ -18,11 +18,6 @@ class Modele(object):
         self.maxUnite = 20  #???
         self.selection = []
         self.listeArtefact = []
-        self.dictUnit = {}
-        self.dictBatiment = {}
-        self.createDict()
-        
-
         self.dictUnit = {}            #dicte combiencoute chaque unit
         self.dictBatiment = {}        #dicte combiencoute chaque batiment  
         self.dictArtefact = {}
