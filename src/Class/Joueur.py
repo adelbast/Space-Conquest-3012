@@ -74,7 +74,7 @@ class Joueur():
         self.ageRendu += 1
         maxPop += maxPop
     
-	def compterRessource (self):
+    def compterRessource (self):
         for i in self.listeBatiment:
             if i.name == "ferme":
                 self.listeRessource[0]+= self.generateFerme(i)

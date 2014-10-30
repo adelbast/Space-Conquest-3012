@@ -163,7 +163,7 @@ class Controleur:
             self.vue.displayInfoUnit(self.modele.selection[0],self.modele.noJoueurLocal)
         except Exception:
             self.vue.hud.delete("infos")
-            self.vue.hud.delete("build")
+            self.vue.hud.delete("button")
             print("Pas de selection!")
         self.vue.etatCreation = False
 

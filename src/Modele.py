@@ -363,11 +363,11 @@ class Modele(object):
                 
             self.dictBatiment[name] = [self.maxHp, self.cost, self.production, self.size, self.canBuild]
 
-        for name in artefacts:
-            self.position = int (parserArtefact.get('position'))
-            self.size = int (parserArtefact.get('size'))
-            self.modif = int (parserArtefact.get('modif'))
-            self.dictArtefact [name] = [self.position, self.size,self.modif]
+        """for name in artefacts:
+            self.position = int (parserArtefact.get(name,'position'))
+            self.size = int (parserArtefact.get(name, 'size'))
+            self.modif = int (parserArtefact.get(name, 'modif'))
+            self.dictArtefact [name] = [self.position, self.size,self.modif]"""
             
     def getAIcount(self):
         retour = 0

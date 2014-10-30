@@ -3,6 +3,7 @@ import math
 from PIL import ImageTk, Image
 from Tile import Tileset
 from Sprites.Sprites import Sprites
+from Class.Unit import *
 import os
 
 class Vue:
@@ -61,6 +62,9 @@ class Vue:
 
         #Pour que le canvas scroll lorsquon click
         self.root.bind("<Key>", self.scroll_move)
+
+        #Pour le click sur le hud
+        self.hud.bind("<Button-1>", self.getBuildInfo)
 
         #Pour le click sur la map
         self.miniMap.bind("<Button-1>", self.miniMapClick)
@@ -238,10 +242,16 @@ class Vue:
             column = 0
 
             self.hud.create_rectangle(600, 25, 881, 237, fill='black', tags="infos")
-            
+
+            if isinstance (unit, Unit):
+                build_type = "structure"
+            else:
+                build_type = "unit"
+
             for u in unit.canBuild:
+                
                 print(u)
-                self.hud.create_image(startX+((column*size)+margin*(column+1)), startY+((row*size)+margin*(row+1)), anchor=NW, image=self.photoImageBoutonUP, tags="build")
+                self.hud.create_image(startX+((column*size)+margin*(column+1)), startY+((row*size)+margin*(row+1)), anchor=NW, image=self.photoImageBoutonUP, tags=("button", u, build_type))
                 
                 if(column%3 == 0 and column != 0):
                     print("row : ",row)
@@ -253,10 +263,10 @@ class Vue:
                     
                 
         else:
-            self.hud.delete("build")
+            self.hud.delete("button")
             print("Aucune production possible")
         
-        
+    
         
     #Affiche les ressources
     def displayRessources(self, ressources):
@@ -373,7 +383,12 @@ class Vue:
                 else:
                     self.surfaceJeu.create_image(b.position[0]-b.size/2, b.position[1]-b.size/2, anchor=NW, image=self.sprites[joueur.noJoueur].spriteDict[b.name], tags="structure")
     
-        
+    #Affiche les tags des boutons sur le hud
+    def getBuildInfo(self, event):
+        item = self.hud.find_closest(event.x, event.y)[0]
+        print("ID : ", item)
+        print("ThingToBuild : ", self.hud.gettags(item)[1], "Type : ", self.hud.gettags(item)[2])
+        print("Below : ", self.hud.find_below(item))
         
               
     #Affiche le HUD
