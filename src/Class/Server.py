@@ -148,7 +148,6 @@ class Server(Thread):
         self.isReady = False
         self.nomServeur = nomServeur
         self.uri = None        #adresse utiliser par pyro pour se connecter au objets distants
-        self.port = 9992
         self.ip = socket.gethostbyname(socket.gethostname())                        #retourne le IP
         self.serverObject = ServerObject(nomServeur, nomJoueurHost, self.ip, test)  #objet distant
         self.nameServerThread = None
@@ -159,7 +158,7 @@ class Server(Thread):
 
     def run(self): #lance le serveur de jeu
         print("Création du serveur en cours...")
-        daemon=Pyro4.Daemon(host=self.ip,port=self.port)
+        daemon=Pyro4.Daemon(host=self.ip)
         self.uri=daemon.register(self.serverObject, self.nomServeur) #"PYRO:SpaceConquest3012@192.168.100.2:9992" Uri ressemble à quelque chose comme ça
         print(self.uri)
         if(self.nameServer):
@@ -174,7 +173,6 @@ class Server(Thread):
             self.nameServerThread = Thread(target = Pyro4.naming.startNSloop,args=(self.ip, None, True)) #création de l'objet serveur
             self.nameServerThread.start()    #lance le nameServeur dans un thread
             Pyro4.naming.locateNS(host=self.ip).register(name=self.nomServeur, uri=self.uri)
-            print("\n")
         except:
             print(traceback.print_exc())
         

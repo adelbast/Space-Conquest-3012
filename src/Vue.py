@@ -77,9 +77,19 @@ class Vue:
         self.surfaceJeu.bind("<ButtonRelease-3>", self.parent.gererMouseRelease)
 
         #Widgets pour l'affichage de la liste de serveur
-        self.buttonJoin = Button(self.root, width=100, text="Join Server", command=self.parent.joinLobby)
+        self.buttonJoin = Button(self.root, width=100, text="Join Server", state=DISABLED, command=self.parent.joinLobby)
         self.serverList = Listbox(self.root, width=100)
-        self.buttonCreate = Button(self.root, width=100, text="Create Server", command=self.parent.createLobby)
+        self.buttonCreate = Button(self.root, width=100, text="Create Server", state=DISABLED, command=self.parent.createLobby)
+        self.registreVerifEntry = self.root.register(self.verifEntry)
+        self.entreClient = Entry(self.root)
+        self.entreClient.insert(0, "Entrez votre nom")
+        self.entreClient.config(validate="key", validatecommand=(self.registreVerifEntry, '%P', '%W', '%S', '%d'))
+        self.entreServeur = Entry(self.root)
+        self.entreServeur.insert(0, "Nom de votre serveur")
+        self.entreServeur.config(validate="key", validatecommand=(self.registreVerifEntry, '%P', '%W', '%S', '%d'))
+        self.entreClientOK = False
+        self.entreServeurOK = False
+        
 
         #Widgets pour l'affichage du Lobby
         self.playerList = Listbox(self.root, width=100)
@@ -286,14 +296,41 @@ class Vue:
         for child in self.root.winfo_children():
             child.grid_forget()
 
+    def verifEntry(self, currentValue, nomWidget, changement, action):
+        if(str(self.entreClient) == nomWidget and currentValue != "" and not re.search("[ ]", currentValue)):
+            self.buttonJoin.config(state=NORMAL)
+            self.entreClientOK = True
+            if(self.entreServeurOK):
+                self.buttonCreate.config(state=NORMAL)
+        elif(str(self.entreClient) == nomWidget):
+            self.entreClientOK = False
+            self.buttonJoin.config(state=DISABLED)
+            self.buttonCreate.config(state=DISABLED)
+
+        if(self.entreClientOK and str(self.entreServeur) == nomWidget and currentValue != "" and not re.search("[ ]", currentValue) ):
+            self.buttonCreate.config(state=NORMAL)
+            self.entreServeurOK = True
+        elif(str(self.entreServeur) == nomWidget):
+            self.entreServeurOK = False
+            self.buttonCreate.config(state=DISABLED)
+
+        if(currentValue == 0): #0:suppression, 1:ajout
+            print("AJOUT")
+            if(re.search("[ ]", currentValue)):
+                print("NUMERODE WIDGET",nomWidget)
+                return False
+        return True
+
     #Affichage de la liste de serveur disponible
     def displayServers(self, serverList):
         #self.root.grid_propagate(0)
-        
-        self.serverList.grid(row=0, column=0)
-        self.buttonJoin.grid(row=1, column=0)
-        self.buttonCreate.grid(row=1, column=1)
+        self.entreClient.grid(row=0, column=0)
+        self.entreServeur.grid(row=0, column=1)
+        self.serverList.grid(row=1, column=0)
+        self.buttonJoin.grid(row=2, column=0)
+        self.buttonCreate.grid(row=2, column=1)
 
+    def refreshServers(self, serverList):
         self.serverList.delete(0, END)
 
         for server in serverList:

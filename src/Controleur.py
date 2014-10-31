@@ -3,14 +3,11 @@ from Modele import Modele
 from Class.AI import AI
 from Class.Server import Server
 from Class.Client import Client
-from threading import Thread
 import time,os
 
 class Controleur:
     def __init__(self):
         self.modele         = Modele(self)
-        self.nom            = input("Entrez votre nom : ")#TODO
-        self.unNomDePartie  = input("Entrez le nom du serveur que vous allez possiblement créé : ")#TODO
         self.vue            = Vue(self)
 
         self.modele.init_grid_Pathfinding(self)
@@ -21,20 +18,12 @@ class Controleur:
         #Section Temporaire
         self.choixServeur = False
         
-        self.creeClient(self.nom)
-        self.serverLobby()#lorsque le menu sera fait, utiliser la fontion du bas plutôt que celle-ci
+        self.client = Client()
+        self.initServerLobby()#lorsque le menu sera fait, utiliser la fontion du bas plutôt que celle-ci
         #self.vue.afficherMenu()
         self.vue.root.mainloop()
+        self.closeGame()
 
-        if(self.client and self.client.proxy):
-            self.client.disconnect()
-
-        if(self.serveur):
-            self.serveur.close()
-
-    #Fonction qui crée le client local
-    def creeClient(self,nom): 
-        self.client = Client(nom)
 
     #Fonction qui crée le serveur. Un seul est nécéssaire par partie
     def creeServeur(self,nameServer, nomPartie, nomJoueur):
@@ -42,21 +31,23 @@ class Controleur:
         self.serveur.daemon = True
         self.serveur.start()    #Démarrage du serveur
 
+    def initServerLobby(self):
+        self.vue.removeAllDisplay()
+        self.vue.displayServers([])
+        self.serverLobby()
+
     #Fait afficher le lobby de choix de serveur
     def serverLobby(self):
         if(not self.choixServeur):
-            self.vue.removeAllDisplay()
             if(self.client.nameServer):
                 try:
-                    self.vue.displayServers(self.client.getServers())#Affichage du lobby
+                    self.vue.refreshServers(self.client.getServers())#Affichage du lobby
                 except:
                     print("oups le nameServer ne répond plus...")
                     self.client.nameServer = None
             else:
-                self.vue.displayServers({})
-                t = Thread(target = self.client.findNameServer)
-                t.daemon = True
-                t.start()
+                self.vue.refreshServers({})
+                self.client.findNameServerThread()
 
             self.vue.root.after(5000,self.serverLobby)
 
@@ -65,6 +56,7 @@ class Controleur:
     def joinLobby(self):
         selectedServer = self.vue.serverList.get(self.vue.serverList.curselection()[0])#Pour obtenir le serveur selectionne dans la listbox
         if(selectedServer):
+            self.client.nom = self.vue.entreClient.get()
             print("Connecting "+self.client.nom+" to "+selectedServer)
             self.client.connect(selectedServer)#Se connecter au serveur
             self.choixServeur = True
@@ -72,9 +64,10 @@ class Controleur:
 
     #Creation d'un nouveau serveur et affiche le lobby de partie
     def createLobby(self):
-        self.creeServeur(self.client.nameServer, self.unNomDePartie, self.client.nom)
+        self.client.nom = self.vue.entreClient.get()
+        self.creeServeur(self.client.nameServer, self.vue.entreServeur.get(), self.client.nom)
         self.client.findNameServer()
-        self.client.connect(self.unNomDePartie)
+        self.client.connect(self.vue.entreServeur.get())
         self.choixServeur = True
         self.playerLobby()
         
@@ -171,7 +164,12 @@ class Controleur:
         self.nomBatiment = nom
         self.vue.etatCreation = True
 
+    def closeGame(self):
+        if(self.client and self.client.proxy):
+            self.client.disconnect()
 
+        if(self.serveur):
+            self.serveur.close()
 
 
     

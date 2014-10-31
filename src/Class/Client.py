@@ -1,10 +1,11 @@
 import Pyro4
 import traceback
 import socket
+from threading import Thread
 
 
 class Client(object):
-	def __init__(self, nom,  test = False):
+	def __init__(self, nom = None, test = False):
 		self.nom =  nom
 		self.noJoueur = None
 		self.proxy = None
@@ -43,6 +44,11 @@ class Client(object):
 		except Exception as e:
 			print("Pas trouvé")
 			return False
+
+	def findNameServerThread(self):
+		t = Thread(target = self.findNameServer)
+		t.daemon = True
+		t.start()
 
 	def isNameServerAlive(self):
 		try:
