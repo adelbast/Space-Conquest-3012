@@ -207,7 +207,8 @@ class Modele(object):
            # print(self.graph[int(self.releasePosx/64) * self.map.numRow + int(self.releasePosy/64)].walkable,
             #    self.graph[int(self.releasePosx/64) * self.map.numRow + int(self.releasePosy/64)].x,
              #   self.graph[int(self.releasePosx/64) * self.map.numRow + int(self.releasePosy/64)].y)
-            print((int)(self.releasePosx/32), (int)(self.releasePosy/32))
+            #print((int)(self.releasePosx/32), (int)(self.releasePosy/32))
+            print(self.releasePosx,self.releasePosy)
             if(self.selection): #Si le joueur a quelque chose de sélectionné, sinon inutile
                 if(self.selection[0].owner == self.noJoueurLocal):
                     try:            #Duck typing

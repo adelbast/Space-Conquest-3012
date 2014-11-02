@@ -32,6 +32,29 @@ class Joueur():
                 self.listeRessource[1] -= attributs[1][1] #metaux
                 self.listeRessource[2] -= attributs[1][2] #energie
                 #changer value des tiles sur lequel le batiment est ici ?? ou dans modele?
+                x = int(position[0]/32)
+                y = int(position[1]/32)
+                self.parent.cutNode(self.parent.getNode(x,y))
+                self.parent.cutNode(self.parent.getNode(x-1,y-1))
+                self.parent.cutNode(self.parent.getNode(x,y-1))
+                self.parent.cutNode(self.parent.getNode(x-1,y))
+                if (attributs[3] > 64):
+                    self.parent.cutNode(self.parent.getNode(x+1,y+1))
+                    self.parent.cutNode(self.parent.getNode(x+1,y))
+                    self.parent.cutNode(self.parent.getNode(x+1,y-1))
+                    self.parent.cutNode(self.parent.getNode(x,y+1))
+                    self.parent.cutNode(self.parent.getNode(x-1,y+1))
+
+                    self.parent.cutNode(self.parent.getNode(x+2,y+2))
+                    self.parent.cutNode(self.parent.getNode(x+2,y))
+                    self.parent.cutNode(self.parent.getNode(x+2,y+1))
+                    self.parent.cutNode(self.parent.getNode(x+2,y-1))
+                    self.parent.cutNode(self.parent.getNode(x+1,y+2))
+                    self.parent.cutNode(self.parent.getNode(x,y+2))
+                    self.parent.cutNode(self.parent.getNode(x-1,y+2))
+
+
+
                 return print("batiment cree")
 
     def assezRessources(self,couts): #fr
