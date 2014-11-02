@@ -133,7 +133,7 @@ class Controleur:
         self.vue.displayRessources(self.modele.listeJoueur[self.modele.noJoueurLocal].listeRessource)
         self.vue.displayObject(self.modele.listeJoueur,[],self.modele.noJoueurLocal,self.modele.selection)
         self.compteur+=1
-        self.vue.root.after(20,self.gameLoop)
+        self.vue.root.after(50,self.gameLoop) #monter a 50 pour tester le pathfinding plus facilement peux descendre si ca vs derange
 
     def gererMouseClick(self,event):
         offset = self.vue.getSurfacePos()#Obtenir la position du canvas

@@ -208,7 +208,6 @@ class Modele(object):
             #    self.graph[int(self.releasePosx/64) * self.map.numRow + int(self.releasePosy/64)].x,
              #   self.graph[int(self.releasePosx/64) * self.map.numRow + int(self.releasePosy/64)].y)
             print((int)(self.releasePosx/32), (int)(self.releasePosy/32))
-
             if(self.selection): #Si le joueur a quelque chose de sélectionné, sinon inutile
                 if(self.selection[0].owner == self.noJoueurLocal):
                     try:            #Duck typing
@@ -220,28 +219,27 @@ class Modele(object):
                         cible = self.clickCibleOuTile(self.releasePosx,self.releasePosy)
                         if(not cible):
                             cible = (self.releasePosx,self.releasePosy)
-                        
-                        for unite in self.selection: #Donne un ordre de déplacement à la sélection
-                            
-                            print("Ordre de déplacement")
-                            
-                            try:
-                                if isinstance (cible, Batiment):
-                                    if 'DeplacementCible' not in self.dicAction2Server:
-                                        self.dicAction2Server['DeplacementCible'] = []
-                                    self.dicAction2Server['DeplacementCible'].append((unite.id, cible.owner, 1, cible.id))#(noUnit, noProprioCible, 0:unité/1:batiment , noUnitCible)
-                                    #unite.setDestination(batiment = cible)
-                                else:
-                                    cible.owner = cible.owner
-                                    if 'DeplacementCible' not in self.dicAction2Server:
-                                        self.dicAction2Server['DeplacementCible'] = []
-                                    self.dicAction2Server['DeplacementCible'].append((unite.id, cible.owner, 0, cible.id))
-                                    #unite.setDestination(unit = cible)
-                            except:
-                                if 'Deplacement' not in self.dicAction2Server:
-                                    self.dicAction2Server['Deplacement'] = []
-                                self.dicAction2Server['Deplacement'].append((unite.id, cible[0], cible[1]))
-                                #unite.setDestination(unePosition = cible)
+                        if (self.getNode(int(self.releasePosx/32),int(self.releasePosy/32)) is not None): #voir si ou on clique est un node couper
+                            print(self.getNode(int(self.releasePosx/32),int(self.releasePosy/32)) )
+                            for unite in self.selection: #Donne un ordre de déplacement à la sélection
+                                print("Ordre de déplacement")
+                                try:
+                                    if isinstance (cible, Batiment):
+                                        if 'DeplacementCible' not in self.dicAction2Server:
+                                            self.dicAction2Server['DeplacementCible'] = []
+                                        self.dicAction2Server['DeplacementCible'].append((unite.id, cible.owner, 1, cible.id))#(noUnit, noProprioCible, 0:unité/1:batiment , noUnitCible)
+                                        #unite.setDestination(batiment = cible)
+                                    else:
+                                        cible.owner = cible.owner
+                                        if 'DeplacementCible' not in self.dicAction2Server:
+                                            self.dicAction2Server['DeplacementCible'] = []
+                                        self.dicAction2Server['DeplacementCible'].append((unite.id, cible.owner, 0, cible.id))
+                                        #unite.setDestination(unit = cible)
+                                except:
+                                    if 'Deplacement' not in self.dicAction2Server:
+                                        self.dicAction2Server['Deplacement'] = []
+                                    self.dicAction2Server['Deplacement'].append((unite.id, cible[0], cible[1]))
+                                    #unite.setDestination(unePosition = cible)
             
         elif(event.num == 1): #clic gauche
             if(etat==True):

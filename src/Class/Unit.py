@@ -61,7 +61,9 @@ class Unit:    ##Laurence
             self.etat = self.GOTO_POSITION
         else:
             return None
-        self.calculatePath()
+        #add condition si destination est nodeCoupe
+        if(self.parent.getNode(int(self.parent.releasePosx/32),int(self.parent.releasePosy/32)) not in self.parent.cutNodes):
+            self.calculatePath()
         #self.process()
     
     def takeDmg(self,dmg):
@@ -114,7 +116,7 @@ class Unit:    ##Laurence
             #else:   # Ce n'est pas un ami et est en range (huhuhu...)
             #    self.destination.takeDmg(self.force)
         except Exception as e:
-            print(traceback.print_exc())
+            #print(traceback.print_exc())
             print("La cible n'existe plus pendant l'etat "+str(self.etat)+" du Unit \ ID \ noProprio : "+self.name+" \ "+str(self.id)+" \ "+str(self.owner))
             self.destination = None
             self.etat = self.IDLE
@@ -151,16 +153,14 @@ class Unit:    ##Laurence
                 self.etat = self.IDLE
                 print("Arrivé sur cible")'''
         if self.path :
-           self.position[0] = self.path[0].x*32
-           self.position[1] = self.path[0].y*32
+            self.position[0] = self.path[0].x*32
+            self.position[1] = self.path[0].y*32
 
-
-           self.path.pop(0)
-        else:
-            if self.destination[0] != self.position[0] or self.destination[1] != self.position[1]:
-               self.x = self.destination[0]
-               self.y = self.destination[1]
+            self.path.pop(0)
         
+        elif self.destination[0] != self.position[0] or self.destination[1] != self.position[1]:
+           self.x = self.destination[0]
+           self.y = self.destination[1]
 
     
     def inRange(self,unit):
