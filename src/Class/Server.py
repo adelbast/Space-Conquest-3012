@@ -123,9 +123,6 @@ class ServerObject(object):
             "NB_CLIENT":len(self.client)
         }
         return info
-
-    def getClients(self):
-        return [(c.num, c.nom) for c in self.client]
         
 
     def getNomServeur(self):

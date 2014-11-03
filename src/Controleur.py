@@ -4,6 +4,7 @@ from Class.AI import AI
 from Class.Server import Server
 from Class.Client import Client
 import time,os
+import traceback
 
 class Controleur:
     def __init__(self):
@@ -17,7 +18,7 @@ class Controleur:
         self.compteur = 0
         self.afterID = None
         #Section Temporaire
-        
+
         
         self.client = Client()
         self.initServerLobby()#lorsque le menu sera fait, utiliser la fontion du bas plutôt que celle-ci
@@ -33,7 +34,7 @@ class Controleur:
         self.serveur.start()    #Démarrage du serveur
 
     def initServerLobby(self):
-        self.vue.removeAllDisplay()
+        self.vue.removeGridDisplay()
         self.vue.displayServers([])
         self.serverLobby()
 
@@ -60,6 +61,8 @@ class Controleur:
             self.client.nom = self.vue.entreClient.get()
             print("Connecting "+self.client.nom+" to "+selectedServer)
             self.client.connect(selectedServer)#Se connecter au serveur
+            self.vue.removeGridDisplay()
+            self.vue.displayLobby(self.serveur)
             self.playerLobby()
 
     #Creation d'un nouveau serveur et affiche le lobby de partie
@@ -69,17 +72,20 @@ class Controleur:
         self.creeServeur(self.client.nameServer, self.vue.entreServeur.get(), self.client.nom)
         self.client.findNameServer()
         self.client.connect(self.vue.entreServeur.get())
+        self.vue.removeGridDisplay()
+        self.vue.displayLobby(self.serveur)
         self.playerLobby()
         
 
     def playerLobby(self):
-        self.vue.removeAllDisplay()
-        self.vue.displayLobby(self.client.proxy.getClients(), self.serveur)
+        self.vue.refreshLobby(self.client.proxy.getStartingInfo())
         if(self.client.proxy.isGameStarted()):
             self.lancerPartie()
         else:
-            if(self.serveur and not self.client.isNameServerAlive()):
-                self.server.startNameServer()
+            if(self.serveur):
+                self.client.setCpuClient( int(self.vue.spinBox.get()) )  #Afin que tous les joueurs puisse afficher les joueur IA dans leur lobby
+                if(not self.client.isNameServerAlive()):
+                    self.server.startNameServer()
             self.afterID = self.vue.root.after(300,self.playerLobby)
 
 
@@ -94,7 +100,7 @@ class Controleur:
         if(self.serveur):
             self.serveur.removeServerBroadcast()
             self.client.proxy.startGame()
-        self.vue.removeAllDisplay()
+        self.vue.removeGridDisplay()
         os.system('cls')
         print(self.client.noJoueur)
         self.modele.initPartie(self.client.noJoueur,self.client.getStartingInfo(),self.isHost())

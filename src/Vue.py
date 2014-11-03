@@ -76,7 +76,7 @@ class Vue:
         self.surfaceJeu.bind("<ButtonRelease-1>",self.parent.gererMouseRelease)
         self.surfaceJeu.bind("<ButtonRelease-3>", self.parent.gererMouseRelease)
 
-        #Widgets pour l'affichage de la liste de serveur
+        #Widgets pour l'affichage de la liste de serveur/Joueur
         self.buttonJoin = Button(self.root, width=100, text="Join Server", state=DISABLED, command=self.parent.joinLobby)
         self.serverList = Listbox(self.root, width=100)
         self.buttonCreate = Button(self.root, width=100, text="Create Server", state=DISABLED, command=self.parent.createLobby)
@@ -89,6 +89,8 @@ class Vue:
         self.entreServeur.config(validate="key", validatecommand=(self.registreVerifEntry, '%P', '%W', '%S', '%d'))
         self.entreClientOK = False
         self.entreServeurOK = False
+        self.labelFrameSpinBox = LabelFrame(self.root, text="Nombre d'IA")
+        self.spinBox = Spinbox(self.labelFrameSpinBox, from_=0, to=8)
         
 
         #Widgets pour l'affichage du Lobby
@@ -292,7 +294,7 @@ class Vue:
     def eraseSelection(self):
         self.surfaceJeu.delete("selection")
 
-    def removeAllDisplay(self):
+    def removeGridDisplay(self):
         for child in self.root.winfo_children():
             child.grid_forget()
 
@@ -314,10 +316,10 @@ class Vue:
             self.entreServeurOK = False
             self.buttonCreate.config(state=DISABLED)
 
-        if(currentValue == 0): #0:suppression, 1:ajout
+        if(action == 1): #0:suppression, 1:ajout
             print("AJOUT")
             if(re.search("[ ]", currentValue)):
-                print("NUMERODE WIDGET",nomWidget)
+                print("NUMERO DE WIDGET",nomWidget)
                 return False
         return True
 
@@ -339,15 +341,20 @@ class Vue:
 
         
     #Affichage du Lobby avant de debuter une partie
-    def displayLobby(self, listeClients, isHost):
-        self.playerList.delete(0, END)
-        
+    def displayLobby(self, isHost):
         self.playerList.grid(row=0, column=0)
+        
         if(isHost):
+            self.labelFrameSpinBox.grid(row=0, column=1)
+            self.spinBox.grid(row=0, column=0)
             self.buttonStart.grid(row=1, column=0)
 
-        for numero, nom in listeClients:
+    def refreshLobby(self, listeClients):
+        self.playerList.delete(0, END)
+        for nom in listeClients:
             self.playerList.insert(END, nom)
+
+        
 
 
     #Affiche la map
