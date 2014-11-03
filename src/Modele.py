@@ -72,6 +72,26 @@ class Modele(object):
             else:
                 self.listeJoueur.append(Joueur(self, nomJoueur, len(self.listeJoueur)))
         self.host = host
+
+        print("IIIIIIIIIIIIIIIIICCCCCCCCCCCCCCCCCCCCCCCIIIIIIIIIIIIIIIIIII")
+        print("Nom du joueur local : " + self.listeJoueur[self.noJoueurLocal].nom + ", numero : " + str(self.noJoueurLocal))
+        for i in range(len(self.listeJoueur)):
+            print("SPAWNPOINT NUM---------------------------------")
+            print(self.map.startingPoint[i])
+            print("=====1=====")
+            a =[self.map.startingPoint[i][0]*64,self.map.startingPoint[i][1]*64]
+            print("=====2=====")
+            self.listeJoueur[i].creerBatiment((a),True,"guardTower",self.dictBatiment["guardTower"])
+            print("=====3=====")
+            self.listeJoueur[i].creerBatiment(a,True,"HQ",self.dictBatiment["HQ"])
+            print("=====4=====")
+            self.listeJoueur[i].creerUnite("worker", (a[0]+100,a[1]+100), self.dictUnit["worker"])
+            print("canbuild : ",self.listeJoueur[i].listeBatiment[1].canBuild)
+
+        print("FIN")
+
+
+        """
         print("Nom du joueur local : " + self.listeJoueur[self.noJoueurLocal].nom + ", numero : " + str(self.noJoueurLocal))
         self.listeJoueur[0].creerBatiment((100,100),True,"guardTower",self.dictBatiment["guardTower"])
         self.listeJoueur[0].creerBatiment((300,400),True,"barrack",self.dictBatiment["barrack"])
@@ -104,7 +124,7 @@ class Modele(object):
             self.listeJoueur[5].creerBatiment((600,800),True,"HQ",self.dictBatiment["HQ"])
             #self.listeJoueur[self.noJoueurLocal].creerUnite("worker", (600,600), self.dictUnit["worker"])  #nom,position, attributs
             self.listeJoueur[5].creerUnite("worker", (600,600), self.dictUnit["worker"])
-
+    """
     def gestion(self,dicActionFromServer):
         self.listeJoueur[self.noJoueurLocal].compterRessource()
         ii = 0
