@@ -15,6 +15,8 @@ class Controleur:
         self.client = None
         self.serveur = None
         self.nomBatiment = None
+        self.infoCreation = None
+        self.etatCreation = None
         self.compteur = 0
         self.afterID = None
         #Section Temporaire
@@ -155,7 +157,7 @@ class Controleur:
         offset = self.vue.getSurfacePos()#Obtenir la position du canvas
         self.modele.releasePosx = event.x+offset[0]
         self.modele.releasePosy = event.y+offset[1]
-        self.modele.gererMouseRelease(event,self.vue.etatCreation) # A AJOUTER!!!!!!
+        self.modele.gererMouseRelease(event,self.etatCreation, self.infoCreation) # A AJOUTER!!!!!!
         try:
             self.vue.displayInfoUnit(self.modele.selection[0],self.modele.noJoueurLocal)
         except Exception:
@@ -167,6 +169,9 @@ class Controleur:
     def creationBatiment(self,nom):  # A AJOUTER!!!!!!
         self.nomBatiment = nom
         self.vue.etatCreation = True
+
+    def getSizeBatiment(self, batiment):
+        return self.modele.dictBatiment[batiment]
 
     def closeGame(self):
         if(self.client and self.client.proxy):

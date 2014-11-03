@@ -12,7 +12,6 @@ class Vue:
         self.root = Tk()
         self.root.resizable(0,0)
         self.root.title("Space Conquest 3012")
-        self.etatCreation = False
 
         #Creation du Tileset
         self.tileset = Tileset.Tileset("Image/tileset/tileset.png",64,64)
@@ -72,6 +71,7 @@ class Vue:
 
         #Pour les clicks sur la surface de jeu
         self.surfaceJeu.bind("<B1-Motion>", self.parent.gererMouseDrag)
+        self.surfaceJeu.bind("<Motion>",self.displayShadow)
         self.surfaceJeu.bind("<Button-1>",self.parent.gererMouseClick)
         self.surfaceJeu.bind("<ButtonRelease-1>",self.parent.gererMouseRelease)
         self.surfaceJeu.bind("<ButtonRelease-3>", self.parent.gererMouseRelease)
@@ -141,11 +141,13 @@ class Vue:
         else:
             self.surfaceJeu.unbind("<Enter>",self.dessinerShadowBatiment)"""
 
-    def dessinerShadowBatiment(self):
-        x = self.root.winfo_pointerx()
-        y = self.root.winfo_pointery()
-        print(x,y)
-        self.surfaceJeu.create_rectangle(x, y, x + 20, y + 20, outline='red')
+    def displayShadow(self, event):
+        self.surfaceJeu.delete("shadow")
+        if(self.parent.etatCreation == True):
+            size = self.parent.getSizeBatiment(self.parent.infoCreation)[3]
+            print(self.parent.getSizeBatiment(self.parent.infoCreation)[3])
+            self.surfaceJeu.create_rectangle(event.x-(size/2), event.y-(size/2), event.x+(size/2), event.y+(size/2), fill="red", tags="shadow")
+        
 
 
 
@@ -384,7 +386,7 @@ class Vue:
     #Affichage des objets sur la surface                                                                                                 
     def displayObject(self, joueurs, artefacts, noLocal, selection):
         
-        self.surfaceJeu.delete("unit","structure","artefact")
+        self.surfaceJeu.delete("unit","structure","artefact", "healthbars")
 
         #Affichage des artefacts
         for a in artefacts:
@@ -396,6 +398,13 @@ class Vue:
                    
             #Affiche les unités
             for u in joueur.listeUnite:
+
+                conversionVie = (u.size*u.currentHp)/u.maxHp
+                offsetY = 6
+                height = 3
+                
+                self.surfaceJeu.create_rectangle(u.position[0]-u.size/2, (u.position[1]-u.size/2)-offsetY, (u.position[0]-u.size/2)+u.size, (u.position[1]-u.size/2)+(height-offsetY), fill="red", width=0, tags="healthbars")
+                self.surfaceJeu.create_rectangle(u.position[0]-u.size/2, (u.position[1]-u.size/2)-offsetY, (u.position[0]-u.size/2)+conversionVie, (u.position[1]-u.size/2)+(height-offsetY), fill="blue", width=0, tags="healthbars")
 
                 #Si l'unite est au joueur local
                 if(joueur.noJoueur == noLocal):
@@ -433,6 +442,12 @@ class Vue:
         print("ID : ", item)
         print("ThingToBuild : ", self.hud.gettags(item)[1], "Type : ", self.hud.gettags(item)[2])
         print("Below : ", self.hud.find_below(item))
+
+        if(self.hud.gettags(item)[2] == "structure"):
+            self.parent.etatCreation = True
+
+        #Retourne un tuple avec "button", le nom de l'unite, le type de l'unite   
+        self.parent.infoCreation = self.hud.gettags(item)[1]
         
               
     #Affiche le HUD
