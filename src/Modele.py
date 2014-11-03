@@ -277,9 +277,9 @@ class Modele(object):
         else: return None
 
 
-    def joueurPasMort(self,joueur):
+    def joueurPasMort(self,joueur):   #Retourne si un joueur est mort ou non
         if(joueur.listeBatiment):
-            print(joueur.nom+" est mort")
+            print(joueur.nom+" est mort")   
             return False
         return True
 
@@ -372,7 +372,6 @@ class Modele(object):
         return retour
 
 
-
     def supprimerBatiment (self,idBatiment):
         self.dicAction2Server["SuppressionBatiment"].append(idBatiment)
 
@@ -388,37 +387,33 @@ class Modele(object):
     def perteArtefact(self,noArtefact):
         self.dicAction2Serveur["PerteArtefact"].append(noArtefact)
 
-
-    def init_grid_Pathfinding(self,parent): # test avec init sur map ( pas encore Tileset)
+########################################################################################
+    def init_grid_Pathfinding(self,parent): #Initialise le graphe
         for x in range(self.map.numCol*2):
             for y in range(self.map.numRow*2):
-                self.graph.append(Node(x,y))
-                
+                self.graph.append(Node(x,y))    #Cree des nodes
                 
         print("row and col")
         print(self.map.numCol, self.map.numRow)
-
-
                     
         for y in range(self.map.numCol):
             for x in range(self.map.numRow):
-                if parent.vue.tileset.tileset[(int)(self.map.map[x][y])].isWalkable is False:
+                if parent.vue.tileset.tileset[(int)(self.map.map[x][y])].isWalkable is False:   #Coupe les nodes des tiles qui ne sont pas walkable
                     print("Nodes Cutting")
                     print(x, y)
                     self.cutNode(self.getNode(y*2,x*2))
                     self.cutNode(self.getNode(y*2+1,x*2))
                     self.cutNode(self.getNode(y*2,x*2+1))
                     self.cutNode(self.getNode(y*2+1,x*2+1))
+                    
         print("Cut Nodes")
-        print(len(self.cutNodes))
-                    
-                    
+        print(len(self.cutNodes))           
       
-    def getNode(self, x, y):
+    def getNode(self, x, y):  #Retourne un node au x y donnee du graphe
         return self.graph[x*self.height+y]
                     
 
-    def cutNode(self, node):            #Makes a Node become an obstacle
+    def cutNode(self, node):            #Coupe un node pour qu'il devienne un obstacle
         x = 0
         if isinstance(node.voisins, list) :
                 if isinstance(self.getNode(node.voisins[0][0], node.voisins[0][1]).voisins, list) and node.voisins[x] != [0,0]:

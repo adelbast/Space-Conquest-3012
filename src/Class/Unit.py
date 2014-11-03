@@ -45,6 +45,8 @@ class Unit:    ##Laurence
         ###Pathfinder Later###
         #if self.destination[0] != self.position[0] or self.destination[1] != self.position[1]:  #Pour savoir s'il faut bouger
          #self.path = definePath()
+        #
+        #self.step = 5 ;
 
     def setDestination(self, unit = None, batiment = None, unePosition = None):
         if unit:
@@ -69,18 +71,21 @@ class Unit:    ##Laurence
     def takeDmg(self,dmg):
         print("Damage Taken")
 
-    def selfDestroy(self):
+    def selfDestroy(self): #Detruit la unit
         self.currentHp = 0
         print("Unit self-destruct")
 
     def calculatePath(self):
+        ####  Va chercher le node du graphe qui correspond a la destination
         if isinstance(self.destination, tuple) or isinstance(self.destination, list):
             self.goal = self.getNode(math.trunc(self.destination[0]/32)
                                      ,math.trunc(self.destination[1]/32))
         else:
             self.goal = self.getNode(math.trunc(self.destination.position[0]/32),
                                      math.trunc(self.destination.position[1]/32))
-        
+        ###
+
+        ###Calcule le path
         cf, cost_so_far = self.a_star_search(self.parent.graph, self.getNode(math.trunc(self.position[0]/32),
                                                                              math.trunc(self.position[1]/32)),
                                              self.goal)
@@ -122,7 +127,7 @@ class Unit:    ##Laurence
             self.etat = self.IDLE
             self.followModulator = 0
 
-    def move(self): # A modifier
+    def move(self): # A modifier Cleaning?
         '''if self.etat == self.GOTO_POSITION:
             if self.position[0] > self.destination[0]:
                 self.position = (self.position[0]-5,self.position[1])
@@ -152,6 +157,10 @@ class Unit:    ##Laurence
             if self.position[0] == self.destination.position[0] and self.position[1] == self.destination.position[1]:
                 self.etat = self.IDLE
                 print("Arrivé sur cible")'''
+
+        if self.etat == self.FOLLOW: #Recalculer la destination au cas ou la cible serais en mouvement
+            self.calculatePath()
+            
         if self.path :
             self.position[0] = self.path[0].x*32
             self.position[1] = self.path[0].y*32
@@ -167,6 +176,8 @@ class Unit:    ##Laurence
         if  math.sqrt(abs(self.position[0] - unit.position[0])**2 + abs(self.position[1] - unit.position[1])**2) < self.rangeAtt:
             return True
         return False
+
+#####################################################Cleaning? 
 
     def get_heuristic(self,cell):
         # methode manhattan : 10 * somme entre la difference entre x arrive et depart et y arrive et depart
@@ -273,18 +284,15 @@ class Unit:    ##Laurence
                         self.update_cell(adj_cell,cell)
                         heapq.heappush(self.listeOuverte, (adj_cell.f, adj_cell) )
 
+#####################################################
+                        
     def getNode(self, x, y):
         return self.parent.graph[x*(self.parent.map.numRow*2)+y]
 
-
     def heuristic(self, a, b):
-       x1 = a.x
-       y1 = a.y
-       x2 = b.x
-       y2 = b.y
-       return abs(x1 - x2) + abs(y1 - y2)
+       return abs(a.x - b.x) + abs(a.y - b.y)
       
-    def a_star_search(self,graph, start, goal):
+    def a_star_search(self,graph, start, goal):     #Algorithme de path finder
        frontier = PriorityQueue()
        frontier.put(start, 0)
        came_from = {}
@@ -308,7 +316,7 @@ class Unit:    ##Laurence
                 
        return came_from, cost_so_far
 
-    def reconstruct_path(self, came_from, start, goal):
+    def reconstruct_path(self, came_from, start, goal): #Reconstruit le chemin trouve par le path finder
        current = goal
        path = [current]
        while current != start:
@@ -333,6 +341,9 @@ class PriorityQueue:
    def get(self):
       return heapq.heappop(self.elements)[2]
 ####################
+
+
+    #Cette classe devrait etre mise dans un fichier a part verifier les imports puis retirer
 class Node:
     def __init__(self,x,y):
         self.x = x
