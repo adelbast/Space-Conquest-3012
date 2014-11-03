@@ -13,7 +13,6 @@ import math
 class Modele(object):
     def __init__(self,parent):
         self.host = False
-        self.parent = parent
         self.listeJoueur = []
         self.noJoueurLocal = None
         self.maxUnite = 20  #???
@@ -203,7 +202,7 @@ class Modele(object):
                 pass
 
 
-    def gererMouseRelease(self, event, etat, info):
+    def gererMouseRelease(self,event,etat):
         if(event.num == 3): #clic droit
            # print(self.graph[int(self.releasePosx/64) * self.map.numRow + int(self.releasePosy/64)].walkable,
             #    self.graph[int(self.releasePosx/64) * self.map.numRow + int(self.releasePosy/64)].x,
@@ -244,12 +243,9 @@ class Modele(object):
                                     #unite.setDestination(unePosition = cible)
             
         elif(event.num == 1): #clic gauche
-            if(etat==True and info != None):
+            if(etat==True):
                 #self.listeJoueur[self.noJoueurLocal].creerBatiment([self.releasePosx,self.releasePosy],True,"HQ",self.dictBatiment["HQ"]) # pas bon, event.x,y doit etre changer pour map width et height 
-                self.dicAction2Server['NewBatiment']=(info,self.releasePosx,self.releasePosy) #packetage de creation batiment
-                self.parent.etatCreation = False
-                self.parent.infoCreation = None
-                return
+                self.dicAction2Server['NewBatiment']=("HQ",self.releasePosx,self.releasePosy) #packetage de creation batiment
             self.selection[:] = []
             if(self.clickPosx!=self.releasePosx or self.clickPosy!=self.releasePosy):   #self.clickPosx+5 < self.releasePosx or self.clickPosx-5 > self.releasePosx or self.clickPosy+5 < self.releasePosy or self.clickPosy-5 > self.releasePosy
                 print(self.clickPosx,self.clickPosy,self.releasePosx,self.releasePosy)

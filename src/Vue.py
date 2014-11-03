@@ -72,7 +72,6 @@ class Vue:
 
         #Pour les clicks sur la surface de jeu
         self.surfaceJeu.bind("<B1-Motion>", self.parent.gererMouseDrag)
-        self.surfaceJeu.bind("<Motion>",self.displayShadow)
         self.surfaceJeu.bind("<Button-1>",self.parent.gererMouseClick)
         self.surfaceJeu.bind("<ButtonRelease-1>",self.parent.gererMouseRelease)
         self.surfaceJeu.bind("<ButtonRelease-3>", self.parent.gererMouseRelease)
@@ -140,10 +139,11 @@ class Vue:
         else:
             self.surfaceJeu.unbind("<Enter>",self.dessinerShadowBatiment)"""
 
-    def displayShadow(self, event):
-        self.surfaceJeu.delete("shadow")
-        if(self.parent.etatCreation == True):
-            self.surfaceJeu.create_rectangle(event.x-64, event.y-64, event.x+64, event.y+64, fill="red", tags="shadow")
+    def dessinerShadowBatiment(self):
+        x = self.root.winfo_pointerx()
+        y = self.root.winfo_pointery()
+        print(x,y)
+        self.surfaceJeu.create_rectangle(x, y, x + 20, y + 20, outline='red')
 
 
 
@@ -261,7 +261,6 @@ class Vue:
             for u in unit.canBuild:
                 
                 print(u)
-                self.hud.create_image(startX+((column*size)+margin*(column+1)), startY+((row*size)+margin*(row+1)), anchor=NW, image=self.photoImageBoutonUP, tags=("button", u, build_type))
                 self.hud.create_image(startX+((column*size)+margin*(column+1)), startY+((row*size)+margin*(row+1)), anchor=NW, image=self.photoImageBoutonUP, tags=("button", u, build_type))
                 
                 if(column%3 == 0 and column != 0):
@@ -427,14 +426,8 @@ class Vue:
         print("ID : ", item)
         print("ThingToBuild : ", self.hud.gettags(item)[1], "Type : ", self.hud.gettags(item)[2])
         print("Below : ", self.hud.find_below(item))
-
-        if(self.hud.gettags(item)[2] == "structure"):
-            self.parent.etatCreation = True
-
-        #Retourne un tuple avec "button", le nom de l'unite, le type de l'unite   
-        self.parent.infoCreation = self.hud.gettags(item)[1]
-
-       
+        
+              
     #Affiche le HUD
     def displayHUD(self):
         self.hud.create_image(0,0,anchor=NW,image=self.photoImageHUD, tags="hud")

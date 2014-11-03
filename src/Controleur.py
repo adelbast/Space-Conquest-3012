@@ -13,8 +13,7 @@ class Controleur:
         self.modele.init_grid_Pathfinding(self)
         self.client = None
         self.serveur = None
-        self.infoCreation = None
-        self.etatCreation = None
+        self.nomBatiment = None
         self.compteur = 0
         self.afterID = None
         #Section Temporaire
@@ -140,7 +139,7 @@ class Controleur:
         offset = self.vue.getSurfacePos()#Obtenir la position du canvas
         self.modele.clickPosx = event.x+offset[0]
         self.modele.clickPosy = event.y+offset[1]
-            
+
     def gererMouseDrag(self, event):
         offset = self.vue.getSurfacePos()
         self.vue.displaySelection((self.modele.clickPosx,self.modele.clickPosy), event)
@@ -150,7 +149,7 @@ class Controleur:
         offset = self.vue.getSurfacePos()#Obtenir la position du canvas
         self.modele.releasePosx = event.x+offset[0]
         self.modele.releasePosy = event.y+offset[1]
-        self.modele.gererMouseRelease(event,self.etatCreation, self.infoCreation) # A AJOUTER!!!!!!
+        self.modele.gererMouseRelease(event,self.vue.etatCreation) # A AJOUTER!!!!!!
         try:
             self.vue.displayInfoUnit(self.modele.selection[0],self.modele.noJoueurLocal)
         except Exception:
@@ -162,7 +161,6 @@ class Controleur:
     def creationBatiment(self,nom):  # A AJOUTER!!!!!!
         self.nomBatiment = nom
         self.vue.etatCreation = True
-        
 
     def closeGame(self):
         if(self.client and self.client.proxy):

@@ -110,21 +110,21 @@ class Joueur():
 
     def generateFerme(self,ferme):
         self.ressource=ferme.generate()
-        for i in self.listeArtefact:
+        for i in listeArtefact:
             if (i == "Corne_abondance"):
                 self.ressource = self.ressource * 1.5
         return self.ressource
 
     def generateMine(self,mine):
         self.ressource=mine.generate()
-        for i in self.listeArtefact:
+        for i in listeArtefact:
             if (i == "Marteau_de_gnome"):
                 self.ressource = self.ressource * 1.5
         return self.ressource
 
     def generateSolar(self,solar):
         self.ressource=solar.generate()
-        for i in self.listeArtefact:
+        for i in listeArtefact:
             if (i == "Miroir_des_dieux"):
                 self.ressource = self.ressource * 1.5
         return self.ressource
@@ -135,7 +135,7 @@ class Joueur():
         return self.unite.__len__()
         
     def mods(self):
-        for i in self.listeArtefact:
+        for i in listeArtefact:
             if (i == "Statue_de_Hera"):
                 for ii in listeUnite:
                     force *= 1.5
