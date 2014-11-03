@@ -64,6 +64,7 @@ class Unit:    ##Laurence
         else:
             return None
         #add condition si destination est nodeCoupe
+        print(len(self.parent.cutNodes))
         if(self.parent.getNode(int(self.parent.releasePosx/32),int(self.parent.releasePosy/32)) not in self.parent.cutNodes):
             self.calculatePath()
         #self.process()
@@ -78,11 +79,11 @@ class Unit:    ##Laurence
     def calculatePath(self):
         ####  Va chercher le node du graphe qui correspond a la destination
         if isinstance(self.destination, tuple) or isinstance(self.destination, list):
-            self.goal = self.getNode(math.trunc(self.destination[0]/32)
-                                     ,math.trunc(self.destination[1]/32))
+            self.goal = self.getNode(int(self.destination[0]/32)
+                                     ,int(self.destination[1]/32))
         else:
-            self.goal = self.getNode(math.trunc(self.destination.position[0]/32),
-                                     math.trunc(self.destination.position[1]/32))
+            self.goal = self.getNode(int(self.destination.position[0]/32),
+                                     int(self.destination.position[1]/32))
         ###
 
         ###Calcule le path
