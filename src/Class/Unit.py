@@ -76,35 +76,6 @@ class Unit:    ##Laurence
         self.currentHp = 0
         print("Unit self-destruct")
 
-    def calculatePath(self):
-        ####  Va chercher le node du graphe qui correspond a la destination
-        if isinstance(self.destination, tuple) or isinstance(self.destination, list):
-            self.goal = self.getNode(int(self.destination[0]/32)
-                                     ,int(self.destination[1]/32))
-        else:
-            self.goal = self.getNode(int(self.destination.position[0]/32),
-                                     int(self.destination.position[1]/32))
-        ###
-
-        ###Calcule le path
-        cf, cost_so_far = self.a_star_search(self.parent.graph, self.getNode(math.trunc(self.position[0]/32),
-                                                                             math.trunc(self.position[1]/32)),
-                                             self.goal)
-        self.liste = [] 
-        self.liste1 = cost_so_far
-        self.liste2 = self.reconstruct_path(cf, self.getNode(math.trunc(self.position[0]/32),
-                                                             math.trunc(self.position[1]/32)),
-                                             self.goal)
-
-        for i in self.liste2:
-           self.liste.insert(0,Node(i.x,i.y))
-
-        self.path = self.liste
-
-        print("VALUEEES")
-        print(self.path[0].x ,self.path[0].y)
-        print(self.path[len(self.path)-1].x, self.path[len(self.path)-1].y)
-
     def autoGestion(self,listeJoueurAmi):
         try:
             if self.etat == self.IDLE:
@@ -178,114 +149,38 @@ class Unit:    ##Laurence
             return True
         return False
 
-#####################################################Cleaning? 
+######################################################################################################Fonctions du pathfinder
 
-    def get_heuristic(self,cell):
-        # methode manhattan : 10 * somme entre la difference entre x arrive et depart et y arrive et depart
-        return 10 * (abs(cell.x - self.arrive.x) + abs(cell.y - self.arrive.y))
-
-
-    def get_cell(self ,x ,y):
-        return self.cells[x * self.grid_height + y]
-        """ on fait * la hauteur de la grid pour aller chercher dans la bonne "rangee" """
-
-    # pour optimisation, calculer une seule fois pour toute les cases avec le init_grid... a voir
-    def get_adjacent_cells(self,cell): # X et Y inverser pour ca que ca ne fonctionne pas!! a regler demain
-        cells=[]
-        if cell.x < self.grid_width-1:
-            cells.append(self.get_cell(cell.x+1,cell.y))
-            #print(self.get_cell(cell.x+1,cell.y).x , self.get_cell(cell.x+1,cell.y).y )
-        if cell.x < self.grid_width-1 and cell.y < self.grid_height-1:
-            cells.append(self.get_cell(cell.x+1,cell.y+1))
-            #print(self.get_cell(cell.x+1,cell.y+1).x, self.get_cell(cell.x+1,cell.y+1).y)
-        if cell.x < self.grid_width-1 and cell.y > 0 :
-            cells.append(self.get_cell(cell.x+1,cell.y-1))
-            #print(self.get_cell(cell.x+1,cell.y-1).x, self.get_cell(cell.x+1,cell.y-1).y)
-        if cell.x > 0 and cell.y > 0 :
-            cells.append(self.get_cell(cell.x-1,cell.y-1))
-            #print(self.get_cell(cell.x-1,cell.y-1).x, self.get_cell(cell.x-1,cell.y-1).y)
-        if cell.x > 0 and cell.y < self.grid_height-1:
-            cells.append(self.get_cell(cell.x-1,cell.y+1))
-            #print(self.get_cell(cell.x-1,cell.y+1).x, self.get_cell(cell.x-1,cell.y+1).y)
-        
-        if cell.y > 0:
-            cells.append(self.get_cell(cell.x,cell.y-1))
-            #print(self.get_cell(cell.x,cell.y-1).x, self.get_cell(cell.x,cell.y-1).y)
-        if cell.x > 0:
-            cells.append(self.get_cell(cell.x-1,cell.y))
-            #print(self.get_cell(cell.x-1,cell.y).x, self.get_cell(cell.x-1,cell.y).y)
-        if cell.y < self.grid_height-1:
-            cells.append(self.get_cell(cell.x,cell.y+1))
-            #print(self.get_cell(cell.x,cell.y+1).x, self.get_cell(cell.x,cell.y+1).y)
-
-        #print("------------------------------")
-        return cells
-
-    def display_path(self):
-        cell = self.arrive
-        while cell.parent is not self.depart:
-            cell = cell.parent
-            print (cell.x,cell.y)
-            #print ("valeur de f :" + str(cell.f))
-            #print ("valeur de g :" + str(cell.g))
-        print("done")
-
-    def get_path(self):
-        #reverse display path pour faire debut jusqu'a fin plutot que fin jusqu'a debut
-        cell = self.arrive
-        path = []
-        while cell.parent is not self.depart:
-            cell = cell.parent
-            path.append(cell)
-        path.reverse()
-        for i in path:
-            pass
-            #print(i.x,i.y)
-        return path
-
-    def update_cell(self,adj,cell):
-        if adj.x != cell.x and adj.y != cell.y:
-            adj.g = cell.g+14
-            #print("move diagonal")
+    def calculatePath(self):
+        ####  Va chercher le node du graphe qui correspond a la destination
+        if isinstance(self.destination, tuple) or isinstance(self.destination, list):
+            self.goal = self.getNode(int(self.destination[0]/32)
+                                     ,int(self.destination[1]/32))
         else:
-            adj.g = cell.g+10
-        adj.h = self.get_heuristic(adj)
-        adj.parent = cell
-        adj.f = adj.h + adj.g
+            self.goal = self.getNode(int(self.destination.position[0]/32),
+                                     int(self.destination.position[1]/32))
+        ###
 
-    def process(self):
-        self.cells = self.parent.cells
-        self.grid_height = self.parent.map.numRow
-        self.grid_width = self.parent.map.numCol
-        #print(int(self.position[0]/64),int(self.position[1]/64))
-        #print(int(self.destination[0]/64),int(self.destination[1]/64))
-        self.depart = self.get_cell(int(self.position[0]/64),int(self.position[1]/64))
-        print(self.depart.x , self.depart.y)
-        self.arrive = self.get_cell(int(self.destination[0]/64),int(self.destination[1]/64))
-        print(self.arrive.x , self.arrive.y)
-        self.listeOuverte=[]
-        heapq.heapify(self.listeOuverte) # ordonne la liste ouverte en arbre binaire
-        self.listeFermee = set()
-        
-        heapq.heappush(self.listeOuverte, (self.depart.f,self.depart))
-        while len(self.listeOuverte):
-            f,cell = heapq.heappop(self.listeOuverte)
-            self.listeFermee.add(cell)
-            if cell is self.arrive:
-                #self.display_path()
-                self.get_path()
-                break
-            adj_cells = self.get_adjacent_cells(cell)
-            for adj_cell in adj_cells:
-                if adj_cell.walkable and adj_cell not in self.listeFermee:
-                    if(adj_cell.f, adj_cell) in self.listeOuverte:
-                        if adj_cell.g > cell.g + 10:
-                            self.update_cell(adj_cell,cell)
-                    else:
-                        self.update_cell(adj_cell,cell)
-                        heapq.heappush(self.listeOuverte, (adj_cell.f, adj_cell) )
+        ###Calcule le path
+        cf, cost_so_far = self.a_star_search(self.parent.graph, self.getNode(math.trunc(self.position[0]/32),
+                                                                             math.trunc(self.position[1]/32)),
+                                             self.goal)
+        self.liste = [] 
+        self.liste1 = cost_so_far
+        self.liste2 = self.reconstruct_path(cf, self.getNode(math.trunc(self.position[0]/32),
+                                                             math.trunc(self.position[1]/32)),
+                                             self.goal)
 
-#####################################################
+        for i in self.liste2:
+           self.liste.insert(0,Node(i.x,i.y))
+
+        self.path = self.liste
+
+        print("VALUEEES")
+        print(self.path[0].x ,self.path[0].y)
+        print(self.path[len(self.path)-1].x, self.path[len(self.path)-1].y)
+
+        ####
                         
     def getNode(self, x, y):
         return self.parent.graph[x*(self.parent.map.numRow*2)+y]

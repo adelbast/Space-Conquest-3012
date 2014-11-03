@@ -22,6 +22,7 @@ class Modele(object):
         self.dictUnit = {}            #dicte combiencoute chaque unit
         self.dictBatiment = {}        #dicte combiencoute chaque batiment  
         self.dictArtefact = {}
+        self.dictRecherche = {} #Contient un modele de toutes les recherches
         self.createDict()
     
         
@@ -333,12 +334,16 @@ class Modele(object):
 
         parserArtefact = configparser.ConfigParser()
         parserArtefact.read('Config/AttributeArtefact.cfg')
+
+        parserRecherche = configparser.ConfigParser()
+        parserRecherche.read('Config/AttributeRecherche.cfg')
         
         
         unit = parser.sections()
         unitVe = parserVehicule.sections()
         batiments = parserBatiment.sections()
         artefacts = parserArtefact.sections()
+        recherches = parserRecherche.sections()
         
         for name in unit:
             self.type        = parser.get(name, 'type')
@@ -382,11 +387,18 @@ class Modele(object):
             self.dictBatiment[name] = [self.maxHp, self.cost, self.production, self.size, self.canBuild]
 
         for name in artefacts:
-            self.positionX = int (parserArtefact.get(name,'positionX'))
-            self.positionY = int (parserArtefact.get(name,'positionY'))
-            self.size = int (parserArtefact.get(name, 'size'))
-            self.modif = float (parserArtefact.get(name, 'modif'))
+            self.positionX      = int (parserArtefact.get(name,'positionX'))
+            self.positionY      = int (parserArtefact.get(name,'positionY'))
+            self.size           = int (parserArtefact.get(name, 'size'))
+            self.modif          = float (parserArtefact.get(name, 'modif'))
             self.dictArtefact[name] = [self.positionX,self.positionX, self.size,self.modif]
+
+        for name in recherches:
+            self.type       = str (parserRecherche.get(name,'type'))
+            self.attribute  = str (parserRecherche.get(name,'attribute'))
+            self.bonus      = float (parserRecherche.get(name, 'bonus'))
+            self.cost       = [int(parserRecherche.get(name,'costFood')), int(parserRecherche.get(name,'costMetal')), int(parserRecherche.get(name,'costPower'))]
+            self.dictRecherche[name] = [self.type, self.attribute, self.bonus, self.cost]
             
     def getAIcount(self):
         retour = 0
