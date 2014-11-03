@@ -162,6 +162,9 @@ class Controleur:
     def creationBatiment(self,nom):  # A AJOUTER!!!!!!
         self.nomBatiment = nom
         self.vue.etatCreation = True
+
+    def getSizeBatiment(self, batiment):
+        return self.modele.dictBatiment[batiment]
         
 
     def closeGame(self):

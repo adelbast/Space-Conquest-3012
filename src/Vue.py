@@ -143,7 +143,9 @@ class Vue:
     def displayShadow(self, event):
         self.surfaceJeu.delete("shadow")
         if(self.parent.etatCreation == True):
-            self.surfaceJeu.create_rectangle(event.x-64, event.y-64, event.x+64, event.y+64, fill="red", tags="shadow")
+            size = self.parent.getSizeBatiment(self.parent.infoCreation)[3]
+            print(self.parent.getSizeBatiment(self.parent.infoCreation)[3])
+            self.surfaceJeu.create_rectangle(event.x-(size/2), event.y-(size/2), event.x+(size/2), event.y+(size/2), fill="red", tags="shadow")
 
 
 
@@ -378,7 +380,7 @@ class Vue:
     #Affichage des objets sur la surface                                                                                                 
     def displayObject(self, joueurs, artefacts, noLocal, selection):
         
-        self.surfaceJeu.delete("unit","structure","artefact")
+        self.surfaceJeu.delete("unit","structure","artefact", "healthbars")
 
         #Affichage des artefacts
         for a in artefacts:
@@ -387,10 +389,16 @@ class Vue:
 
         #Iteration sur chacun des joueurs
         for joueur in joueurs:
-                   
+              
             #Affiche les unités
             for u in joueur.listeUnite:
-
+                conversionVie = (u.size*u.currentHp)/u.maxHp
+                offsetY = 6
+                height = 3
+                
+                self.surfaceJeu.create_rectangle(u.position[0]-u.size/2, (u.position[1]-u.size/2)-offsetY, (u.position[0]-u.size/2)+u.size, (u.position[1]-u.size/2)+(height-offsetY), fill="red", width=0, tags="healthbars")
+                self.surfaceJeu.create_rectangle(u.position[0]-u.size/2, (u.position[1]-u.size/2)-offsetY, (u.position[0]-u.size/2)+conversionVie, (u.position[1]-u.size/2)+(height-offsetY), fill="blue", width=0, tags="healthbars")                
+                
                 #Si l'unite est au joueur local
                 if(joueur.noJoueur == noLocal):
 
