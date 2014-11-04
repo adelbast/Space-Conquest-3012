@@ -48,6 +48,7 @@ class Joueur():
                     self.parent.cutNode(self.parent.getNode(x+1,y-1))
                     self.parent.cutNode(self.parent.getNode(x-1,y))
                     self.parent.cutNode(self.parent.getNode(x-1,y+1))
+                    self.parent.cutNode(self.parent.getNode(x,y-1))
 
                     self.parent.cutNode(self.parent.getNode(x-2,y-2))
                     self.parent.cutNode(self.parent.getNode(x-1,y-2))

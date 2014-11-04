@@ -214,8 +214,12 @@ class Vue:
             else:
                 self.sprites.append(s)
             
+    #Affiche les nodes du pathfinder 
+    """def displayNodes(self, nodes):
+        size = 20
         
-        
+        for node in nodes:
+            self.surfaceJeu.create_rectangle(node.x*32, node.y*32,(node.x*32)+size, (node.y*32)+size, fill="red")"""
 
     #Affiche les informations sur l'unité
     def displayInfoUnit(self, unit, noLocal):
@@ -227,58 +231,65 @@ class Vue:
 
         #Affichage de l'image de l'unité
         try:
-            thumbnail = self.sprites[noLocal][0].spriteDict[unit.name]['front']['1']
+            if(unit.owner == noLocal):
+                thumbnail = self.sprites[noLocal][0].spriteDict[unit.name]['front']['1']
+            else:
+                thumbnail = self.sprites[unit.owner].spriteDict[unit.name]['front']['1']
         except:
-           thumbnail = self.sprites[noLocal][0].spriteDict[unit.name]
+           thumbnail = self.sprites[unit.owner][0].spriteDict[unit.name]
         
         if(thumbnail.width() != 128):
-            print(thumbnail.width())
+            #print(thumbnail.width())
             offset = (128-thumbnail.width())/2
             
-        self.hud.create_rectangle(350, 60, 478, 188, fill='red')
+        self.hud.create_rectangle(330, 60, 458, 188, fill='red')
         
-        self.hud.create_image(350+offset,60+offset, anchor=NW, image=thumbnail, tags="infos")
+        self.hud.create_image(330+offset,60+offset, anchor=NW, image=thumbnail, tags="infos")
 
         #Affichage de la barre de vie
         conversionVie = (128*unit.currentHp)/unit.maxHp
         
-        self.hud.create_rectangle(350, 200, 478, 210, fill='black', tags="infos")
-        self.hud.create_rectangle(350, 200, 350+conversionVie, 210, fill='green', tags="infos")
+        self.hud.create_rectangle(330, 200, 458, 210, fill='black', tags="infos")
+        self.hud.create_rectangle(330, 200, 330+conversionVie, 210, fill='green', tags="infos")
 
-        #Afficher les unités qui peuvent être produites
-        if(len(unit.canBuild) > 0):
+        #Affichage des stats
+        #self.hud.create_text(468)
 
-            margin = 5
-            startX = 600
-            startY = 25
-            size = 64
-            row = 0
-            column = 0
+        if(unit.owner == noLocal):
+            #Afficher les unités qui peuvent être produites
+            if(len(unit.canBuild) > 0):
 
-            self.hud.create_rectangle(600, 25, 881, 237, fill='black', tags="infos")
+                margin = 5
+                startX = 600
+                startY = 25
+                size = 64
+                row = 0
+                column = 0
 
-            if isinstance (unit, Unit):
-                build_type = "structure"
-            else:
-                build_type = "unit"
+                self.hud.create_rectangle(600, 25, 881, 237, fill='black', tags="infos")
 
-            for u in unit.canBuild:
-                
-                print(u)
-                self.hud.create_image(startX+((column*size)+margin*(column+1)), startY+((row*size)+margin*(row+1)), anchor=NW, image=self.photoImageBoutonUP, tags=("button", u, build_type))
-                
-                if(column%3 == 0 and column != 0):
-                    print("row : ",row)
-                    row +=1
-                    print("column : ", column)
-                    column = 0
+                if isinstance (unit, Unit):
+                    build_type = "structure"
                 else:
-                    column += 1
+                    build_type = "unit"
+
+                for u in unit.canBuild:
+                
+                    #print(u)
+                    self.hud.create_image(startX+((column*size)+margin*(column+1)), startY+((row*size)+margin*(row+1)), anchor=NW, image=self.photoImageBoutonUP, tags=("button", u, build_type))
+                
+                    if(column%3 == 0 and column != 0):
+                        #print("row : ",row)
+                        row +=1
+                        #print("column : ", column)
+                        column = 0
+                    else:
+                        column += 1
                     
                 
-        else:
-            self.hud.delete("button")
-            print("Aucune production possible")
+            else:
+                self.hud.delete("button")
+                print("Aucune production possible")
         
     
         
@@ -395,7 +406,23 @@ class Vue:
 
         #Iteration sur chacun des joueurs
         for joueur in joueurs:
-                   
+
+            #Affiche les batiments
+            for b in joueur.listeBatiment:
+                #Si l'unite est au joueur local
+                if(joueur.noJoueur == noLocal):
+
+                    #Si l'unite est selectionnee
+                    if(b in selection):
+                        self.surfaceJeu.create_image(b.position[0]-b.size/2, b.position[1]-b.size/2, anchor=NW, image=self.sprites[joueur.noJoueur][1].spriteDict[b.name], tags="structure")
+                    #Si l'unite n'est pas selectionnee
+                    else:
+                        self.surfaceJeu.create_image(b.position[0]-b.size/2, b.position[1]-b.size/2, anchor=NW, image=self.sprites[joueur.noJoueur][0].spriteDict[b.name], tags="structure")
+
+                #Sinon si l'unite est a un autre joueur
+                else:
+                    self.surfaceJeu.create_image(b.position[0]-b.size/2, b.position[1]-b.size/2, anchor=NW, image=self.sprites[joueur.noJoueur].spriteDict[b.name], tags="structure")
+            
             #Affiche les unités
             for u in joueur.listeUnite:
 
@@ -420,28 +447,14 @@ class Vue:
                 else:
                     self.surfaceJeu.create_image(u.position[0]-u.size/2, u.position[1]-u.size/2, anchor=NW, image=self.sprites[joueur.noJoueur].spriteDict[u.name][u.orientation]['1'], tags="unit")
 
-            #Affiche les batiments
-            for b in joueur.listeBatiment:
-                #Si l'unite est au joueur local
-                if(joueur.noJoueur == noLocal):
 
-                    #Si l'unite est selectionnee
-                    if(b in selection):
-                        self.surfaceJeu.create_image(b.position[0]-b.size/2, b.position[1]-b.size/2, anchor=NW, image=self.sprites[joueur.noJoueur][1].spriteDict[b.name], tags="structure")
-                    #Si l'unite n'est pas selectionnee
-                    else:
-                        self.surfaceJeu.create_image(b.position[0]-b.size/2, b.position[1]-b.size/2, anchor=NW, image=self.sprites[joueur.noJoueur][0].spriteDict[b.name], tags="structure")
-
-                #Sinon si l'unite est a un autre joueur
-                else:
-                    self.surfaceJeu.create_image(b.position[0]-b.size/2, b.position[1]-b.size/2, anchor=NW, image=self.sprites[joueur.noJoueur].spriteDict[b.name], tags="structure")
     
     #Affiche les tags des boutons sur le hud
     def getBuildInfo(self, event):
         item = self.hud.find_closest(event.x, event.y)[0]
-        print("ID : ", item)
-        print("ThingToBuild : ", self.hud.gettags(item)[1], "Type : ", self.hud.gettags(item)[2])
-        print("Below : ", self.hud.find_below(item))
+        #print("ID : ", item)
+        #print("ThingToBuild : ", self.hud.gettags(item)[1], "Type : ", self.hud.gettags(item)[2])
+        #print("Below : ", self.hud.find_below(item))
 
         if(self.hud.gettags(item)[2] == "structure"):
             self.parent.etatCreation = True
