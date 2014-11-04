@@ -132,7 +132,6 @@ class Unit:    ##Laurence
             self.position[1] = self.path[0].y*32
             self.path.pop(0)
 
-<<<<<<< HEAD
     def attaque(self):
         if(self.type == "infantry"):
             if(self.destination.type == "infantry"):    # ==
@@ -170,13 +169,6 @@ class Unit:    ##Laurence
                 pass
             elif(self.destination.type == "range"):     # <
                 pass
-
-
-=======
-        elif self.destination[0] != self.position[0] or self.destination[1] != self.position[1]:
-           self.x = self.destination[0]
-           self.y = self.destination[1]
->>>>>>> 43a633ff039ca7fd335e6b5ae85d56b51af52989
     
     def inRange(self,unit):
         if  math.sqrt(abs(self.position[0] - unit.position[0])**2 + abs(self.position[1] - unit.position[1])**2) < self.rangeAtt:
