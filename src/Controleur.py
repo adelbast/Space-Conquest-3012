@@ -112,7 +112,6 @@ class Controleur:
         self.vue.displayObject(self.modele.listeJoueur,[],self.modele.noJoueurLocal,self.modele.selection)
         self.vue.displayHUD()
         self.vue.displayRessources(self.modele.listeJoueur[self.modele.noJoueurLocal].listeRessource)
-        
         self.gameLoop()
     
     def packAction2Server(self):
@@ -140,6 +139,7 @@ class Controleur:
         self.modele.actualiser()
         self.vue.displayRessources(self.modele.listeJoueur[self.modele.noJoueurLocal].listeRessource)
         self.vue.displayObject(self.modele.listeJoueur,[],self.modele.noJoueurLocal,self.modele.selection)
+        self.vue.displayNodes(self.modele.cutNodes)
         self.compteur+=1
         self.vue.root.after(50,self.gameLoop) #monter a 50 pour tester le pathfinding plus facilement peux descendre si ca vs derange
 

@@ -66,7 +66,6 @@ class Unit:    ##Laurence
         else:
             return None
         #add condition si destination est nodeCoupe
-        print(len(self.parent.cutNodes))
         if(self.parent.getNode(int(self.parent.releasePosx/32),int(self.parent.releasePosy/32)) not in self.parent.cutNodes):
             self.calculatePath()
         #self.process()
@@ -131,9 +130,9 @@ class Unit:    ##Laurence
         if self.path :
             self.position[0] = self.path[0].x*32
             self.position[1] = self.path[0].y*32
-
             self.path.pop(0)
 
+<<<<<<< HEAD
     def attaque(self):
         if(self.type == "infantry"):
             if(self.destination.type == "infantry"):    # ==
@@ -173,6 +172,11 @@ class Unit:    ##Laurence
                 pass
 
 
+=======
+        elif self.destination[0] != self.position[0] or self.destination[1] != self.position[1]:
+           self.x = self.destination[0]
+           self.y = self.destination[1]
+>>>>>>> 43a633ff039ca7fd335e6b5ae85d56b51af52989
     
     def inRange(self,unit):
         if  math.sqrt(abs(self.position[0] - unit.position[0])**2 + abs(self.position[1] - unit.position[1])**2) < self.rangeAtt:
@@ -192,23 +196,26 @@ class Unit:    ##Laurence
         ###
 
         ###Calcule le path
-        cf, cost_so_far = self.a_star_search(self.parent.graph, self.getNode(math.trunc(self.position[0]/32),
-                                                                             math.trunc(self.position[1]/32)),
-                                             self.goal)
-        self.liste = [] 
-        self.liste1 = cost_so_far
-        self.liste2 = self.reconstruct_path(cf, self.getNode(math.trunc(self.position[0]/32),
-                                                             math.trunc(self.position[1]/32)),
-                                             self.goal)
+        try:
+            cf, cost_so_far = self.a_star_search(self.parent.graph, self.getNode(math.trunc(self.position[0]/32),
+                                                                                 math.trunc(self.position[1]/32)),
+                                                 self.goal)
+            self.liste = [] 
+            self.liste1 = cost_so_far
+            self.liste2 = self.reconstruct_path(cf, self.getNode(math.trunc(self.position[0]/32),
+                                                                 math.trunc(self.position[1]/32)),
+                                                 self.goal)
 
-        for i in self.liste2:
-           self.liste.insert(0,Node(i.x,i.y))
+            for i in self.liste2:
+               self.liste.insert(0,Node(i.x,i.y))
 
-        self.path = self.liste
-
-        print("VALUEEES")
-        print(self.path[0].x ,self.path[0].y)
-        print(self.path[len(self.path)-1].x, self.path[len(self.path)-1].y)
+            self.path = self.liste
+        except:
+            print("pas de path valide")
+        
+        #print("VALUEEES")
+        #print(self.path[0].x ,self.path[0].y)
+        #print(self.path[len(self.path)-1].x, self.path[len(self.path)-1].y)
 
         ####
                         
@@ -284,9 +291,9 @@ class Node:
                 if  self.y + dir[1] >= 0:
                     self.voisins.append([self.x + dir[0], self.y + dir[1]])
                 else:
-                    self.voisins.append(0)
+                    self.voisins.append([0,0])
             else:
-                self.voisins.append(0)
+                self.voisins.append([0,0])
    
 
    

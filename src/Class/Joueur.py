@@ -35,19 +35,17 @@ class Joueur():
                 x = int(position[0]/32)
                 y = int(position[1]/32)
                 self.parent.cutNode(self.parent.getNode(x,y))
-                print(x,y)
-                self.parent.cutNode(self.parent.getNode(x+1,y+1))
-                print(x-1,y-1)
-                self.parent.cutNode(self.parent.getNode(x+1,y))
-                print(x,y-1)
-                self.parent.cutNode(self.parent.getNode(x,y+1))
-                print(x-1,y)
-                if (attributs[3] > 64):
+                if(attributs[3] > 32):
                     self.parent.cutNode(self.parent.getNode(x-1,y-1))
                     self.parent.cutNode(self.parent.getNode(x-1,y))
+                    self.parent.cutNode(self.parent.getNode(x,y-1))
+                if (attributs[3] > 64):
+                    self.parent.cutNode(self.parent.getNode(x+1,y+1))
+                    self.parent.cutNode(self.parent.getNode(x+1,y))
                     self.parent.cutNode(self.parent.getNode(x+1,y-1))
                     self.parent.cutNode(self.parent.getNode(x-1,y))
                     self.parent.cutNode(self.parent.getNode(x-1,y+1))
+                    self.parent.cutNode(self.parent.getNode(x,y+1))
 
                     self.parent.cutNode(self.parent.getNode(x-2,y-2))
                     self.parent.cutNode(self.parent.getNode(x-1,y-2))

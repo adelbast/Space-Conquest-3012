@@ -99,7 +99,7 @@ class Vue:
         
 
         #TEST BOUTON HUD JUSTE TEST, PAS DEFINITIF
-        """boutonCreerUnit = Button(self.hud,text="creerUnite",command=lambda:self.parent.modele.listeJoueur[0].creerUnite("psychonaut",[300,300] , self.parent.modele.dictUnit["psychonaut"] ))
+        """boutonCreerUnit = Button(self.hud,text="creerUnite",command=lambda:self.parent.modele.listeJoueur[0].creerUnite("psychonaut",[500,500] , self.parent.modele.dictUnit["psychonaut"] ))
         boutonCreerUnit.configure(width = 10, activebackground = "#33B5E5", relief = FLAT)
         boutonCreerUnit_window = self.hud.create_window(600, 40, anchor=NW, window=boutonCreerUnit)"""
         
@@ -144,11 +144,16 @@ class Vue:
     def displayShadow(self, event):
         self.surfaceJeu.delete("shadow")
         if(self.parent.etatCreation == True):
+            x = int(event.x/32)*32
+            y = int(event.y/32)*32
+            
             size = self.parent.getSizeBatiment(self.parent.infoCreation)[3]
             print(self.parent.getSizeBatiment(self.parent.infoCreation)[3])
-            self.surfaceJeu.create_rectangle(event.x-(size/2), event.y-(size/2), event.x+(size/2), event.y+(size/2), fill="red", tags="shadow")
-        
-
+            
+            if(size != 32):
+                self.surfaceJeu.create_rectangle(x-(size/2), y-(size/2), x+(size/2), y+(size/2), fill="red", tags="shadow")
+            else:
+                self.surfaceJeu.create_rectangle(x, y, x+size, y+size, fill="red", tags="shadow")
 
 
     #Deplacer la camera lorsqu'on clique sur le canvas de la minimap
@@ -214,8 +219,13 @@ class Vue:
             else:
                 self.sprites.append(s)
             
+    #Affiche les nodes du pathfinder 
+    def displayNodes(self, nodes):
+        self.surfaceJeu.delete("Nodes")
+        size = 32
         
-        
+        for node in nodes:
+            self.surfaceJeu.create_rectangle(node.x*32, node.y*32,(node.x*32)+size, (node.y*32)+size, fill="red",tags="Nodes")
 
     #Affiche les informations sur l'unité
     def displayInfoUnit(self, unit, noLocal):
@@ -227,58 +237,69 @@ class Vue:
 
         #Affichage de l'image de l'unité
         try:
-            thumbnail = self.sprites[noLocal][0].spriteDict[unit.name]['front']['1']
+            if(unit.owner == noLocal):
+                thumbnail = self.sprites[noLocal][0].spriteDict[unit.name]['front']['1']
+            else:
+                thumbnail = self.sprites[unit.owner].spriteDict[unit.name]['front']['1']
         except:
-           thumbnail = self.sprites[noLocal][0].spriteDict[unit.name]
+           thumbnail = self.sprites[unit.owner][0].spriteDict[unit.name]
         
         if(thumbnail.width() != 128):
-            print(thumbnail.width())
+            #print(thumbnail.width())
             offset = (128-thumbnail.width())/2
             
-        self.hud.create_rectangle(350, 60, 478, 188, fill='red')
+        self.hud.create_rectangle(310, 60, 438, 188, fill='red')
         
-        self.hud.create_image(350+offset,60+offset, anchor=NW, image=thumbnail, tags="infos")
+        self.hud.create_image(310+offset,60+offset, anchor=NW, image=thumbnail, tags="infos")
 
         #Affichage de la barre de vie
         conversionVie = (128*unit.currentHp)/unit.maxHp
         
-        self.hud.create_rectangle(350, 200, 478, 210, fill='black', tags="infos")
-        self.hud.create_rectangle(350, 200, 350+conversionVie, 210, fill='green', tags="infos")
+        self.hud.create_rectangle(310, 200, 438, 210, fill='black', tags="infos")
+        self.hud.create_rectangle(310, 200, 310+conversionVie, 210, fill='green', tags="infos")
 
-        #Afficher les unités qui peuvent être produites
-        if(len(unit.canBuild) > 0):
+        #Affichage des stats
+        if isinstance (unit, Unit):
+            self.hud.create_text(448, 60, anchor=NW, text="Power : "+str(unit.force), font=("Stencil", 12), tags="infos")
+            self.hud.create_text(448, 85, anchor=NW, text="Range Vision : "+str(unit.rangeVision), font=("Stencil", 12), tags="infos")
+            self.hud.create_text(448, 110, anchor=NW, text="Range Attack : "+str(unit.rangeAtt), font=("Stencil", 12), tags="infos")
+            self.hud.create_text(448, 135, anchor=NW, text="Vitesse : "+str(unit.vitesse), font=("Stencil", 12), tags="infos")
 
-            margin = 5
-            startX = 600
-            startY = 25
-            size = 64
-            row = 0
-            column = 0
+        if(unit.owner == noLocal):
+            #Afficher les unités qui peuvent être produites
+            if(len(unit.canBuild) > 0):
 
-            self.hud.create_rectangle(600, 25, 881, 237, fill='black', tags="infos")
+                margin = 5
+                startX = 600
+                startY = 25
+                size = 64
+                row = 0
+                column = 0
 
-            if isinstance (unit, Unit):
-                build_type = "structure"
-            else:
-                build_type = "unit"
+                self.hud.create_rectangle(600, 25, 881, 237, fill='black', tags="infos")
 
-            for u in unit.canBuild:
-                
-                print(u)
-                self.hud.create_image(startX+((column*size)+margin*(column+1)), startY+((row*size)+margin*(row+1)), anchor=NW, image=self.photoImageBoutonUP, tags=("button", u, build_type))
-                
-                if(column%3 == 0 and column != 0):
-                    print("row : ",row)
-                    row +=1
-                    print("column : ", column)
-                    column = 0
+                if isinstance (unit, Unit):
+                    build_type = "structure"
                 else:
-                    column += 1
+                    build_type = "unit"
+
+                for u in unit.canBuild:
+                
+                    #print(u)
+                    self.hud.create_image(startX+((column*size)+margin*(column+1)), startY+((row*size)+margin*(row+1)), anchor=NW, image=self.photoImageBoutonUP, tags=("button", u, build_type))
+                
+                    if(column%3 == 0 and column != 0):
+                        #print("row : ",row)
+                        row +=1
+                        #print("column : ", column)
+                        column = 0
+                    else:
+                        column += 1
                     
                 
-        else:
-            self.hud.delete("button")
-            print("Aucune production possible")
+            else:
+                self.hud.delete("button")
+                print("Aucune production possible")
         
     
         
@@ -395,30 +416,6 @@ class Vue:
 
         #Iteration sur chacun des joueurs
         for joueur in joueurs:
-                   
-            #Affiche les unités
-            for u in joueur.listeUnite:
-
-                conversionVie = (u.size*u.currentHp)/u.maxHp
-                offsetY = 6
-                height = 3
-                
-                self.surfaceJeu.create_rectangle(u.position[0]-u.size/2, (u.position[1]-u.size/2)-offsetY, (u.position[0]-u.size/2)+u.size, (u.position[1]-u.size/2)+(height-offsetY), fill="red", width=0, tags="healthbars")
-                self.surfaceJeu.create_rectangle(u.position[0]-u.size/2, (u.position[1]-u.size/2)-offsetY, (u.position[0]-u.size/2)+conversionVie, (u.position[1]-u.size/2)+(height-offsetY), fill="blue", width=0, tags="healthbars")
-
-                #Si l'unite est au joueur local
-                if(joueur.noJoueur == noLocal):
-
-                    #Si l'unite est selectionnee
-                    if(u in selection):
-                        self.surfaceJeu.create_image(u.position[0]-u.size/2, u.position[1]-u.size/2, anchor=NW, image=self.sprites[joueur.noJoueur][1].spriteDict[u.name][u.orientation]['1'], tags="unit")
-                    #Si l'unite n'est pas selectionnee
-                    else:
-                        self.surfaceJeu.create_image(u.position[0]-u.size/2, u.position[1]-u.size/2, anchor=NW, image=self.sprites[joueur.noJoueur][0].spriteDict[u.name][u.orientation]['1'], tags="unit")
-
-                #Sinon si l'unite est a un autre joueur
-                else:
-                    self.surfaceJeu.create_image(u.position[0]-u.size/2, u.position[1]-u.size/2, anchor=NW, image=self.sprites[joueur.noJoueur].spriteDict[u.name][u.orientation]['1'], tags="unit")
 
             #Affiche les batiments
             for b in joueur.listeBatiment:
@@ -430,18 +427,46 @@ class Vue:
                         self.surfaceJeu.create_image(b.position[0]-b.size/2, b.position[1]-b.size/2, anchor=NW, image=self.sprites[joueur.noJoueur][1].spriteDict[b.name], tags="structure")
                     #Si l'unite n'est pas selectionnee
                     else:
-                        self.surfaceJeu.create_image(b.position[0]-b.size/2, b.position[1]-b.size/2, anchor=NW, image=self.sprites[joueur.noJoueur][0].spriteDict[b.name], tags="structure")
-
+                        if(b.size != 32):
+                            self.surfaceJeu.create_image(b.position[0]-b.size/2, b.position[1]-b.size/2, anchor=NW, image=self.sprites[joueur.noJoueur][0].spriteDict[b.name], tags="structure")
+                        else:
+                            self.surfaceJeu.create_image(b.position[0], b.position[1], anchor=NW, image=self.sprites[joueur.noJoueur][0].spriteDict[b.name], tags="structure")
                 #Sinon si l'unite est a un autre joueur
                 else:
                     self.surfaceJeu.create_image(b.position[0]-b.size/2, b.position[1]-b.size/2, anchor=NW, image=self.sprites[joueur.noJoueur].spriteDict[b.name], tags="structure")
+            
+            #Affiche les unités
+            for u in joueur.listeUnite:
+
+                conversionVie = (u.size*u.currentHp)/u.maxHp
+                offsetY = 6
+                height = 3
+                
+                self.surfaceJeu.create_rectangle(u.position[0], (u.position[1])-offsetY, (u.position[0])+u.size, (u.position[1])+(height-offsetY), fill="red", width=0, tags="healthbars")
+                self.surfaceJeu.create_rectangle(u.position[0], (u.position[1])-offsetY, (u.position[0])+conversionVie, (u.position[1])+(height-offsetY), fill="blue", width=0, tags="healthbars")
+
+                #Si l'unite est au joueur local
+                if(joueur.noJoueur == noLocal):
+
+                    #Si l'unite est selectionnee
+                    if(u in selection):
+                        self.surfaceJeu.create_image(u.position[0], u.position[1], anchor=NW, image=self.sprites[joueur.noJoueur][1].spriteDict[u.name][u.orientation]['1'], tags="unit")
+                    #Si l'unite n'est pas selectionnee
+                    else:
+                        self.surfaceJeu.create_image(u.position[0], u.position[1], anchor=NW, image=self.sprites[joueur.noJoueur][0].spriteDict[u.name][u.orientation]['1'], tags="unit")
+
+                #Sinon si l'unite est a un autre joueur
+                else:
+                    self.surfaceJeu.create_image(u.position[0], u.position[1], anchor=NW, image=self.sprites[joueur.noJoueur].spriteDict[u.name][u.orientation]['1'], tags="unit")
+
+
     
     #Affiche les tags des boutons sur le hud
     def getBuildInfo(self, event):
         item = self.hud.find_closest(event.x, event.y)[0]
-        print("ID : ", item)
-        print("ThingToBuild : ", self.hud.gettags(item)[1], "Type : ", self.hud.gettags(item)[2])
-        print("Below : ", self.hud.find_below(item))
+        #print("ID : ", item)
+        #print("ThingToBuild : ", self.hud.gettags(item)[1], "Type : ", self.hud.gettags(item)[2])
+        #print("Below : ", self.hud.find_below(item))
 
         if(self.hud.gettags(item)[2] == "structure"):
             self.parent.etatCreation = True

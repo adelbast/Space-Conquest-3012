@@ -83,12 +83,12 @@ class Modele(object):
             print("=====1=====")
             a =[self.map.startingPoint[i][0]*64,self.map.startingPoint[i][1]*64]
             print("=====2=====")
-            self.listeJoueur[i].creerBatiment((a),True,"guardTower",self.dictBatiment["guardTower"])
+            #self.listeJoueur[i].creerBatiment((a),True,"guardTower",self.dictBatiment["guardTower"])
             print("=====3=====")
             self.listeJoueur[i].creerBatiment(a,True,"HQ",self.dictBatiment["HQ"])
             print("=====4=====")
             self.listeJoueur[i].creerUnite("worker", (a[0]+100,a[1]+100), self.dictUnit["worker"])
-            print("canbuild : ",self.listeJoueur[i].listeBatiment[1].canBuild)
+               
 
         print("FIN")
 
@@ -243,7 +243,7 @@ class Modele(object):
                         if(not cible):
                             cible = (self.releasePosx,self.releasePosy)
                         if (self.getNode(int(self.releasePosx/32),int(self.releasePosy/32)) is not None): #voir si ou on clique est un node couper
-                            print(self.getNode(int(self.releasePosx/32),int(self.releasePosy/32)) )
+                            #print(self.getNode(int(self.releasePosx/32),int(self.releasePosy/32)) )
                             for unite in self.selection: #Donne un ordre de déplacement à la sélection
                                 print("Ordre de déplacement")
                                 try:
@@ -267,7 +267,7 @@ class Modele(object):
         elif(event.num == 1): #clic gauche
             if(etat==True and info != None):
                 #self.listeJoueur[self.noJoueurLocal].creerBatiment([self.releasePosx,self.releasePosy],True,"HQ",self.dictBatiment["HQ"]) # pas bon, event.x,y doit etre changer pour map width et height 
-                self.dicAction2Server['NewBatiment']=(info,self.releasePosx,self.releasePosy) #packetage de creation batiment
+                self.dicAction2Server['NewBatiment']=(info,int(self.releasePosx/32)*32,int(self.releasePosy/32)*32) #packetage de creation batiment
                 self.parent.etatCreation = False
                 self.parent.infoCreation = None
                 return
@@ -291,15 +291,25 @@ class Modele(object):
                 
     def clickCibleOuTile(self,x,y): #retourne None pour un tile et la cible pour une cible
     #fonction qui regarde si le clic est sur un batiment ou une unité
+        retour = None
         for joueur in self.listeJoueur:
-            liste = joueur.listeUnite+joueur.listeBatiment
-            for chose in liste:
-                if(x < chose.position[0]+chose.size/2):#
-                    if(x > chose.position[0]-chose.size/2):#
-                        if(y < chose.position[1]+chose.size/2):#
-                            if(y > chose.position[1]-chose.size/2):#
-                                return chose
-        else: return None
+            for chose in joueur.listeUnite:
+                if(x < chose.position[0]+chose.size):
+                    if(x > chose.position[0]):
+                        if(y < chose.position[1]+chose.size):
+                            if(y > chose.position[1]):
+                                retour = chose
+                                break
+            if(not retour):
+                for chose in joueur.listeBatiment:
+                    if(x < chose.position[0]+chose.size/2):
+                        if(x > chose.position[0]-chose.size/2):
+                            if(y < chose.position[1]+chose.size/2):
+                                if(y > chose.position[1]-chose.size/2):
+                                    retour = chose
+                                    break
+            
+        return retour
 
 
     def joueurPasMort(self,joueur):   #Retourne si un joueur est mort ou non
@@ -441,7 +451,8 @@ class Modele(object):
                     self.cutNode(self.getNode(y*2+1,x*2))
                     self.cutNode(self.getNode(y*2,x*2+1))
                     self.cutNode(self.getNode(y*2+1,x*2+1))
-                    
+
+        self.cutNode(self.getNode(0,0))            
         print("Cut Nodes")
         print(len(self.cutNodes))           
       
