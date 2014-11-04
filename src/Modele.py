@@ -243,7 +243,7 @@ class Modele(object):
                         if(not cible):
                             cible = (self.releasePosx,self.releasePosy)
                         if (self.getNode(int(self.releasePosx/32),int(self.releasePosy/32)) is not None): #voir si ou on clique est un node couper
-                            print(self.getNode(int(self.releasePosx/32),int(self.releasePosy/32)) )
+                            #print(self.getNode(int(self.releasePosx/32),int(self.releasePosy/32)) )
                             for unite in self.selection: #Donne un ordre de déplacement à la sélection
                                 print("Ordre de déplacement")
                                 try:
@@ -267,7 +267,7 @@ class Modele(object):
         elif(event.num == 1): #clic gauche
             if(etat==True and info != None):
                 #self.listeJoueur[self.noJoueurLocal].creerBatiment([self.releasePosx,self.releasePosy],True,"HQ",self.dictBatiment["HQ"]) # pas bon, event.x,y doit etre changer pour map width et height 
-                self.dicAction2Server['NewBatiment']=(info,self.releasePosx,self.releasePosy) #packetage de creation batiment
+                self.dicAction2Server['NewBatiment']=(info,int(self.releasePosx/32)*32,int(self.releasePosy/32)*32) #packetage de creation batiment
                 self.parent.etatCreation = False
                 self.parent.infoCreation = None
                 return
@@ -441,7 +441,8 @@ class Modele(object):
                     self.cutNode(self.getNode(y*2+1,x*2))
                     self.cutNode(self.getNode(y*2,x*2+1))
                     self.cutNode(self.getNode(y*2+1,x*2+1))
-                    
+
+        self.cutNode(self.getNode(0,0))            
         print("Cut Nodes")
         print(len(self.cutNodes))           
       

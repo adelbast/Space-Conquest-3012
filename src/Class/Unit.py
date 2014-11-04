@@ -254,9 +254,9 @@ class Node:
                 if  self.y + dir[1] >= 0:
                     self.voisins.append([self.x + dir[0], self.y + dir[1]])
                 else:
-                    self.voisins.append(0)
+                    self.voisins.append([0,0])
             else:
-                self.voisins.append(0)
+                self.voisins.append([0,0])
    
 
    

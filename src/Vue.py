@@ -215,11 +215,12 @@ class Vue:
                 self.sprites.append(s)
             
     #Affiche les nodes du pathfinder 
-    """def displayNodes(self, nodes):
-        size = 20
+    def displayNodes(self, nodes):
+        self.surfaceJeu.delete("Nodes")
+        size = 32
         
         for node in nodes:
-            self.surfaceJeu.create_rectangle(node.x*32, node.y*32,(node.x*32)+size, (node.y*32)+size, fill="red")"""
+            self.surfaceJeu.create_rectangle(node.x*32, node.y*32,(node.x*32)+size, (node.y*32)+size, fill="red",tags="Nodes")
 
     #Affiche les informations sur l'unité
     def displayInfoUnit(self, unit, noLocal):
@@ -430,22 +431,22 @@ class Vue:
                 offsetY = 6
                 height = 3
                 
-                self.surfaceJeu.create_rectangle(u.position[0]-u.size/2, (u.position[1]-u.size/2)-offsetY, (u.position[0]-u.size/2)+u.size, (u.position[1]-u.size/2)+(height-offsetY), fill="red", width=0, tags="healthbars")
-                self.surfaceJeu.create_rectangle(u.position[0]-u.size/2, (u.position[1]-u.size/2)-offsetY, (u.position[0]-u.size/2)+conversionVie, (u.position[1]-u.size/2)+(height-offsetY), fill="blue", width=0, tags="healthbars")
+                self.surfaceJeu.create_rectangle(u.position[0], (u.position[1])-offsetY, (u.position[0])+u.size, (u.position[1])+(height-offsetY), fill="red", width=0, tags="healthbars")
+                self.surfaceJeu.create_rectangle(u.position[0], (u.position[1])-offsetY, (u.position[0])+conversionVie, (u.position[1])+(height-offsetY), fill="blue", width=0, tags="healthbars")
 
                 #Si l'unite est au joueur local
                 if(joueur.noJoueur == noLocal):
 
                     #Si l'unite est selectionnee
                     if(u in selection):
-                        self.surfaceJeu.create_image(u.position[0]-u.size/2, u.position[1]-u.size/2, anchor=NW, image=self.sprites[joueur.noJoueur][1].spriteDict[u.name][u.orientation]['1'], tags="unit")
+                        self.surfaceJeu.create_image(u.position[0], u.position[1], anchor=NW, image=self.sprites[joueur.noJoueur][1].spriteDict[u.name][u.orientation]['1'], tags="unit")
                     #Si l'unite n'est pas selectionnee
                     else:
-                        self.surfaceJeu.create_image(u.position[0]-u.size/2, u.position[1]-u.size/2, anchor=NW, image=self.sprites[joueur.noJoueur][0].spriteDict[u.name][u.orientation]['1'], tags="unit")
+                        self.surfaceJeu.create_image(u.position[0], u.position[1], anchor=NW, image=self.sprites[joueur.noJoueur][0].spriteDict[u.name][u.orientation]['1'], tags="unit")
 
                 #Sinon si l'unite est a un autre joueur
                 else:
-                    self.surfaceJeu.create_image(u.position[0]-u.size/2, u.position[1]-u.size/2, anchor=NW, image=self.sprites[joueur.noJoueur].spriteDict[u.name][u.orientation]['1'], tags="unit")
+                    self.surfaceJeu.create_image(u.position[0], u.position[1], anchor=NW, image=self.sprites[joueur.noJoueur].spriteDict[u.name][u.orientation]['1'], tags="unit")
 
 
     
