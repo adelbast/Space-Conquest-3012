@@ -144,11 +144,16 @@ class Vue:
     def displayShadow(self, event):
         self.surfaceJeu.delete("shadow")
         if(self.parent.etatCreation == True):
+            x = int(event.x/32)*32
+            y = int(event.y/32)*32
+            
             size = self.parent.getSizeBatiment(self.parent.infoCreation)[3]
             print(self.parent.getSizeBatiment(self.parent.infoCreation)[3])
-            self.surfaceJeu.create_rectangle(event.x-(size/2), event.y-(size/2), event.x+(size/2), event.y+(size/2), fill="red", tags="shadow")
-        
-
+            
+            if(size != 32):
+                self.surfaceJeu.create_rectangle(x-(size/2), y-(size/2), x+(size/2), y+(size/2), fill="red", tags="shadow")
+            else:
+                self.surfaceJeu.create_rectangle(x, y, x+size, y+size, fill="red", tags="shadow")
 
 
     #Deplacer la camera lorsqu'on clique sur le canvas de la minimap
@@ -243,18 +248,22 @@ class Vue:
             #print(thumbnail.width())
             offset = (128-thumbnail.width())/2
             
-        self.hud.create_rectangle(330, 60, 458, 188, fill='red')
+        self.hud.create_rectangle(310, 60, 438, 188, fill='red')
         
-        self.hud.create_image(330+offset,60+offset, anchor=NW, image=thumbnail, tags="infos")
+        self.hud.create_image(310+offset,60+offset, anchor=NW, image=thumbnail, tags="infos")
 
         #Affichage de la barre de vie
         conversionVie = (128*unit.currentHp)/unit.maxHp
         
-        self.hud.create_rectangle(330, 200, 458, 210, fill='black', tags="infos")
-        self.hud.create_rectangle(330, 200, 330+conversionVie, 210, fill='green', tags="infos")
+        self.hud.create_rectangle(310, 200, 438, 210, fill='black', tags="infos")
+        self.hud.create_rectangle(310, 200, 310+conversionVie, 210, fill='green', tags="infos")
 
         #Affichage des stats
-        #self.hud.create_text(468)
+        if isinstance (unit, Unit):
+            self.hud.create_text(448, 60, anchor=NW, text="Power : "+str(unit.force), font=("Stencil", 12), tags="infos")
+            self.hud.create_text(448, 85, anchor=NW, text="Range Vision : "+str(unit.rangeVision), font=("Stencil", 12), tags="infos")
+            self.hud.create_text(448, 110, anchor=NW, text="Range Attack : "+str(unit.rangeAtt), font=("Stencil", 12), tags="infos")
+            self.hud.create_text(448, 135, anchor=NW, text="Vitesse : "+str(unit.vitesse), font=("Stencil", 12), tags="infos")
 
         if(unit.owner == noLocal):
             #Afficher les unités qui peuvent être produites
@@ -418,8 +427,10 @@ class Vue:
                         self.surfaceJeu.create_image(b.position[0]-b.size/2, b.position[1]-b.size/2, anchor=NW, image=self.sprites[joueur.noJoueur][1].spriteDict[b.name], tags="structure")
                     #Si l'unite n'est pas selectionnee
                     else:
-                        self.surfaceJeu.create_image(b.position[0]-b.size/2, b.position[1]-b.size/2, anchor=NW, image=self.sprites[joueur.noJoueur][0].spriteDict[b.name], tags="structure")
-
+                        if(b.size != 32):
+                            self.surfaceJeu.create_image(b.position[0]-b.size/2, b.position[1]-b.size/2, anchor=NW, image=self.sprites[joueur.noJoueur][0].spriteDict[b.name], tags="structure")
+                        else:
+                            self.surfaceJeu.create_image(b.position[0], b.position[1], anchor=NW, image=self.sprites[joueur.noJoueur][0].spriteDict[b.name], tags="structure")
                 #Sinon si l'unite est a un autre joueur
                 else:
                     self.surfaceJeu.create_image(b.position[0]-b.size/2, b.position[1]-b.size/2, anchor=NW, image=self.sprites[joueur.noJoueur].spriteDict[b.name], tags="structure")

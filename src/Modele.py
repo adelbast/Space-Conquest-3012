@@ -83,12 +83,12 @@ class Modele(object):
             print("=====1=====")
             a =[self.map.startingPoint[i][0]*64,self.map.startingPoint[i][1]*64]
             print("=====2=====")
-            self.listeJoueur[i].creerBatiment((a),True,"guardTower",self.dictBatiment["guardTower"])
+            #self.listeJoueur[i].creerBatiment((a),True,"guardTower",self.dictBatiment["guardTower"])
             print("=====3=====")
             self.listeJoueur[i].creerBatiment(a,True,"HQ",self.dictBatiment["HQ"])
             print("=====4=====")
             self.listeJoueur[i].creerUnite("worker", (a[0]+100,a[1]+100), self.dictUnit["worker"])
-            print("canbuild : ",self.listeJoueur[i].listeBatiment[1].canBuild)
+               
 
         print("FIN")
 
@@ -291,15 +291,25 @@ class Modele(object):
                 
     def clickCibleOuTile(self,x,y): #retourne None pour un tile et la cible pour une cible
     #fonction qui regarde si le clic est sur un batiment ou une unité
+        retour = None
         for joueur in self.listeJoueur:
-            liste = joueur.listeUnite+joueur.listeBatiment
-            for chose in liste:
-                if(x < chose.position[0]+chose.size/2):#
-                    if(x > chose.position[0]-chose.size/2):#
-                        if(y < chose.position[1]+chose.size/2):#
-                            if(y > chose.position[1]-chose.size/2):#
-                                return chose
-        else: return None
+            for chose in joueur.listeUnite:
+                if(x < chose.position[0]+chose.size):
+                    if(x > chose.position[0]):
+                        if(y < chose.position[1]+chose.size):
+                            if(y > chose.position[1]):
+                                retour = chose
+                                break
+            if(not retour):
+                for chose in joueur.listeBatiment:
+                    if(x < chose.position[0]+chose.size/2):
+                        if(x > chose.position[0]-chose.size/2):
+                            if(y < chose.position[1]+chose.size/2):
+                                if(y > chose.position[1]-chose.size/2):
+                                    retour = chose
+                                    break
+            
+        return retour
 
 
     def joueurPasMort(self,joueur):   #Retourne si un joueur est mort ou non
