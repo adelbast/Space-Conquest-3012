@@ -1,6 +1,7 @@
 import configparser
 import math 
 import heapq
+import traceback
 
 class Unit:    ##Laurence
     def __init__(self, parent, name, xy, owner, attribut, idU, destination = None):
@@ -21,7 +22,8 @@ class Unit:    ##Laurence
         self.size        = attribut[7]
         self.canBuild    = attribut[8]
 
-        self.currentHp    = self.maxHp
+        self.currentHp   = self.maxHp
+        self.attackSpeed = 200  #Plus le chiffre est élevé, plus l'attaque est lente... (C'est de la magie)
                       
                       
         ###Variables Temporaires
@@ -36,9 +38,9 @@ class Unit:    ##Laurence
         self.GOTO_POSITION = 1
         self.GOTO_BATIMENT = 2
         self.FOLLOW = 3
-        self.ATTACK = 4
         self.etat = self.IDLE
 
+        self.attackPause = 0
         self.MODULO = 20
         self.followModulator = 0
 
@@ -68,9 +70,6 @@ class Unit:    ##Laurence
         if(self.parent.getNode(int(self.parent.releasePosx/32),int(self.parent.releasePosy/32)) not in self.parent.cutNodes):
             self.calculatePath()
         #self.process()
-    
-    def takeDmg(self,dmg):
-        print("Damage Taken")
 
     def selfDestroy(self): #Detruit la unit
         self.currentHp = 0
@@ -79,25 +78,25 @@ class Unit:    ##Laurence
     def autoGestion(self,listeJoueurAmi):
         try:
             if self.etat == self.IDLE:
-                #print("IDLE")
                 pass
-                # Si c'est un banal déplacement      # Si déplacement vers batiment   # Si déplacement vers unité       # Si la cible est ami                     # Si la cible n'est pas en range
+            elif(self.etat != self.GOTO_POSITION and self.destination.owner not in listeJoueurAmi and self.inRange(self.destination)):
+                if(self.attackPause == 0):
+                    self.attaque()
+                    self.attackPause = self.attackSpeed
+                self.attackPause -= 1
             else:
-                #if self.etat == self.GOTO_POSITION or self.etat == self.GOTO_BATIMENT or self.etat == self.FOLLOW or (self.destination.owner in listeJoueurAmi) or not self.inRange(self.destination):
-                
                 self.move()
-                if self.etat == self.FOLLOW:
+                if(self.etat == self.FOLLOW):
                     self.followModulator += 1
-                    if not self.followModulator%self.MODULO:
+                    if (not self.followModulator%self.MODULO):
                         self.calculatePath()
-            #else:   # Ce n'est pas un ami et est en range (huhuhu...)
-            #    self.destination.takeDmg(self.force)
         except Exception as e:
-            #print(traceback.print_exc())
+            print(traceback.print_exc())
             print("La cible n'existe plus pendant l'etat "+str(self.etat)+" du Unit \ ID \ noProprio : "+self.name+" \ "+str(self.id)+" \ "+str(self.owner))
             self.destination = None
             self.etat = self.IDLE
             self.followModulator = 0
+            self.attackPause == 0
 
     def move(self): # A modifier Cleaning?
         '''if self.etat == self.GOTO_POSITION:
@@ -129,19 +128,50 @@ class Unit:    ##Laurence
             if self.position[0] == self.destination.position[0] and self.position[1] == self.destination.position[1]:
                 self.etat = self.IDLE
                 print("Arrivé sur cible")'''
-
-        if self.etat == self.FOLLOW: #Recalculer la destination au cas ou la cible serais en mouvement
-            self.calculatePath()
-            
         if self.path :
             self.position[0] = self.path[0].x*32
             self.position[1] = self.path[0].y*32
 
             self.path.pop(0)
-        
-        elif self.destination[0] != self.position[0] or self.destination[1] != self.position[1]:
-           self.x = self.destination[0]
-           self.y = self.destination[1]
+
+    def attaque(self):
+        if(self.type == "infantry"):
+            if(self.destination.type == "infantry"):    # ==
+                pass
+            elif(self.destination.type == "air"):       # <
+                pass
+            elif(self.destination.type == "vehicule"):  # >
+                pass
+            elif(self.destination.type == "range"):     # >
+                pass
+        elif(self.type == "range"):
+            if(self.destination.type == "infantry"):    # <
+                pass
+            elif(self.destination.type == "air"):       # <
+                pass
+            elif(self.destination.type == "vehicule"):  # >
+                pass
+            elif(self.destination.type == "range"):     # ==
+                pass
+        elif(self.type == "air"):
+            if(self.destination.type == "infantry"):    # >
+                pass
+            elif(self.destination.type == "air"):       # ==
+                pass
+            elif(self.destination.type == "vehicule"):  # >
+                pass
+            elif(self.destination.type == "range"):     # <
+                pass
+        elif(self.type == "vehicule"):
+            if(self.destination.type == "infantry"):    # >
+                pass
+            elif(self.destination.type == "air"):       # >
+                pass
+            elif(self.destination.type == "vehicule"):  # ==
+                pass
+            elif(self.destination.type == "range"):     # <
+                pass
+
 
     
     def inRange(self,unit):
