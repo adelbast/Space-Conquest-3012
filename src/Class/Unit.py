@@ -1,5 +1,5 @@
 import configparser
-import math 
+import math, time 
 import heapq
 import traceback
 
@@ -24,7 +24,8 @@ class Unit:    ##Laurence
 
         self.currentHp   = self.maxHp
         self.attackSpeed = 200  #Plus le chiffre est élevé, plus l'attaque est lente... (C'est de la magie)
-        self.lastFrameTime = None
+        self.currentFrame = '1'
+        self.lastFrameTime = None #Le temps doit etre convertit en millisecondes
                       
         ###Variables Temporaires
         self.destination = None  # Unit, Bâtiment ou Position(Un tuple)
@@ -51,6 +52,10 @@ class Unit:    ##Laurence
         #self.step = 5 ;
 
     def setDestination(self, unit = None, batiment = None, unePosition = None):
+
+        #On set un temps initial pour l'animation
+        self.lastFrameTime = int(round(time.time()*1000))
+        
         if unit:
             print("Deplacement vers unit")
             self.destination = unit         # Un Unit
@@ -144,6 +149,10 @@ class Unit:    ##Laurence
             self.position[0] = self.path[0].x*32
             self.position[1] = self.path[0].y*32
             self.path.pop(0)
+
+            if(len(self.path) <= 0):
+                self.etat = self.IDLE
+                self.currentFrame = '1'
 
     def attaque(self):
         if(self.type == "infantry"):

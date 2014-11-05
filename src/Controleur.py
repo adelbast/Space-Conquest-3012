@@ -113,6 +113,7 @@ class Controleur:
         self.vue.displayObject(self.modele.listeJoueur,[],self.modele.noJoueurLocal,self.modele.selection)
         self.vue.displayHUD()
         self.vue.displayRessources(self.modele.listeJoueur[self.modele.noJoueurLocal].listeRessource)
+        self.tempsDebut = time.time()
         self.gameLoop()
     
     def packAction2Server(self):

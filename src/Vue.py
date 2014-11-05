@@ -4,6 +4,7 @@ from PIL import ImageTk, Image
 from Tile import Tileset
 from Sprites.Sprites import Sprites
 from Class.Unit import *
+import time
 import os
 
 class Vue:
@@ -187,11 +188,25 @@ class Vue:
         self.surfaceJeu.yview_moveto(posy*1/self.miniMapH)
 
     #Animation des unites
-    def animateSprites(self, timerUnit):
-    
-        frameNumber = 0
+    def animateSprites(self, unit):
+        
+        speed = 200 #Vitesse Millisecondes
+        currentTime = int(round(time.time()*1000))
 
-        return frameNumber
+        #print("Temps Courrant : ", currentTime, "Temps Dernier Frame : ", unit.lastFrameTime, "Difference : ", currentTime - unit.lastFrameTime)
+
+        if((currentTime - unit.lastFrameTime) >= speed):
+            print("animation")
+            if(unit.currentFrame == '0'):
+                unit.currentFrame = '2'
+            else:
+                unit.currentFrame = '0'
+
+            unit.lastFrameTime = int(round(time.time()*1000))   #Reset le last frame time
+
+        #print("Current Frame : ", unit.currentFrame)
+               
+        
 
     #Generation des sprites pour chacun des joueurs
     def generateSpriteSet(self, noLocal):
@@ -445,6 +460,9 @@ class Vue:
             
             #Affiche les unités
             for u in joueur.listeUnite:
+                
+                if(u.etat != u.IDLE):
+                    self.animateSprites(u)
 
                 conversionVie = (u.size*u.currentHp)/u.maxHp
                 offsetY = 6
@@ -458,14 +476,14 @@ class Vue:
 
                     #Si l'unite est selectionnee
                     if(u in selection):
-                        self.surfaceJeu.create_image(u.position[0], u.position[1], anchor=NW, image=self.sprites[joueur.noJoueur][1].spriteDict[u.name][u.orientation]['1'], tags="unit")
+                        self.surfaceJeu.create_image(u.position[0], u.position[1], anchor=NW, image=self.sprites[joueur.noJoueur][1].spriteDict[u.name][u.orientation][u.currentFrame], tags="unit")
                     #Si l'unite n'est pas selectionnee
                     else:
-                        self.surfaceJeu.create_image(u.position[0], u.position[1], anchor=NW, image=self.sprites[joueur.noJoueur][0].spriteDict[u.name][u.orientation]['1'], tags="unit")
+                        self.surfaceJeu.create_image(u.position[0], u.position[1], anchor=NW, image=self.sprites[joueur.noJoueur][0].spriteDict[u.name][u.orientation][u.currentFrame], tags="unit")
 
                 #Sinon si l'unite est a un autre joueur
                 else:
-                    self.surfaceJeu.create_image(u.position[0], u.position[1], anchor=NW, image=self.sprites[joueur.noJoueur].spriteDict[u.name][u.orientation]['1'], tags="unit")
+                    self.surfaceJeu.create_image(u.position[0], u.position[1], anchor=NW, image=self.sprites[joueur.noJoueur].spriteDict[u.name][u.orientation][u.currentFrame], tags="unit")
 
 
     
