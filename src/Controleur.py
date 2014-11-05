@@ -17,6 +17,7 @@ class Controleur:
         self.nomBatiment = None
         self.infoCreation = None
         self.etatCreation = None
+        self.tempsDebut = None
         self.compteur = 0
         self.afterID = None
         #Section Temporaire

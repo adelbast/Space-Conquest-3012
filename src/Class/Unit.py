@@ -24,7 +24,7 @@ class Unit:    ##Laurence
 
         self.currentHp   = self.maxHp
         self.attackSpeed = 200  #Plus le chiffre est élevé, plus l'attaque est lente... (C'est de la magie)
-                      
+        self.lastFrameTime = None
                       
         ###Variables Temporaires
         self.destination = None  # Unit, Bâtiment ou Position(Un tuple)
@@ -128,6 +128,19 @@ class Unit:    ##Laurence
                 self.etat = self.IDLE
                 print("Arrivé sur cible")'''
         if self.path :
+
+            #Si l'unite s'en va vers la droite
+            if(self.position[0] < self.path[0].x*32):
+                self.orientation = "right"
+            elif(self.position[0] > self.path[0].x*32):
+                self.orientation = "left"
+
+            #Si l'unite s'en va vers le bas
+            if(self.position[1] < self.path[0].y*32):
+                self.orientation = "front"
+            elif(self.position[1] > self.path[0].y*32):
+                self.orientation = "back"
+ 
             self.position[0] = self.path[0].x*32
             self.position[1] = self.path[0].y*32
             self.path.pop(0)

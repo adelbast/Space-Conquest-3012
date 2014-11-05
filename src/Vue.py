@@ -141,6 +141,7 @@ class Vue:
         else:
             self.surfaceJeu.unbind("<Enter>",self.dessinerShadowBatiment)"""
 
+    #Display un rectangle a la position ou l'on veut deposer une structure
     def displayShadow(self, event):
         self.surfaceJeu.delete("shadow")
         if(self.parent.etatCreation == True):
@@ -184,6 +185,13 @@ class Vue:
 
         self.surfaceJeu.xview_moveto(posx*1/self.miniMapW)
         self.surfaceJeu.yview_moveto(posy*1/self.miniMapH)
+
+    #Animation des unites
+    def animateSprites(self, timerUnit):
+    
+        frameNumber = 0
+
+        return frameNumber
 
     #Generation des sprites pour chacun des joueurs
     def generateSpriteSet(self, noLocal):
