@@ -126,16 +126,15 @@ class Controleur:
         return retour
 
     def gameLoop(self):
-        if(self.compteur%5):
-            reception = None
-            #print("\n----------------------------\n",self.compteur, "ENVOIE : ", self.packAction2Server())
-            self.client.pushAction( self.packAction2Server() )
-            self.modele.dicAction2Server.clear()
-            while not reception:
-                reception = self.client.pullAction()
-                if(not reception):
-                    print("laaaaag!")
-            self.modele.gestion( reception )
+        reception = None
+        #print("\n----------------------------\n",self.compteur, "ENVOIE : ", self.packAction2Server())
+        self.client.pushAction( self.packAction2Server() )
+        self.modele.dicAction2Server.clear()
+        while not reception:
+            reception = self.client.pullAction()
+            if(not reception):
+                print("laaaaag!")
+        self.modele.gestion( reception )
         """if(self.vue.etatCreation==True):
             self.vue.dessinerShadowBatiment()"""
         self.modele.actualiser()
