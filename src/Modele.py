@@ -102,7 +102,6 @@ class Modele(object):
                     if(clee == "Deplacement"):
                         for valeur in listValeur:
                             noUnit, cibleX, cibleY = valeur
-                            print("NbUnit =",len(self.listeJoueur[ii].listeUnite),"NoUnit =", noUnit)
                             self.listeJoueur[ii].listeUnite[noUnit].setDestination( unePosition = [cibleX,cibleY])
                             
                     elif(clee == "DeplacementCible"):

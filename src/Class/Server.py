@@ -22,12 +22,25 @@ class ServerObject(object):
         self.highestRead = 0        #le temps le plus recent lue
         self.client = []            #la liste des client
         self.cpuClient = 0
-        self.actions = []           #[(temp,[package joueur 0][package joueur 1][][][])]la liste qui contient tous les evenements qui contiennent les actions
+        self.actions = []           # [                                 la liste qui contient tous les evenements qui contiennent les actions
+                                    #   [ temp 1,[ [package joueur 0]
+                                    #              [package joueur 1]
+                                    #              [package joueur 2] ]
+                                    #   ],
+                                    #   [ temp 2,[ [package joueur 0]
+                                    #              [package joueur 1]
+                                    #              [package joueur 2] ]
+                                    #   ],
+                                    #   [ temp 3,[ [package joueur 0]
+                                    #              [package joueur 1]
+                                    #              [package joueur 2] ]
+                                    #   ]
+                                    # ]
         self.maxTempsDecalage = 8
         self.gameStarted = False
 
     def ping(self):
-        print("ping")
+        if(self.test):print("ping")
         return True
         
     def nbPlayer(self):
@@ -55,13 +68,14 @@ class ServerObject(object):
                 self.highestRead = self.getHighestRead()
                 #print("highestRead :",self.highestRead,len(self.actions))
                 
-                if self.highestRead >= len(self.actions):          # si la dernière action dans le dictionnaire(leur cle est leur temps) est lue on en ajoute une nouvelle
-                    #print("Ajout d'un temps d'action")
+                if not self.actions or self.highestRead >= self.actions[len(self.actions)-1][0]:
+                    if(self.test):print("Ajout d'un temps d'action")
                     uneListe = [None]*(len(self.client)+self.cpuClient)
-                    self.actions.append( (self.highestRead, uneListe) )
+                    self.actions.append( [self.highestRead+1, uneListe] ) #+1 pour mettre cette action dans le future
                 
                 #print(self.actions[len(self.actions)-1][1])
                 self.actions[len(self.actions)-1][1][num] = package     # on ajoute le package representant l'action  a la derniere place du dictionnaire
+                if(self.test):print("action Sauvegarder")
 
         except:
             print(traceback.print_exc())
@@ -74,16 +88,16 @@ class ServerObject(object):
             
             self.highestRead = self.getHighestRead()
             
-            #print("Longueur client : ",len(self.client),"num : ",num,"longeur Action:",len(self.actions))
-            
-            if self.actions and self.client[num].temps-1 == self.actions[0][0]:
+            if self.actions and self.client[num].temps-self.maxTempsDecalage > self.actions[0][0]:
                 self.deleteLowest()
-                
+            
             self.client[num].temps+=1     #augmente le temps de la personne qui veux les actions
-
+            
             for action in self.actions:
                 if (action[0] == self.client[num].temps-1): # le -1 est la parce quon a augmenté le temps avant d'envoyer le reponse
                     return action[1]
+            else:
+                return [None]*(len(self.client)+self.cpuClient)#utile pour le premier tour de boucle
         except:
             print(traceback.print_exc())
     
@@ -92,8 +106,9 @@ class ServerObject(object):
         return max([c.temps for c in self.client])
 
     def deleteLowest(self): # cherche le client qui est le plus en retard dans la lecture des evenement
-        try:
-            if min([c.temps for c in self.client]) > self.actions[0][0]: #[element en orde chronologique][le temps de cette action]
+        try:#Traduction du if en français : si le temp plus petit temps des clients est plus grand que le temps de la plus vielle action, on supprime cette action
+            if min([c.temps for c in self.client if c.estConnecte]) > self.actions[0][0]: #actions[element en orde chronologique][le temps de cette action]
+                if(self.test):print("_______Suppression",self.actions[1])
                 del self.actions[0]     # on enleve levenement le plus bas
         except:
             print(traceback.print_exc())

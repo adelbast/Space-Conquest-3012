@@ -21,7 +21,7 @@ class Controleur:
         self.compteur = 0
         self.afterID = None
         #Section Temporaire
-
+        self.verbose = False # //Mettre verbose a True pour plus de print venant du serveur
         
         self.client = Client()
         self.initServerLobby()#lorsque le menu sera fait, utiliser la fontion du bas plutôt que celle-ci
@@ -32,7 +32,7 @@ class Controleur:
 
     #Fonction qui crée le serveur. Un seul est nécéssaire par partie
     def creeServeur(self,nameServer, nomPartie, nomJoueur):
-        self.serveur = Server(nameServer, nomPartie, nomJoueur) #Initialisation
+        self.serveur = Server(nameServer, nomPartie, nomJoueur, test = self.verbose) #Initialisation 
         self.serveur.daemon = True
         self.serveur.start()    #Démarrage du serveur
 
@@ -127,11 +127,12 @@ class Controleur:
 
     def gameLoop(self):
         reception = None
-        #print("\n----------------------------\n",self.compteur, "ENVOIE : ", self.packAction2Server())
+        if(self.verbose):print("\n----------------------------\n",self.compteur, "ENVOIE : ", self.packAction2Server())
         self.client.pushAction( self.packAction2Server() )
         self.modele.dicAction2Server.clear()
         while not reception:
             reception = self.client.pullAction()
+            if(self.verbose):print("RECOIE : ", reception)
             if(not reception):
                 print("laaaaag!")
         self.modele.gestion( reception )
