@@ -9,6 +9,7 @@ class Unit:    ##Laurence
         self.owner    = owner
         self.name     = name
         self.position = [xy[0],xy[1]]
+        self.positionFluide = [xy[0],xy[1]]
         self.id = idU
         self.parent = parent
 
@@ -27,9 +28,9 @@ class Unit:    ##Laurence
         self.currentFrame = '1'
         self.lastFrameTime = None #Le temps doit etre convertit en millisecondes
                       
-        ###Variables Temporaires
         self.destination = None  # Unit, Bâtiment ou Position(Un tuple)
-
+        self.depassementVertical = False #Booleen qui indique que l'unité est rendu ou a dépassé son node d'objectif
+        self.depassementHorizontal = False
         self.path        = []
 
         self.orientation = "front"
@@ -73,6 +74,10 @@ class Unit:    ##Laurence
         #add condition si destination est nodeCoupe
         if(self.parent.getNode(int(self.parent.releasePosx/32),int(self.parent.releasePosy/32)) not in self.parent.cutNodes):
             self.calculatePath()
+            self.depassementHorizontal = False
+            self.depassementVertical   = False
+        else:
+            self.etat = self.IDLE
         #self.process()
 
     def selfDestroy(self): #Detruit la unit
@@ -103,56 +108,49 @@ class Unit:    ##Laurence
             self.attackPause == 0
 
     def move(self): # A modifier Cleaning?
-        '''if self.etat == self.GOTO_POSITION:
-            if self.position[0] > self.destination[0]:
-                self.position = (self.position[0]-5,self.position[1])
+        if ((self.depassementHorizontal or self.positionFluide[0] == self.position[0]) and (self.depassementVertical or self.positionFluide[1] == self.position[1])):
+            if(self.path):
+                newX = self.path[0].x*32
+                newY = self.path[0].y*32
+                if(self.position[0] != newX and not abs(newX-self.positionFluide[0]) < self.vitesse):
+                    self.position[0] = newX
+                    self.depassementHorizontal = False
+                if(self.position[1] != newY and not abs(newY-self.positionFluide[1]) < self.vitesse):
+                    self.position[1] = newY
+                    self.depassementVertical   = False
+                self.path.pop(0)
             else:
-                self.position = (self.position[0]+5,self.position[1])
-
-            if (self.position[1] > self.destination[1]):
-                self.position = (self.position[0],self.position[1]-5)
-            else:
-                self.position = (self.position[0],self.position[1]+5)
-
-            if self.position[0] == self.destination[0] and self.position[1] == self.destination[1]:
-                self.etat = self.IDLE
-                print("Arrivé tile")
-
-        else:
-            if self.position[0] > self.destination.position[0]:
-                self.position = (self.position[0]-5,self.position[1])
-            else:
-                self.position = (self.position[0]+5,self.position[1])
-
-            if self.position[1] > self.destination.position[1]:
-                self.position = (self.position[0],self.position[1]-5)
-            else:
-                self.position = (self.position[0],self.position[1]+5)
-
-            if self.position[0] == self.destination.position[0] and self.position[1] == self.destination.position[1]:
-                self.etat = self.IDLE
-                print("Arrivé sur cible")'''
-        if self.path :
-
-            #Si l'unite s'en va vers la droite
-            if(self.position[0] < self.path[0].x*32):
-                self.orientation = "right"
-            elif(self.position[0] > self.path[0].x*32):
-                self.orientation = "left"
-
-            #Si l'unite s'en va vers le bas
-            if(self.position[1] < self.path[0].y*32):
-                self.orientation = "front"
-            elif(self.position[1] > self.path[0].y*32):
-                self.orientation = "back"
- 
-            self.position[0] = self.path[0].x*32
-            self.position[1] = self.path[0].y*32
-            self.path.pop(0)
-
-            if(len(self.path) <= 0):
+                self.positionFluide[0] = self.position[0]
+                self.positionFluide[1] = self.position[1]
                 self.etat = self.IDLE
                 self.currentFrame = '1'
+                return 1
+
+        
+        if  (not self.depassementHorizontal and self.positionFluide[0] > self.position[0]):
+            self.positionFluide[0] = self.positionFluide[0]-self.vitesse
+            self.orientation = "left"
+            if (self.positionFluide[0] <= self.position[0]):
+                self.depassementHorizontal = True
+
+        elif(not self.depassementHorizontal and self.positionFluide[0] < self.position[0]):
+            self.positionFluide[0] = self.positionFluide[0]+self.vitesse
+            self.orientation = "right"
+            if (self.positionFluide[0] >= self.position[0]):
+                self.depassementHorizontal = True
+
+        if  (not self.depassementVertical and self.positionFluide[1] > self.position[1]):
+            self.positionFluide[1] = self.positionFluide[1]-self.vitesse
+            self.orientation = "back"
+            if (self.positionFluide[1] <= self.position[1]):
+                self.depassementVertical = True
+
+        elif(not self.depassementVertical and self.positionFluide[1] < self.position[1]):
+            self.positionFluide[1] = self.positionFluide[1]+self.vitesse
+            self.orientation = "front"
+            if (self.positionFluide[1] >= self.position[1]):
+                self.depassementVertical = True
+        
 
     def attaque(self):
         if(self.type == "infantry"):
@@ -224,6 +222,11 @@ class Unit:    ##Laurence
                self.liste.insert(0,Node(i.x,i.y))
 
             self.path = self.liste
+            self.path.pop(0)
+            self.position[0] = self.path[0].x*32
+            self.position[1] = self.path[0].y*32
+            self.path.pop(0)
+            
         except:
             print("pas de path valide")
         

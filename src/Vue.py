@@ -196,7 +196,6 @@ class Vue:
         #print("Temps Courrant : ", currentTime, "Temps Dernier Frame : ", unit.lastFrameTime, "Difference : ", currentTime - unit.lastFrameTime)
 
         if((currentTime - unit.lastFrameTime) >= speed):
-            print("animation")
             if(unit.currentFrame == '0'):
                 unit.currentFrame = '2'
             else:
@@ -468,22 +467,22 @@ class Vue:
                 offsetY = 6
                 height = 3
                 
-                self.surfaceJeu.create_rectangle(u.position[0], (u.position[1])-offsetY, (u.position[0])+u.size, (u.position[1])+(height-offsetY), fill="red", width=0, tags="healthbars")
-                self.surfaceJeu.create_rectangle(u.position[0], (u.position[1])-offsetY, (u.position[0])+conversionVie, (u.position[1])+(height-offsetY), fill="blue", width=0, tags="healthbars")
+                self.surfaceJeu.create_rectangle(u.positionFluide[0], (u.positionFluide[1])-offsetY, (u.positionFluide[0])+u.size, (u.positionFluide[1])+(height-offsetY), fill="red", width=0, tags="healthbars")
+                self.surfaceJeu.create_rectangle(u.positionFluide[0], (u.positionFluide[1])-offsetY, (u.positionFluide[0])+conversionVie, (u.positionFluide[1])+(height-offsetY), fill="blue", width=0, tags="healthbars")
 
                 #Si l'unite est au joueur local
                 if(joueur.noJoueur == noLocal):
 
                     #Si l'unite est selectionnee
                     if(u in selection):
-                        self.surfaceJeu.create_image(u.position[0], u.position[1], anchor=NW, image=self.sprites[joueur.noJoueur][1].spriteDict[u.name][u.orientation][u.currentFrame], tags="unit")
+                        self.surfaceJeu.create_image(u.positionFluide[0], u.positionFluide[1], anchor=NW, image=self.sprites[joueur.noJoueur][1].spriteDict[u.name][u.orientation][u.currentFrame], tags="unit")
                     #Si l'unite n'est pas selectionnee
                     else:
-                        self.surfaceJeu.create_image(u.position[0], u.position[1], anchor=NW, image=self.sprites[joueur.noJoueur][0].spriteDict[u.name][u.orientation][u.currentFrame], tags="unit")
+                        self.surfaceJeu.create_image(u.positionFluide[0], u.positionFluide[1], anchor=NW, image=self.sprites[joueur.noJoueur][0].spriteDict[u.name][u.orientation][u.currentFrame], tags="unit")
 
                 #Sinon si l'unite est a un autre joueur
                 else:
-                    self.surfaceJeu.create_image(u.position[0], u.position[1], anchor=NW, image=self.sprites[joueur.noJoueur].spriteDict[u.name][u.orientation][u.currentFrame], tags="unit")
+                    self.surfaceJeu.create_image(u.positionFluide[0], u.positionFluide[1], anchor=NW, image=self.sprites[joueur.noJoueur].spriteDict[u.name][u.orientation][u.currentFrame], tags="unit")
 
 
     
