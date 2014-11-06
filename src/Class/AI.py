@@ -14,10 +14,16 @@ class AI(Joueur):
         self.nbGen = [0,0,0]
         self.nbGenReq = [0,0,0]
 
+    #   self.construireBatiment(0,"barrack")
+
     def faireQqch(self):#bouge automatiquement(arbitrairement) l'unité 0
         self.compteur += 1
-        self.etatCroissance()
-        self.etatMilitaire()
+       #self.construireBatiment(0,"barrack")
+      # self.etatCroissance()
+       #self.etatMilitaire()
+    
+        
+        print("AI batiment")
 #------------------------------Croissance------------------------------#
 
     def etatCroissance(self):
@@ -95,7 +101,10 @@ class AI(Joueur):
         if self.nbWorkersReq > 20:
             self.nbWorkerReq = 20
                  
-
+#   def construireBatiment(self,worker,nom):   #tentative de faire créer un batiments à l'AI - à arranger 
+   #    print(self.parent.dictBatiment)
+   #    self.positionTest[1]+=10
+   #    Joueur.creerBatiment([50,50],True,"barrack",0,self.parent.dictBatiment["barrack"])
     
         
     ''' for i in self.listebatiment:
