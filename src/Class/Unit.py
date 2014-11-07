@@ -17,7 +17,7 @@ class Unit:    ##Laurence
         self.maxHp       = attribut[1]
         self.cost        = attribut[2]
         self.force       = attribut[3]
-        self.vitesse     = 10#attribut[4]
+        self.vitesse     = attribut[4]
         self.rangeVision = attribut[5]
         self.rangeAtt    = attribut[6]
         self.size        = attribut[7]
