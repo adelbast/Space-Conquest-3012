@@ -218,7 +218,7 @@ class Vue:
             #Generation des infantries
             s.generateSprites(32,32,96,128,"Config/AttributeInfantryUnits.cfg", d, 1)
             #Generation des vehicules
-            s.generateSprites(64,64,192,256,"Config/AttributeVehicules.cfg", d, 1)
+            s.generateSprites(64,64,192,256,"Config/AttributeVehicule.cfg", d, 1)
             #Generation des buildings
             s.generateBuildingSprites("Config/AttributeBuilding.cfg", d, 1)
 
@@ -230,7 +230,7 @@ class Vue:
                 #Generation des infantries
                 ss.generateSprites(32,32,96,128,"Config/AttributeInfantryUnits.cfg", d, 3)
                 #Generation des vehicules
-                ss.generateSprites(64,64,192,256,"Config/AttributeVehicules.cfg", d, 3)
+                ss.generateSprites(64,64,192,256,"Config/AttributeVehicule.cfg", d, 3)
                 #Generation des buildings
                 ss.generateBuildingSprites("Config/AttributeBuilding.cfg", d, 3)
                 
@@ -495,9 +495,10 @@ class Vue:
 
         if(self.hud.gettags(item)[2] == "structure"):
             self.parent.etatCreation = True
-
-        #Retourne un tuple avec "button", le nom de l'unite, le type de l'unite   
-        self.parent.infoCreation = self.hud.gettags(item)[1]
+            self.parent.infoCreation = self.hud.gettags(item)[1]
+        else:
+            self.parent.spawnUnit(self.hud.gettags(item)[1])
+        
         
               
     #Affiche le HUD
