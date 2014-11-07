@@ -122,10 +122,11 @@ class Modele(object):
                         
                     elif(clee == "NewUnit"):
                         for valeur in listValeur:
-                            typeUnit, noDuBatimentSpawner = valeur
+                            print("valeur : ",valeur)
+                            typeUnit, spawnPosition = valeur
                             print(self.listeJoueur,ii)
                             print(self.listeJoueur[ii].listeBatiment)
-                            self.listeJoueur[ii].creerUnite(typeUnit, self.listeJoueur[ii].listeBatiment[0].position, self.dictUnit[typeUnit]) #nom, position, attributs
+                            self.listeJoueur[ii].creerUnite(typeUnit, spawnPosition, self.dictUnit[typeUnit]) #nom, position, attributs
                         
                     elif(clee == "NewBatiment"):
                         workerID = 0#TODO
@@ -345,7 +346,12 @@ class Modele(object):
             self.rangeVision = int(parserVehicule.get(name, 'rangeVision'))
             self.rangeAtt    = int(parserVehicule.get(name, 'rangeAtt'))
             self.size        = int(parserVehicule.get(name, 'size'))
-            self.dictUnit[name] = [self.type, self.maxHp, self.cost, self.force, self.vitesse, self.rangeVision, self.rangeAtt,self.size]
+            try:
+                self.canBuild    = parserBatiment.get(name, 'canBuild').split(",")
+            except:
+                self.canBuild    = []
+                
+            self.dictUnit[name] = [self.type, self.maxHp, self.cost, self.force, self.vitesse, self.rangeVision, self.rangeAtt,self.size, self.canBuild]
         
         for name in batiments:
             self.maxHp       = int(parserBatiment.get(name, 'hp'))

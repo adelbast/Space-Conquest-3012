@@ -141,7 +141,7 @@ class Controleur:
         self.modele.actualiser()
         self.vue.displayRessources(self.modele.listeJoueur[self.modele.noJoueurLocal].listeRessource)
         self.vue.displayObject(self.modele.listeJoueur,[],self.modele.noJoueurLocal,self.modele.selection)
-        self.vue.displayNodes(self.modele.cutNodes)
+        #self.vue.displayNodes(self.modele.cutNodes)
         self.compteur+=1
         self.vue.root.after(50,self.gameLoop) #monter a 50 pour tester le pathfinding plus facilement peux descendre si ca vs derange
 
@@ -171,6 +171,12 @@ class Controleur:
     def creationBatiment(self,nom):  # A AJOUTER!!!!!!
         self.nomBatiment = nom
         self.vue.etatCreation = True
+
+    def spawnUnit(self, unitName):
+        pX = self.modele.selection[0].position[0] - (self.modele.dictUnit[unitName][7] + self.modele.selection[0].size/2)
+        pY = self.modele.selection[0].position[1] - (self.modele.dictUnit[unitName][7] + self.modele.selection[0].size/2)
+        self.modele.dicAction2Server['NewUnit'] = []
+        self.modele.dicAction2Server['NewUnit'].append((unitName, (pX,pY)))
 
     def getSizeBatiment(self, batiment):
         return self.modele.dictBatiment[batiment]
