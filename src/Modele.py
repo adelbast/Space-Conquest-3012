@@ -122,10 +122,7 @@ class Modele(object):
                         
                     elif(clee == "NewUnit"):
                         for valeur in listValeur:
-                            print("valeur : ",valeur)
                             typeUnit, spawnPosition = valeur
-                            print(self.listeJoueur,ii)
-                            print(self.listeJoueur[ii].listeBatiment)
                             self.listeJoueur[ii].creerUnite(typeUnit, spawnPosition, self.dictUnit[typeUnit]) #nom, position, attributs
                         
                     elif(clee == "NewBatiment"):
@@ -144,8 +141,8 @@ class Modele(object):
                     elif(clee == "SuppressionUnit"):
                         for valeur in listValeur:
                             noUnit = valeur
-
-                            self.listeJoueur[ii].supprimerUnite(noUnit)
+                            print("deleting : ",self.listeJoueur[ii].listeUnite[noUnit].name)
+                            del self.listeJoueur[ii].listeUnite[noUnit]
                         
                     elif(clee == "CaptureArtefact"):
                         for valeur in listValeur:
@@ -178,11 +175,12 @@ class Modele(object):
         
     def gestionAuto(self):
         for joueur in self.listeJoueur:
-            for uni in joueur.listeUnite :
+            for _, uni in joueur.listeUnite.items():
                 if(uni.currentHp > 0):
                     uni.autoGestion(joueur.listeAllie)#Fait bouger toutes les unitées
-                else:
-                    del uni
+                elif(not uni.deleteCallDone):
+                    self.supprimerUnit(uni.id)
+                    uni.deleteCallDone = True
             try:
                 joueur.faireQqch() # AI
             except:
@@ -210,7 +208,6 @@ class Modele(object):
                         if (self.getNode(int(self.releasePosx/32),int(self.releasePosy/32)) is not None): #voir si ou on clique est un node couper
                             #print(self.getNode(int(self.releasePosx/32),int(self.releasePosy/32)) )
                             for unite in self.selection: #Donne un ordre de déplacement à la sélection
-                                print("Ordre de déplacement")
                                 try:
                                     if isinstance (cible, Batiment):
                                         if 'DeplacementCible' not in self.dicAction2Server:
@@ -239,46 +236,41 @@ class Modele(object):
             self.selection[:] = []
             if(self.clickPosx!=self.releasePosx or self.clickPosy!=self.releasePosy):   #self.clickPosx+5 < self.releasePosx or self.clickPosx-5 > self.releasePosx or self.clickPosy+5 < self.releasePosy or self.clickPosy-5 > self.releasePosy
                 print(self.clickPosx,self.clickPosy,self.releasePosx,self.releasePosy)
-                for unit in self.listeJoueur[self.noJoueurLocal].listeUnite:            #Je prends seulement les unites puisque selection multiple de batiment inutile
+                for _, unit in self.listeJoueur[self.noJoueurLocal].listeUnite.items(): #Je prends seulement les unites puisque selection multiple de batiment inutile
                     if(self.pointDansForme([self.releasePosx,self.clickPosx,self.clickPosx,self.releasePosx],[self.clickPosy,self.clickPosy,self.releasePosy,self.releasePosy],unit.position[0],unit.position[1])):#La fonction dont je t'ai parlé sur ts frank...
                         self.selection.append(unit)
                         print(unit.name)
                     else:
-                        print("Pas cible")
+                        pass#print("Pas cible")
             else:
                 cible = self.clickCibleOuTile(self.releasePosx,self.releasePosy)
                 if(cible):
                     self.selection.append(cible)
                     print(cible.name)
                 else:
-                    print("Pas cible")
+                    pass#print("Pas cible")
             
                 
     def clickCibleOuTile(self,x,y): #retourne None pour un tile et la cible pour une cible
     #fonction qui regarde si le clic est sur un batiment ou une unité
-        retour = None
         for joueur in self.listeJoueur:
-            for chose in joueur.listeUnite:
-                if(x < chose.position[0]+chose.size):
-                    if(x > chose.position[0]):
-                        if(y < chose.position[1]+chose.size):
-                            if(y > chose.position[1]):
-                                retour = chose
-                                break
-            if(not retour):
-                for chose in joueur.listeBatiment:
-                    if(x < chose.position[0]+chose.size/2):
-                        if(x > chose.position[0]-chose.size/2):
-                            if(y < chose.position[1]+chose.size/2):
-                                if(y > chose.position[1]-chose.size/2):
-                                    retour = chose
-                                    break
-            
-        return retour
+            for _, chose in joueur.listeUnite.items():
+                if(x < chose.positionFluide[0]+chose.size):
+                    if(x > chose.positionFluide[0]):
+                        if(y < chose.positionFluide[1]+chose.size):
+                            if(y > chose.positionFluide[1]):
+                                return chose
+            for _, chose in joueur.listeBatiment.items():
+                if(x < chose.position[0]+chose.size/2):
+                    if(x > chose.position[0]-chose.size/2):
+                        if(y < chose.position[1]+chose.size/2):
+                            if(y > chose.position[1]-chose.size/2):
+                                return chose
+        return None
 
 
     def joueurPasMort(self,joueur):   #Retourne si un joueur est mort ou non
-        if(joueur.listeBatiment):
+        if(not joueur.listeBatiment):
             print(joueur.nom+" est mort")   
             return False
         return True
@@ -394,7 +386,9 @@ class Modele(object):
         self.dicAction2Server["SuppressionBatiment"].append(idBatiment)
 
     def supprimerUnit (self,idUnite):
-        self.dicAction2Server["SuppressionUnite"].append(idUnite)
+        if 'SuppressionUnit' not in self.dicAction2Server:
+            self.dicAction2Server['SuppressionUnit'] = []
+        self.dicAction2Server["SuppressionUnit"].append(idUnite)
             
     def changerAge (self):
         self.dicAction2Server["RechercheAge"]+= 1

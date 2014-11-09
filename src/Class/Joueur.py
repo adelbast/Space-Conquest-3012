@@ -7,8 +7,8 @@ class Joueur():
         self.nom = nom
         self.parent = parent
         self.noJoueur = noJoueur
-        self.listeUnite=[]
-        self.listeBatiment=[]
+        self.listeUnite={}
+        self.listeBatiment={}
         self.listeArtefact=[]
         self.listeRessource=[10000,10000,10000] #nourriture,metaux,energie
         self.maxPop=None
@@ -18,15 +18,15 @@ class Joueur():
         self.nbUnite=0
         self.idCountBatiment=0
         self.idCountUnit=0
-        self.listeAllie = []
+        self.listeAllie = []#self.noJoueur
         
 
     def creerBatiment(self,position,worker,nom,attributs): #fr
         if self.assezRessources(attributs[1]): #pour savoir si assezRessource
                 if nom == "ferme" or nom == "mine" or nom == "solarPanel":
-                    self.listeBatiment.append(Generator(self.noJoueur,nom,position,attributs,self.idCountBatiment))
+                    self.listeBatiment[self.idCountBatiment] = Generator(self.noJoueur, nom, position, attributs, self.idCountBatiment)
                 else:
-                    self.listeBatiment.append(Batiment(self.noJoueur,nom,position,attributs,self.idCountBatiment ))
+                    self.listeBatiment[self.idCountBatiment] = Batiment(self.noJoueur, nom, position, attributs, self.idCountBatiment)
                 self.idCountBatiment+=1
                 self.listeRessource[0] -= attributs[1][0] #food
                 self.listeRessource[1] -= attributs[1][1] #metaux
@@ -67,40 +67,32 @@ class Joueur():
         return True;
             
     def supprimerBatiment(self,idBatiment): #fr
-        count =0
-        for i in self.listeBatiment:
-            if (i.id == idBatiment):
-                self.listeBatiment.pop(count)
-                return print("batiment supprime")
-            count+=1
+        del self.listeBatiment[idBatiment]
+        return print("batiment supprime")
 
     def creerUnite(self,nom,position, attributs):### donner une destination en arg par rapport a la pos du batiment qui l'a cree ou autre ?
         if(self.assezRessources(attributs[2])):
-            self.listeUnite.append(Unit(self.parent,nom, (position[0],position[1]), self.noJoueur, attributs, self.idCountUnit))   #name, xy, owner, attribut, idU, destination = None
+            self.listeUnite[self.idCountUnit] = Unit(self.parent,nom, (position[0],position[1]), self.noJoueur, attributs, self.idCountUnit)   #name, xy, owner, attribut, idU, destination = None
             self.idCountUnit+=1
             self.listeRessource[0] -= attributs[2][0] #food
             self.listeRessource[1] -= attributs[2][1] #metaux
             self.listeRessource[2] -= attributs[2][2] #energie
-            print("unite cree")
+            print(self.listeUnite[self.idCountUnit-1].name,"cree")
             return 1
         else:
             print("Ressource insuffisante")
             return 0
 
     def supprimerUnite(self,idUnite):
-        count = 0
-        for i in self.listeUnite:
-            if(i.id == idUnite):
-                self.listeUnite.pop(count)
-                return print("unite supprime")
-            count +=1
+        del self.listeUnite[idUnite]
+        return print("unite supprime")
 
     def changerAge(self):
         self.ageRendu += 1
         maxPop += maxPop
     
     def compterRessource (self):
-        for i in self.listeBatiment:
+        for _, i in self.listeBatiment.items():
             if i.name == "ferme":
                 self.listeRessource[0]+= self.generateFerme(i)
             elif i.name == "mine":
@@ -133,13 +125,16 @@ class Joueur():
 
     
         
-    def compterUnite(self):
+    def compterUnite(self):#wtf is that?
         return self.unite.__len__()
         
     def mods(self):
+        #@Antoine
+        #Ce code n'est pas fonctionnel... Il multiplie la force par 1.5 a chaque tour de boucle... 
+        #Pour une force de 10, au bout de 10 tour de boucle l'unité va fesser de 864...
         for i in self.listeArtefact:
             if (i == "Statue_de_Hera"):
-                for ii in listeUnite:
+                for ii in listeUnite.items():
                     force *= 1.5
             elif (i == "Corne_abondance"):
                 self.listeRessource[0] += 100

@@ -12,14 +12,14 @@ class Controleur:
         self.vue            = Vue(self)
 
         self.modele.init_grid_Pathfinding(self)
-        self.client = None
-        self.serveur = None
-        self.nomBatiment = None
+        self.client       = None
+        self.serveur      = None
+        self.nomBatiment  = None
         self.infoCreation = None
         self.etatCreation = None
-        self.tempsDebut = None
-        self.compteur = 0
-        self.afterID = None
+        self.tempsDebut   = None
+        self.compteur     = 0
+        self.afterID      = None
         #Section Temporaire
         self.verbose = False # //Mettre verbose a True pour plus de print venant du serveur
         

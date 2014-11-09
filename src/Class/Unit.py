@@ -25,7 +25,7 @@ class Unit:    ##Laurence
         self.armor       = attribut[9]
 
         self.currentHp   = self.maxHp
-        self.attackSpeed = 200  #Plus le chiffre est élevé, plus l'attaque est lente... (C'est de la magie)
+        self.attackSpeed = 50  #Plus le chiffre est élevé, plus l'attaque est lente... (C'est de la magie)
         self.currentFrame = '1'
         self.lastFrameTime = None #Le temps doit etre convertit en millisecondes
                       
@@ -44,8 +44,10 @@ class Unit:    ##Laurence
         self.etat = self.IDLE
 
         self.attackPause = 0
-        self.MODULO = 20
+        self.MODULO = 5
         self.followModulator = 0
+
+        self.deleteCallDone = False #Variable d'état de suppression pour éviter de caller deux fois le serveur pour supprimer la meme unité
 
         ###Pathfinder Later###
         #if self.destination[0] != self.position[0] or self.destination[1] != self.position[1]:  #Pour savoir s'il faut bouger
@@ -91,15 +93,17 @@ class Unit:    ##Laurence
                 if(self.attackPause == 0):
                     self.attaque()
                     self.attackPause = self.attackSpeed
-                self.attackPause -= 1
             else:
                 self.move()
                 if(self.etat == self.FOLLOW):
                     self.followModulator += 1
                     if (not self.followModulator%self.MODULO):
                         self.calculatePath()
-        except Exception as e:
-            print(traceback.print_exc())
+
+            if(self.attackPause > 0):
+                self.attackPause -= 1
+
+        except AttributeError as e:
             print("La cible n'existe plus pendant l'etat "+str(self.etat)+" du Unit \ ID \ noProprio : "+self.name+" \ "+str(self.id)+" \ "+str(self.owner))
             self.destination = None
             self.etat = self.IDLE
@@ -188,6 +192,8 @@ class Unit:    ##Laurence
                 self.destination.currentHp -= self.force-self.destination.armor
             elif(self.destination.type == "range"):     # <
                 self.destination.currentHp -= self.force-self.destination.armor
+        if(self.destination.currentHp<0):
+            self.destination.currentHp=0
     
     def inRange(self,unit):
         if  math.sqrt(abs(self.position[0] - unit.position[0])**2 + abs(self.position[1] - unit.position[1])**2) < self.rangeAtt:

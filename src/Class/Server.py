@@ -165,8 +165,6 @@ class Server(Thread):
         self.nameServerThread = None
         self.nameServer = ns
 
-        if(test):
-            self.run()
 
     def run(self): #lance le serveur de jeu
         print("Création du serveur en cours...")

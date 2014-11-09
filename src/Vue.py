@@ -321,7 +321,6 @@ class Vue:
                 
             else:
                 self.hud.delete("button")
-                print("Aucune production possible")
         
     
         
@@ -440,7 +439,7 @@ class Vue:
         for joueur in joueurs:
 
             #Affiche les batiments
-            for b in joueur.listeBatiment:
+            for _, b in joueur.listeBatiment.items():# _ == placeholder pour la clée
                 #Si l'unite est au joueur local
                 if(joueur.noJoueur == noLocal):
 
@@ -458,7 +457,7 @@ class Vue:
                     self.surfaceJeu.create_image(b.position[0]-b.size/2, b.position[1]-b.size/2, anchor=NW, image=self.sprites[joueur.noJoueur].spriteDict[b.name], tags="structure")
             
             #Affiche les unités
-            for u in joueur.listeUnite:
+            for _, u in joueur.listeUnite.items():# _ == placeholder pour la clée
                 
                 if(u.etat != u.IDLE):
                     self.animateSprites(u)
