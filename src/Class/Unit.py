@@ -23,9 +23,9 @@ class Unit:    ##Laurence
         self.size        = attribut[7]
         self.canBuild    = attribut[8]
         self.armor       = attribut[9]
+        self.attackSpeed = attribut[10]
 
         self.currentHp   = self.maxHp
-        self.attackSpeed = 50  #Plus le chiffre est élevé, plus l'attaque est lente... (C'est de la magie)
         self.currentFrame = '1'
         self.lastFrameTime = None #Le temps doit etre convertit en millisecondes
                       

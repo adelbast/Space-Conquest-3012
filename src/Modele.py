@@ -128,7 +128,8 @@ class Modele(object):
                     elif(clee == "NewBatiment"):
                         workerID = 0#TODO
                         typeBatiment, x, y = listValeur
-                        self.listeJoueur[ii].creerBatiment((x,y), self.listeJoueur[ii].listeUnite[workerID], typeBatiment, self.dictBatiment[typeBatiment]) #position,worker,nom,attributs
+                        try:
+                            self.listeJoueur[ii].creerBatiment((x,y), self.listeJoueur[ii].listeUnite[workerID], typeBatiment, self.dictBatiment[typeBatiment]) #position,worker,nom,attributs
                         
                     elif(clee == "SuppressionBatiment"):
                         for valeur in listValeur:
@@ -322,13 +323,13 @@ class Modele(object):
             self.rangeAtt    = int(parser.get(name, 'rangeAtt'))
             self.size        = int(parser.get(name, 'size'))
             self.armor       = int(parser.get(name, 'armor'))
-            
+            self.vitesseAtt  = int(parser.get(name, 'vitesseAttaque'))
             try:
                 self.canBuild    = parser.get(name, 'canBuild').split(",")
             except:
                 self.canBuild    = []
 
-            self.dictUnit[name] = [self.type, self.maxHp, self.cost, self.force, self.vitesse, self.rangeVision, self.rangeAtt,self.size, self.canBuild, self.armor]
+            self.dictUnit[name] = [self.type, self.maxHp, self.cost, self.force, self.vitesse, self.rangeVision, self.rangeAtt,self.size, self.canBuild, self.armor, self.vitesseAtt]
 
         for name in unitVe:
             self.type        = parserVehicule.get(name, 'type')
@@ -340,12 +341,13 @@ class Modele(object):
             self.rangeAtt    = int(parserVehicule.get(name, 'rangeAtt'))
             self.size        = int(parserVehicule.get(name, 'size'))
             self.armor       = int(parserVehicule.get(name, 'armor'))
+            self.vitesseAtt  = int(parserVehicule.get(name, 'vitesseAttaque'))
             try:
                 self.canBuild    = parserBatiment.get(name, 'canBuild').split(",")
             except:
                 self.canBuild    = []
                 
-            self.dictUnit[name] = [self.type, self.maxHp, self.cost, self.force, self.vitesse, self.rangeVision, self.rangeAtt,self.size, self.canBuild, self.armor]
+            self.dictUnit[name] = [self.type, self.maxHp, self.cost, self.force, self.vitesse, self.rangeVision, self.rangeAtt,self.size, self.canBuild, self.armor, self.vitesseAtt]
         
         for name in batiments:
             self.maxHp       = int(parserBatiment.get(name, 'hp'))
