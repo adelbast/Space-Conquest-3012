@@ -154,40 +154,40 @@ class Unit:    ##Laurence
     def attaque(self):
         if(self.type == "infantry"):
             if(self.destination.type == "infantry"):    # ==
-                destination.currentHp -= self.force-destination.armor
+                self.destination.currentHp -= self.force-self.destination.armor
             elif(self.destination.type == "air"):       # < peut pas attaquer
                 pass
             elif(self.destination.type == "vehicule"):  # >
-                destination.currentHp -= self.force-destination.armor*2
+                self.destination.currentHp -= self.force-self.destination.armor*2
             elif(self.destination.type == "range"):     # <
-                destination.currentHp -= self.force*.5
+                self.destination.currentHp -= self.force*.5
         elif(self.type == "range"):
             if(self.destination.type == "infantry"):    # <
-                destination.currentHp -= self.force
+                self.destination.currentHp -= self.force
             elif(self.destination.type == "air"):       # <
-                destination.currentHp -= self.force-destination.armor
+                self.destination.currentHp -= self.force-self.destination.armor
             elif(self.destination.type == "vehicule"):  # >
-                destination.currentHp -= self.force-destination.armor*2
+                self.destination.currentHp -= self.force-self.destination.armor*2
             elif(self.destination.type == "range"):     # ==
-                destination.currentHp -= self.force-destination.armor
+                self.destination.currentHp -= self.force-self.destination.armor
         elif(self.type == "air"):
             if(self.destination.type == "infantry"):    # >
-                destination.currentHp -= self.force-destination.armor
+                self.destination.currentHp -= self.force-self.destination.armor
             elif(self.destination.type == "air"):       # ==
-                destination.currentHp -= self.force-destination.armor
+                self.destination.currentHp -= self.force-self.destination.armor
             elif(self.destination.type == "vehicule"):  # <
-                destination.currentHp -= self.force-destination.armor
+                self.destination.currentHp -= self.force-self.destination.armor
             elif(self.destination.type == "range"):     # <
-                destination.currentHp -= self.force-destination.armor
+                self.destination.currentHp -= self.force-self.destination.armor
         elif(self.type == "vehicule"):
             if(self.destination.type == "infantry"):    # <
-                destination.currentHp -= self.force-destination.armor
+                self.destination.currentHp -= self.force-self.destination.armor
             elif(self.destination.type == "air"):       # >
-                destination.currentHp -= self.force/2-destination.armor
+                self.destination.currentHp -= self.force/2-self.destination.armor
             elif(self.destination.type == "vehicule"):  # ==
-                destination.currentHp -= self.force-destination.armor
+                self.destination.currentHp -= self.force-self.destination.armor
             elif(self.destination.type == "range"):     # <
-                destination.currentHp -= self.force-destination.armor
+                self.destination.currentHp -= self.force-self.destination.armor
     
     def inRange(self,unit):
         if  math.sqrt(abs(self.position[0] - unit.position[0])**2 + abs(self.position[1] - unit.position[1])**2) < self.rangeAtt:
