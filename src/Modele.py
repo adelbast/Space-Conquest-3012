@@ -131,7 +131,7 @@ class Modele(object):
                         try:
                             self.listeJoueur[ii].creerBatiment((x,y), self.listeJoueur[ii].listeUnite[workerID], typeBatiment, self.dictBatiment[typeBatiment]) #position,worker,nom,attributs
                         except KeyError as e:
-                            print e
+                            print(e)
                             print("Le worker doit s'être fait tuer entre deux action...")
                     elif(clee == "SuppressionBatiment"):
                         for valeur in listValeur:

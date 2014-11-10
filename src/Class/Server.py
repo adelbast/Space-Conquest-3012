@@ -4,7 +4,7 @@ import socket
 from random import randint
 import pickle
 import time
-from threading import Thread
+from threading import Thread, Lock
 import traceback
 import sys
 
@@ -19,7 +19,6 @@ class ServerObject(object):
         self.nomServeur = nomServeur
         self.nomJoueurHost = nomJoueurHost
         self.ip = ip
-        self.highestRead = 0        #le temps le plus recent lue
         self.client = []            #la liste des client
         self.cpuClient = 0
         self.actions = []           # [                                 la liste qui contient tous les evenements qui contiennent les actions
@@ -36,6 +35,8 @@ class ServerObject(object):
                                     #              [package joueur 2] ]
                                     #   ]
                                     # ]
+        self.lock1 = Lock()
+        self.lock2 = Lock()
         self.maxTempsDecalage = 8
         self.gameStarted = False
 
@@ -53,6 +54,8 @@ class ServerObject(object):
                 self.client.append(InternalClient(num,nom))   #ajoute un client avec comme numero sa position dans le tableau
                 print(self.client[num].nom+" est connecté!")
                 return num           #retourne le numero donne
+            else:
+                return -1
         except Exception as e:
             print(traceback.print_exc())    #code pour avoir le "FULL STACK TRACE" :D
 
@@ -62,16 +65,17 @@ class ServerObject(object):
             
     def sendAction(self,listePackage):
         try:
+            self.lock1.acquire()
             for i in listePackage:
                 num =       i[0]
                 package =   i[1]
-                self.highestRead = self.getHighestRead()
+                highestRead = self.getHighestRead()
                 #print("highestRead :",self.highestRead,len(self.actions))
                 
-                if not self.actions or self.highestRead >= self.actions[len(self.actions)-1][0]:
+                if not self.actions or highestRead >= self.actions[len(self.actions)-1][0]:
                     if(self.test):print("Ajout d'un temps d'action")
                     uneListe = [None]*(len(self.client)+self.cpuClient)
-                    self.actions.append( [self.highestRead+1, uneListe] ) #+1 pour mettre cette action dans le future
+                    self.actions.append( [highestRead+1, uneListe] ) #+1 pour mettre cette action dans le future
                 
                 #print(self.actions[len(self.actions)-1][1])
                 self.actions[len(self.actions)-1][1][num] = package     # on ajoute le package representant l'action  a la derniere place du dictionnaire
@@ -79,34 +83,39 @@ class ServerObject(object):
 
         except:
             print(traceback.print_exc())
+        finally:
+            self.lock1.release()
 
     def readAction(self,num):
+        retour = None
         try:
             for i in self.client:
                 if i.estConnecte and i.temps+self.maxTempsDecalage < self.client[num].temps:
                     return None
-            
-            self.highestRead = self.getHighestRead()
+            self.lock2.acquire()
             
             if self.actions and self.client[num].temps-self.maxTempsDecalage > self.actions[0][0]:
                 self.deleteLowest()
             
-            self.client[num].temps+=1     #augmente le temps de la personne qui veux les actions
-            
             for action in self.actions:
-                if (action[0] == self.client[num].temps-1): # le -1 est la parce quon a augmenté le temps avant d'envoyer le reponse
-                    return action[1]
+                if (action[0] == self.client[num].temps):
+                    retour = action[1]
+                    break
             else:
-                return [None]*(len(self.client)+self.cpuClient)#utile pour le premier tour de boucle
+                retour = [None]*(len(self.client)+self.cpuClient)#utile pour le premier tour de boucle
+            self.client[num].temps+=1     #augmente le temps de la personne qui veux les actions
         except:
             print(traceback.print_exc())
+        finally:
+            self.lock2.release()
+            return retour
     
 
     def getHighestRead(self):
         return max([c.temps for c in self.client])
 
     def deleteLowest(self): # cherche le client qui est le plus en retard dans la lecture des evenement
-        try:#Traduction du if en français : si le temp plus petit temps des clients est plus grand que le temps de la plus vielle action, on supprime cette action
+        try:#Traduction du if en français : si le plus petit temps des clients connecté est plus grand que le temps de la plus vielle action, on supprime cette action
             if min([c.temps for c in self.client if c.estConnecte]) > self.actions[0][0]: #actions[element en orde chronologique][le temps de cette action]
                 if(self.test):print("_______Suppression",self.actions[1])
                 del self.actions[0]     # on enleve levenement le plus bas
