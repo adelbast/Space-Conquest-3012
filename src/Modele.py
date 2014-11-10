@@ -102,16 +102,22 @@ class Modele(object):
                     if(clee == "Deplacement"):
                         for valeur in listValeur:
                             noUnit, cibleX, cibleY = valeur
-                            self.listeJoueur[ii].listeUnite[noUnit].setDestination( unePosition = [cibleX,cibleY])
+                            try:
+                                self.listeJoueur[ii].listeUnite[noUnit].setDestination( unePosition = [cibleX,cibleY])
+                            except KeyError:
+                                pass
                             
                     elif(clee == "DeplacementCible"):
                         #noUnit, noProprio, UvB, noUnitCible
                         for valeur in listValeur:
                             noUnit, noProprio, uvB, noUnitCible = valeur
-                            if uvB == 0:
-                                self.listeJoueur[ii].listeUnite[ noUnit ].setDestination( unit = self.listeJoueur[ noProprio ].listeUnite[ noUnitCible ])
-                            else:
-                                self.listeJoueur[ii].listeUnite[ noUnit ].setDestination( batiment = self.listeJoueur[ noProprio ].listeBatiment[ noUnitCible ])
+                            try:
+                                if uvB == 0:
+                                    self.listeJoueur[ii].listeUnite[ noUnit ].setDestination( unit = self.listeJoueur[ noProprio ].listeUnite[ noUnitCible ])
+                                else:
+                                    self.listeJoueur[ii].listeUnite[ noUnit ].setDestination( batiment = self.listeJoueur[ noProprio ].listeBatiment[ noUnitCible ])
+                            except KeyError:
+                                pass
                     
                     elif(clee == "RechercheAge"):
                         for valeur in listValeur:
@@ -123,29 +129,29 @@ class Modele(object):
                     elif(clee == "NewUnit"):
                         for valeur in listValeur:
                             typeUnit, spawnPosition = valeur
-                            self.listeJoueur[ii].creerUnite(typeUnit, spawnPosition, self.dictUnit[typeUnit]) #nom, position, attributs
+                            try:
+                                self.listeJoueur[ii].creerUnite(typeUnit, spawnPosition, self.dictUnit[typeUnit]) #nom, position, attributs
+                            except KeyError:
+                                pass
                         
                     elif(clee == "NewBatiment"):
                         workerID = 0#TODO
                         typeBatiment, x, y = listValeur
                         try:
                             self.listeJoueur[ii].creerBatiment((x,y), self.listeJoueur[ii].listeUnite[workerID], typeBatiment, self.dictBatiment[typeBatiment]) #position,worker,nom,attributs
-                        except KeyError as e:
-                            print(e)
-                            print("Le worker doit s'être fait tuer entre deux action...")
+                        except KeyError:
+                            pass
+
                     elif(clee == "SuppressionBatiment"):
                         for valeur in listValeur:
                             noBatiment = valeur
-
-                            self.listeJoueur[ii].supprimerBatiment[noBatiment]
-
+                            self.listeJoueur[ii].supprimerBatiment(noBatiment)
                         
                         
                     elif(clee == "SuppressionUnit"):
                         for valeur in listValeur:
                             noUnit = valeur
-                            print("deleting : ",self.listeJoueur[ii].listeUnite[noUnit].name)
-                            del self.listeJoueur[ii].listeUnite[noUnit]
+                            self.listeJoueur[ii].supprimerUnite(noUnit)
                         
                     elif(clee == "CaptureArtefact"):
                         for valeur in listValeur:

@@ -42,8 +42,10 @@ class Unit:    ##Laurence
         self.GOTO_BATIMENT = 2
         self.FOLLOW = 3
         self.etat = self.IDLE
+        self.isWalking = False
 
-        self.attackPause = 0
+        self.reloading = 0
+        self.attackAnimation = 0
         self.MODULO = 5
         self.followModulator = 0
 
@@ -90,27 +92,28 @@ class Unit:    ##Laurence
             if self.etat == self.IDLE:
                 pass
             elif(self.etat != self.GOTO_POSITION and self.destination.owner not in listeJoueurAmi and self.inRange(self.destination)):
-                if(self.attackPause == 0):
+                if( self.reloading == 0 ):
                     self.attaque()
-                    self.attackPause = self.attackSpeed
-            else:
-                self.move()
+                    self.attackAnimation = 5
+                    self.reloading = self.attackSpeed
+            elif(self.attackAnimation == 0):
                 if(self.etat == self.FOLLOW):
                     self.followModulator += 1
-                    if (not self.followModulator%self.MODULO):
+                    if ( self.destination.isWalking and (not self.path or not self.followModulator%self.MODULO) ):
                         self.calculatePath()
-
-            if(self.attackPause > 0):
-                self.attackPause -= 1
+                self.move()
+            if(self.attackAnimation > 0):
+                self.attackAnimation -= 1
+            if(self.reloading > 0):
+                self.reloading -= 1
 
         except AttributeError as e:
             print("La cible n'existe plus pendant l'etat "+str(self.etat)+" du Unit \ ID \ noProprio : "+self.name+" \ "+str(self.id)+" \ "+str(self.owner))
             self.destination = None
             self.etat = self.IDLE
             self.followModulator = 0
-            self.attackPause == 0
 
-    def move(self): # A modifier Cleaning?
+    def move(self):
         if ((self.depassementHorizontal or self.positionFluide[0] == self.position[0]) and (self.depassementVertical or self.positionFluide[1] == self.position[1])):
             if(self.path):
                 newX = self.path[0].x*32
@@ -125,11 +128,14 @@ class Unit:    ##Laurence
             else:
                 self.positionFluide[0] = self.position[0]
                 self.positionFluide[1] = self.position[1]
-                self.etat = self.IDLE
+                self.isWalking = False
                 self.currentFrame = '1'
+                if(self.etat == self.GOTO_POSITION):
+                    self.etat = self.IDLE
                 return 1
 
-        
+
+        self.isWalking = True
         if  (not self.depassementHorizontal and self.positionFluide[0] > self.position[0]):
             self.positionFluide[0] = self.positionFluide[0]-self.vitesse
             self.orientation = "left"
@@ -196,7 +202,7 @@ class Unit:    ##Laurence
             self.destination.currentHp=0
     
     def inRange(self,unit):
-        if  math.sqrt(abs(self.position[0] - unit.position[0])**2 + abs(self.position[1] - unit.position[1])**2) < self.rangeAtt:
+        if  math.sqrt(abs(self.positionFluide[0] - unit.positionFluide[0])**2 + abs(self.positionFluide[1] - unit.positionFluide[1])**2) < self.rangeAtt:
             return True
         return False
 
@@ -228,11 +234,9 @@ class Unit:    ##Laurence
 
             self.path = self.liste
             self.path.pop(0)
-            self.position[0] = self.path[0].x*32
-            self.position[1] = self.path[0].y*32
-            self.path.pop(0)
             
         except:
+            print(traceback.print_exc())
             print("pas de path valide")
         
         #print("VALUEEES")

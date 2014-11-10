@@ -459,7 +459,7 @@ class Vue:
             #Affiche les unités
             for _, u in joueur.listeUnite.items():# _ == placeholder pour la clée
                 
-                if(u.etat != u.IDLE):
+                if(u.isWalking):
                     self.animateSprites(u)
 
                 conversionVie = (u.size*u.currentHp)/u.maxHp

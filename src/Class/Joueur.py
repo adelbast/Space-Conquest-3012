@@ -67,8 +67,11 @@ class Joueur():
         return True;
             
     def supprimerBatiment(self,idBatiment): #fr
-        del self.listeBatiment[idBatiment]
-        return print("batiment supprime")
+        try:    
+            del self.listeBatiment[idBatiment]
+            print("batiment supprime")
+        except KeyError:
+            pass
 
     def creerUnite(self,nom,position, attributs):### donner une destination en arg par rapport a la pos du batiment qui l'a cree ou autre ?
         if(self.assezRessources(attributs[2])):
@@ -84,8 +87,11 @@ class Joueur():
             return 0
 
     def supprimerUnite(self,idUnite):
-        del self.listeUnite[idUnite]
-        return print("unite supprime")
+        try:
+            del self.listeUnite[idUnite]
+            print("unite supprime")
+        except KeyError:
+            pass
 
     def changerAge(self):
         self.ageRendu += 1
