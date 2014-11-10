@@ -491,12 +491,14 @@ class Vue:
         #print("ID : ", item)
         #print("ThingToBuild : ", self.hud.gettags(item)[1], "Type : ", self.hud.gettags(item)[2])
         #print("Below : ", self.hud.find_below(item))
-
-        if(self.hud.gettags(item)[2] == "structure"):
-            self.parent.etatCreation = True
-            self.parent.infoCreation = self.hud.gettags(item)[1]
-        else:
-            self.parent.spawnUnit(self.hud.gettags(item)[1])
+        try:
+            if(self.hud.gettags(item)[2] == "structure"):
+                self.parent.etatCreation = True
+                self.parent.infoCreation = self.hud.gettags(item)[1]
+            else:
+                self.parent.spawnUnit(self.hud.gettags(item)[1])
+        except:
+            print("Aucun choix de construction selectionne")
         
         
               
