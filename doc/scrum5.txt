@@ -1,0 +1,32 @@
+Scrum #5 
+
+Laurence
+quoi: cutting nodes, comencer lincrementation de la recherche
+prob: le jeu crashe
+a faire: débogguer le crash de jeu, continuer recherches
+
+Arnaud
+quoi: les infos des unités dans le gui, healths bar rajoutées,gosser avec le pathfinder
+prob: y'a décalage entre l'affichage des units entre les serveurs
+a faire: animation units
+
+Francis
+quoi: les nodes pour les batiments, path legal ou pas, offset debuggue
+prob: le offset
+a faire: map à faire , path a debugger, nettoyer les units/modele (stubs)
+
+
+Alex:
+quoi: commencé L'AI, fonction de recherche
+prob: fonction est compliqué a traduire en maths
+a faire: checker pour le serveur, mettre un plan B
+
+Xavier
+quoi:  le follow des units, le debut de l'Attaque, decalage de  selection
+prob:  les prob de l'équipe
+a faire: l'attaque, 
+
+Antoine: 
+quoi: recherche théorique du l'AI, schéma AI, implementation AI
+prob: formule complexes
+a faire: avancer les AI

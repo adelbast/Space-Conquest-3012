@@ -1,0 +1,32 @@
+Alex
+fait: point de départ des équipes
+probleme: oui, jai du recommencer 2 fois a cause d'un probleme X
+a faire: finir ça
+
+Antoine:
+fait:
+dic2server
+correction fonctions d'Actions
+squelette artefact non implanté
+prob: probleme divers entre autres avec git-hub
+a faire: implanter artafact foncitonnels et elaborer AI
+
+Laurence:
+fait: implementation du pathfinder
+prob: yen a pu maintenant
+a faire: 
+
+Arnaud:
+fait: affichage des infos des unités, menus, boutons, interface graphique du serveur
+problemes: pas vraiment
+a faire : health bar sur les unites en jeux, grillage lors du positionnement des buildings
+
+francis:
+fait: pathfinder
+probleme: non
+a faire: cut les nodes pour la création de batiments, gestion du clic droit illegal, gestion des selection multiples
+
+xavier:
+fait: integrer le serveur
+probleme: oui
+a faire: AI
