@@ -37,12 +37,9 @@ class Client(object):
 	#Cherche le nameServer (Serveur secondaire sur lequel est enregister le(s) serveur(s) de jeux)
 	def findNameServer(self):
 		try:
-			print("Recherche")
 			self.nameServer = Pyro4.naming.locateNS()	#Recherche le nameServer et l'assigne s'il le trouve
-			print("Trouvé")
 			return True
 		except Exception as e:
-			print("Pas trouvé")
 			return False
 
 	def findNameServerThread(self):
@@ -63,31 +60,36 @@ class Client(object):
 			try:
 				return [clee for clee, valeur in self.nameServer.list().items() if clee != "Pyro.NameServer"]	#retourne un dict d'adresse de forme Uri
 			except:
-				"""print("Handling Error :")
-				print(traceback.print_exc())	#code pour avoir le "FULL STACK TRACE" :D
-				print("Still rollin!")"""
 				return None
 		return None
 
 	#Crée l'objet serveur (dit Proxy) à partir du nom fournis et souscrit au serveur qui lui retourne un numero unique
 	def connect(self,nomDuServeur):
-		try:				
-			self.nameServer.ping()						#Test que le nameserver est en ligne
-			uri = self.nameServer.lookup(nomDuServeur)	#Cherche sur le nameServer si un serveur correspond au nom recu en param
-			print("Connection en cours...")
-			self.proxy = Pyro4.Proxy(uri)				#Assigne l'adresse uri à l'objet pyro
-			self.noJoueur = self.proxy.seConnecter(self.nom)		#Signale au serveur qu'on est connecté et celui-ci nous assigne un numero unique
-			print("Connection établie!")
+		try:
+			if(nomDuServeur):
+				print("[Client] : ","Connection en cours...")				
+				self.nameServer.ping()						#Test que le nameserver est en ligne
+				uri = self.nameServer.lookup(nomDuServeur)	#Cherche sur le nameServer si un serveur correspond au nom recu en param
+				self.proxy = Pyro4.Proxy(uri)				#Assigne l'adresse uri à l'objet pyro
+				self.noJoueur = self.proxy.seConnecter(self.nom)		#Signale au serveur qu'on est connecté et celui-ci nous assigne un numero unique
+				print("[Client] : ","Connection établie")
+			else:
+				print("[Client] : ","Il n'y a pas de serveur de sélectionné!")
+
 		except:
+			print("[Client] : ","Erreur lors de la connection")
 			print("Handling Error :")
 			print(traceback.print_exc())	#code pour avoir le "FULL STACK TRACE" :D
 			print("Still rollin!")
-			return 1
+			return -1
 
 	def disconnect(self):
 		try:
+			print("[Client] : ","Déconnection en cours...",end="  ")
 			self.proxy.seDeconnecter(self.noJoueur)
+			print("Réussi")
 		except Exception as e:
+			print("Raté")
 			print(e)
 
 	#Getter des info que le serveur doit donner à chaque client pour démarrer la partie

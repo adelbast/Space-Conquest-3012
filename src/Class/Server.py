@@ -33,7 +33,7 @@ class ServerObject(object):
         self.pastTime = None#time.time()
 
     def ping(self):
-        if(self.test):print("ping")
+        if(self.test):print("[Serveur] : ping")
         return True
         
     def nbPlayer(self):
@@ -44,7 +44,7 @@ class ServerObject(object):
             if not self.gameStarted:   # on ne peut se connecter que si la limite des joueur n'est pas depasser et si la partie n'est pas commencé
                 num = self.client.__len__()                 # le numero  que le client va recevoir est sa position dans le tableau des clients
                 self.client.append(InternalClient(num,nom))   #ajoute un client avec comme numero sa position dans le tableau
-                print(self.client[num].nom+" est connecté!")
+                print("[Serveur] : ",self.client[num].nom+" est connecté!")
                 return num           #retourne le numero donne
             else:
                 return -1
@@ -53,7 +53,7 @@ class ServerObject(object):
 
     def seDeconnecter(self, noClient):
         self.client[noClient].estConnecte = False
-        print(self.client[noClient].nom + " c'est déconnecté !!!!")
+        print("[Serveur] : ",self.client[noClient].nom + " c'est déconnecté !!!!")
             
     def sendAction(self,listePackage):
         try:
@@ -63,13 +63,13 @@ class ServerObject(object):
                 highestRead = self.getHighestRead()
                 
                 if not self.actions or highestRead >= self.getHighestActionTime():
-                    if(self.test):print("Ajout d'un temps d'action")
+                    if(self.test):print("[Serveur] : ","Ajout d'un temps d'action")
                     uneListe = [None]*(len(self.client)+self.cpuClient)
                     self.actions[highestRead+1] = uneListe  #+1 pour mettre cette action dans le future
                 
                 #print(self.actions[len(self.actions)-1][1])
                 self.actions[self.getHighestActionTime()][num] = package     # on ajoute le package representant l'action  a la derniere place du dictionnaire
-                if(self.test):print("action Sauvegarder")
+                if(self.test):print("[Serveur] : ","Action Sauvegarder")
 
         except:
             print(traceback.print_exc())
@@ -110,7 +110,7 @@ class ServerObject(object):
     def deleteLowest(self): # cherche le client qui est le plus en retard dans la lecture des evenement
         for clee in self.getActionDeleteList():
             try:
-                if(self.test):print("________________________________Suppression",self.actions[clee],clee)
+                if(self.test):print("[Serveur] : ","_______________Suppression",self.actions[clee],clee)
                 del self.actions[clee]     # on enleve levenement le plus bas
             except KeyError:
                 print(traceback.print_exc())
@@ -172,7 +172,7 @@ class Server(Thread):
 
 
     def run(self): #lance le serveur de jeu
-        print("Création du serveur en cours...")
+        print("[Serveur] : ","Mise en marche du serveur ...")
         daemon=Pyro4.Daemon(host=self.ip)
         self.uri=daemon.register(self.serverObject, self.nomServeur) #"PYRO:SpaceConquest3012@192.168.100.2:9992" Uri ressemble à quelque chose comme ça
         print(self.uri)
@@ -180,15 +180,20 @@ class Server(Thread):
             self.nameServer.register(name=self.nomServeur, uri=self.uri)
         else:
             self.startNameServer()
-        print("Pret!")
+        print("[Serveur] : ","Prêt!")
         daemon.requestLoop()
 
     def startNameServer(self):      #lance le serveur qui broadcast les infos du serveur de jeu sur le réseau
         try:
+            print("[Serveur] : ","Lancement du nameServer... ")
             self.nameServerThread = Thread(target = Pyro4.naming.startNSloop,args=(self.ip, None, True)) #création de l'objet serveur
             self.nameServerThread.start()    #lance le nameServeur dans un thread
+            print("[Serveur] : ","Lancement du nameServer RÉUSSI ")
+            print("[Serveur] : ","Enregistrement du serveur sur le nameServer... ")
             Pyro4.naming.locateNS(host=self.ip).register(name=self.nomServeur, uri=self.uri)
+            print("[Serveur] : ","Enregistrement du serveur sur le nameServer RÉUSSI ")
         except:
+            print("[Serveur] : ","Quelque Chose a planté dans la mise en marche du nameServer, voici les détails : \n")
             print(traceback.print_exc())
         
     def removeServerBroadcast(self):
@@ -199,6 +204,7 @@ class Server(Thread):
         if(self.nameServer):
             self.removeServerBroadcast()
         sys.exit()
+        print("[Serveur] : ","Éteint")
 
 
 if __name__ == '__main__':

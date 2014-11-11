@@ -213,10 +213,9 @@ class Modele(object):
                     else:#si pas d'exception
 
                         cible = self.clickCibleOuTile(self.releasePosx,self.releasePosy)
-                        if(not cible):
+                        if(not cible and self.getNode(int(self.releasePosx/32),int(self.releasePosy/32)).voisins is not None):#voir si ou on clique est un node couper
                             cible = (self.releasePosx,self.releasePosy)
-                        if (self.getNode(int(self.releasePosx/32),int(self.releasePosy/32)) is not None): #voir si ou on clique est un node couper
-                            #print(self.getNode(int(self.releasePosx/32),int(self.releasePosy/32)) )
+                        if(cible):    
                             for unite in self.selection: #Donne un ordre de déplacement à la sélection
                                 try:
                                     if isinstance (cible, Batiment):

@@ -18,7 +18,7 @@ class Joueur():
         self.nbUnite=0
         self.idCountBatiment=0
         self.idCountUnit=0
-        self.listeAllie = []#self.noJoueur
+        self.listeAllie = [self.noJoueur]#self.noJoueur
         
 
     def creerBatiment(self,position,worker,nom,attributs): #fr

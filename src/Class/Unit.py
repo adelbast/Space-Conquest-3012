@@ -62,7 +62,6 @@ class Unit:    ##Laurence
         #On set un temps initial pour l'animation
         self.lastFrameTime = int(round(time.time()*1000))
         #add condition si destination est nodeCoupe
-    
         if unit:
             print("Deplacement vers unit")
             self.destination = unit         # Un Unit
