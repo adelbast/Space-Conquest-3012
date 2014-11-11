@@ -43,6 +43,12 @@ class Joueur():
         x = int(position[0]/32)
         y = int(position[1]/32)
         valide = True
+
+        for joueur in self.parent.listeJoueur:
+            print(joueur.nom)
+            for _, unit in joueur.listeUnite.items():
+                if(int(unit.position[0]/32) == x and int(unit.position[1]/32) == y):
+                    valide = False
         
         if self.parent.getNode(x,y) in self.parent.cutNodes:
             valide = False
@@ -52,6 +58,15 @@ class Joueur():
                 or self.parent.getNode(x-1,y) in self.parent.cutNodes 
                 or self.parent.getNode(x,y-1) in self.parent.cutNodes):
                 valide = False
+            elif(valide):
+                for joueur in self.parent.listeJoueur:
+                    print(joueur.nom)
+                    for _, unit in joueur.listeUnite.items():
+                        if(int(unit.position[0]/32) == x and int(unit.position[1]/32) == y
+                            or int(unit.position[0]/32) == x-1 and int(unit.position[1]/32) == y-1
+                            or int(unit.position[0]/32) == x-1 and int(unit.position[1]/32) == y
+                            or int(unit.position[0]/32) == x and int(unit.position[1]/32) == y-1 ):
+                            valide = False
             else:
                 self.parent.cutNode(self.parent.getNode(x-1,y-1))
                 self.parent.cutNode(self.parent.getNode(x-1,y))
@@ -73,6 +88,28 @@ class Joueur():
                 or self.parent.getNode(x,y+1) in self.parent.cutNodes
                 or self.parent.getNode(x-1,y+1) in self.parent.cutNodes):
                 valide = False
+            elif(valide):
+                for joueur in self.parent.listeJoueur:
+                    print(joueur.nom)
+                    for _, unit in joueur.listeUnite.items():
+                        if(int(unit.position[0]/32) == x and int(unit.position[1]/32) == y
+                            or int(unit.position[0]/32) == x-1 and int(unit.position[1]/32) == y-1
+                            or int(unit.position[0]/32) == x-1 and int(unit.position[1]/32) == y
+                            or int(unit.position[0]/32) == x and int(unit.position[1]/32) == y-1
+                            or int(unit.position[0]/32) == x+1 and int(unit.position[1]/32) == y+1
+                            or int(unit.position[0]/32) == x+1 and int(unit.position[1]/32) == y
+                            or int(unit.position[0]/32) == x+1 and int(unit.position[1]/32) == y-1 
+                            or int(unit.position[0]/32) == x-1 and int(unit.position[1]/32) == y
+                            or int(unit.position[0]/32) == x-1 and int(unit.position[1]/32) == y+1
+                            or int(unit.position[0]/32) == x and int(unit.position[1]/32) == y+1
+                            or int(unit.position[0]/32) == x-2 and int(unit.position[1]/32) == y-2
+                            or int(unit.position[0]/32) == x-1 and int(unit.position[1]/32) == y-2
+                            or int(unit.position[0]/32) == x and int(unit.position[1]/32) == y-2
+                            or int(unit.position[0]/32) == x+1 and int(unit.position[1]/32) == y-2
+                            or int(unit.position[0]/32) == x-2 and int(unit.position[1]/32) == y-1
+                            or int(unit.position[0]/32) == x-2 and int(unit.position[1]/32) == y
+                            or int(unit.position[0]/32) == x-2 and int(unit.position[1]/32) == y+1):
+                            valide = False
             else:
                 self.parent.cutNode(self.parent.getNode(x-1,y-1))
                 self.parent.cutNode(self.parent.getNode(x-1,y))
