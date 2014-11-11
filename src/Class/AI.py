@@ -14,11 +14,8 @@ class AI(Joueur):
         self.nbGen = [0,0,0]
         self.nbGenReq = [0,0,0]
 
-    #   self.construireBatiment(0,"barrack")
-
     def faireQqch(self):#bouge automatiquement(arbitrairement) l'unité 0
         self.compteur += 1
-       #self.construireBatiment(0,"barrack")
       # self.etatCroissance()
        #self.etatMilitaire()
     
@@ -45,8 +42,19 @@ class AI(Joueur):
         print ("construire gen" + genType)
       #  if gentype != 1:
 
-    def verificationCarre(self, position):
-        pass
+    def verificationCarre(self,x,y,unit):
+        for i in range(unit.size):
+            for j in range(unit.size):
+                for k in parent.listeJoueur:
+                    for l in k.listeUnite:
+                        if k.listeUnite[l].position[0] == x+i :
+                            if k.listeUnite[l].position[1] == y+j:
+                                return False
+                    for l in k.listeBatiment:
+                        if k.listeBatiment[l].position[0] == x+i :
+                            if k.listeBatiment[l].position[1] == y+j:
+                                return False
+            
         
     def positionPossible(self,unit):
         j=0
@@ -60,16 +68,22 @@ class AI(Joueur):
             for i in range (g):
                 placed = verificationCarre( (i+ (self.listeBatiment[1].position[0]) - ((self.listeBatiment[1].size/2) +d)),
                                         (self.listeBatiment[1].position[1] - d - (self.listeBatiment[1].size/2)),unit)
-
-                placed = verificationCarre ((i + (self.listeBatiment[1].position[0]) - ((self.listeBatiment[1].size/2) +d),
-                                            (self.listeBatiment[1].position[1] + d + (self.listeBatiment[1].size/2)),unit)) 
-
-                placed = verificationCarre (( (self.listeBatiment[1].position[0]) - (self.listeBatiment[1].position[0]) - d),
+                if placed:
+                    pass
+                    
+                if not placed:
+                    placed = verificationCarre ((i + (self.listeBatiment[1].position[0]) - ((self.listeBatiment[1].size/2) +d),
+                                            (self.listeBatiment[1].position[1] + d + (self.listeBatiment[1].size/2)),unit))
+                    if placed:
+                        pass
+                if not placed:
+                    placed = verificationCarre (( (self.listeBatiment[1].position[0]) - (self.listeBatiment[1].position[0]) - d),
                                               (i+ (self.listeBatiment[1].position[1] -(self.listeBatiment[1].position[0]) -d)) ,unit)
-
-                placed = verificationCarre ((self.listeBatiment[1].position[0] + self.listeBatiment[1].size/2 + d),
+                if not placed:
+                    placed = verificationCarre ((self.listeBatiment[1].position[0] + self.listeBatiment[1].size/2 + d),
                                               (i+ (self.listeBatiment[1].position[1] -(self.listeBatiment[1].position[0]) -d)) ,unit)
-
+            if placed:
+                return
     def construireWorkers(self):
         for i in self.listeBatiment:
             if (i.name == "HQ"):
@@ -101,21 +115,12 @@ class AI(Joueur):
         if self.nbWorkersReq > 20:
             self.nbWorkerReq = 20
                  
-#   def construireBatiment(self,worker,nom):   #tentative de faire créer un batiments à l'AI - à arranger 
-   #    print(self.parent.dictBatiment)
-   #    self.positionTest[1]+=10
-   #    Joueur.creerBatiment([50,50],True,"barrack",0,self.parent.dictBatiment["barrack"])
-    
+    def construireBatiment(self,worker,batiment):   #tentative de faire créer un batiments à l'AI - à arranger 
+        x,y =self.positionPossible( )
+        self.dictionaireAction["NewBatiment"]=("HQ",128,2000)
         
-    ''' for i in self.listebatiment:
-            if (i.name == "HQ"):
-                positionXY = i.position
-            
-        self.creerUnite(worker, attributs, positionXY)
-        self.creerUnite(worker, attributs, positionXY)
-        self.creerUnite(worker, attributs, positionXY)
-        self.nbWorkers = 3
-    '''
+        
+    
 #------------------------------Aggresive------------------------------#
     def etatMilitaire(self):
         pass

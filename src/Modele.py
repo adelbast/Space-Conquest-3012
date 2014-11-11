@@ -136,6 +136,7 @@ class Modele(object):
                                 pass
                         
                     elif(clee == "NewBatiment"):
+        
                         workerID = 0#TODO
                         typeBatiment, x, y = listValeur
                         try:
