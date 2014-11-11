@@ -197,8 +197,11 @@ class Server(Thread):
             print(traceback.print_exc())
         
     def removeServerBroadcast(self):
-        if(self.nameServer):
+        try:
+            self.nameServer.ping()
             self.nameServer.remove(self.nomServeur)
+        except:
+            pass
 
     def close(self):
         if(self.nameServer):

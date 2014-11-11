@@ -178,6 +178,15 @@ class Unit:    ##Laurence
         
 
     def attaque(self):
+        if(self.type == "builder"):
+            if(self.destination.type == "infantry"):    # ==
+                self.destination.currentHp -= self.force-self.destination.armor*2
+            elif(self.destination.type == "air"):       # < peut pas attaquer
+                pass
+            elif(self.destination.type == "vehicule"):  # >
+                self.destination.currentHp -= self.force-self.destination.armor*3
+            elif(self.destination.type == "range"):     # <
+                self.destination.currentHp -= self.force
         if(self.type == "infantry"):
             if(self.destination.type == "infantry"):    # ==
                 self.destination.currentHp -= self.force-self.destination.armor
