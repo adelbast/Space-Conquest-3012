@@ -104,8 +104,9 @@ class Modele(object):
                             noUnit, cibleX, cibleY = valeur
                             try:
                                 self.listeJoueur[ii].listeUnite[noUnit].setDestination( unePosition = [cibleX,cibleY])
-                            except KeyError:
-                                pass
+                            except KeyError as e:
+                                print(e)
+                                print("Déplacement a chier")
                             
                     elif(clee == "DeplacementCible"):
                         #noUnit, noProprio, UvB, noUnitCible

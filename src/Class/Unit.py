@@ -62,25 +62,25 @@ class Unit:    ##Laurence
         #On set un temps initial pour l'animation
         self.lastFrameTime = int(round(time.time()*1000))
         #add condition si destination est nodeCoupe
-        if(self.parent.getNode(int(self.parent.releasePosx/32),int(self.parent.releasePosy/32)) not in self.parent.cutNodes):
-            if unit:
-                print("Deplacement vers unit")
-                self.destination = unit         # Un Unit
-                self.etat = self.FOLLOW
-            elif batiment:
-                print("Deplacement vers batiment")
-                self.destination = batiment     # Un Batiment
-                self.etat = self.GOTO_BATIMENT
-            elif unePosition:
-                print("Deplacement vers tile")
-                self.destination = unePosition  # Un Tuple
-                self.etat = self.GOTO_POSITION
-            else:
-                return None
-        
-            self.calculatePath()
-            self.depassementHorizontal = False
-            self.depassementVertical   = False
+    
+        if unit:
+            print("Deplacement vers unit")
+            self.destination = unit         # Un Unit
+            self.etat = self.FOLLOW
+        elif batiment:
+            print("Deplacement vers batiment")
+            self.destination = batiment     # Un Batiment
+            self.etat = self.GOTO_BATIMENT
+        elif unePosition:
+            print("Deplacement vers tile")
+            self.destination = unePosition  # Un Tuple
+            self.etat = self.GOTO_POSITION
+        else:
+            return None
+    
+        self.calculatePath()
+        self.depassementHorizontal = False
+        self.depassementVertical   = False
         #self.process()
 
     def selfDestroy(self): #Detruit la unit

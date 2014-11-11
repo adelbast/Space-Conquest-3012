@@ -2,16 +2,12 @@ import Pyro4
 from Pyro4 import core
 import socket
 from random import randint
-import pickle
 import time
 from threading import Thread, Lock
 import traceback
 import sys
 
 VERSION = "1.0"
-
-#Pyro4.config.SERIALIZER = 'pickle'
-#Pyro4.config.SERIALIZERS_ACCEPTED.add('pickle')
 
 class ServerObject(object):
     def __init__(self,nomServeur,nomJoueurHost,ip, test):
@@ -21,24 +17,20 @@ class ServerObject(object):
         self.ip = ip
         self.client = []            #la liste des client
         self.cpuClient = 0
-        self.actions = []           # [                                 la liste qui contient tous les evenements qui contiennent les actions
-                                    #   [ temp 1,[ [package joueur 0]
-                                    #              [package joueur 1]
-                                    #              [package joueur 2] ]
-                                    #   ],
-                                    #   [ temp 2,[ [package joueur 0]
-                                    #              [package joueur 1]
-                                    #              [package joueur 2] ]
-                                    #   ],
-                                    #   [ temp 3,[ [package joueur 0]
-                                    #              [package joueur 1]
-                                    #              [package joueur 2] ]
-                                    #   ]
-                                    # ]
-        self.lock1 = Lock()
-        self.lock2 = Lock()
+        self.actions = {}           # {                                 la liste qui contient tous les evenements qui contiennent les actions
+                                    #   temp 1,[ [package joueur 0]
+                                    #            [package joueur 1]
+                                    #            [package joueur 2] ]
+                                    #   temp 2,[ [package joueur 0]
+                                    #            [package joueur 1]
+                                    #            [package joueur 2] ]
+                                    #   temp 3,[ [package joueur 0]
+                                    #            [package joueur 1]
+                                    #            [package joueur 2] ]
+                                    # }
         self.maxTempsDecalage = 8
         self.gameStarted = False
+        self.pastTime = None#time.time()
 
     def ping(self):
         if(self.test):print("ping")
@@ -65,62 +57,63 @@ class ServerObject(object):
             
     def sendAction(self,listePackage):
         try:
-            self.lock1.acquire()
             for i in listePackage:
                 num =       i[0]
                 package =   i[1]
                 highestRead = self.getHighestRead()
-                #print("highestRead :",self.highestRead,len(self.actions))
                 
-                if not self.actions or highestRead >= self.actions[len(self.actions)-1][0]:
+                if not self.actions or highestRead >= self.getHighestActionTime():
                     if(self.test):print("Ajout d'un temps d'action")
                     uneListe = [None]*(len(self.client)+self.cpuClient)
-                    self.actions.append( [highestRead+1, uneListe] ) #+1 pour mettre cette action dans le future
+                    self.actions[highestRead+1] = uneListe  #+1 pour mettre cette action dans le future
                 
                 #print(self.actions[len(self.actions)-1][1])
-                self.actions[len(self.actions)-1][1][num] = package     # on ajoute le package representant l'action  a la derniere place du dictionnaire
+                self.actions[self.getHighestActionTime()][num] = package     # on ajoute le package representant l'action  a la derniere place du dictionnaire
                 if(self.test):print("action Sauvegarder")
 
         except:
             print(traceback.print_exc())
-        finally:
-            self.lock1.release()
 
     def readAction(self,num):
-        retour = None
         try:
             for i in self.client:
                 if i.estConnecte and i.temps+self.maxTempsDecalage < self.client[num].temps:
                     return None
-            self.lock2.acquire()
-            
-            if self.actions and self.client[num].temps-self.maxTempsDecalage > self.actions[0][0]:
+            if(num == 0 and time.time() - self.pastTime  > 3 ):
                 self.deleteLowest()
-            
-            for action in self.actions:
-                if (action[0] == self.client[num].temps):
-                    retour = action[1]
-                    break
-            else:
-                retour = [None]*(len(self.client)+self.cpuClient)#utile pour le premier tour de boucle
+                self.pastTime = time.time()
             self.client[num].temps+=1     #augmente le temps de la personne qui veux les actions
+            try:
+                return self.actions[self.client[num].temps-1]
+            except KeyError:
+                return [None]*(len(self.client)+self.cpuClient)#utile pour le premier tour de boucle
         except:
             print(traceback.print_exc())
-        finally:
-            self.lock2.release()
-            return retour
     
 
     def getHighestRead(self):
         return max([c.temps for c in self.client])
 
+    def getLowestRead(self):
+        return min([c.temps for c in self.client if c.estConnecte])
+
+    def getActionDeleteList(self):
+        lowRead = self.getLowestRead()
+        return [clee for clee in self.actions if clee < lowRead]
+
+    def getLowestActionTime(self):
+        return min([clee for clee in self.actions])
+
+    def getHighestActionTime(self):
+        return max([clee for clee in self.actions])
+
     def deleteLowest(self): # cherche le client qui est le plus en retard dans la lecture des evenement
-        try:#Traduction du if en français : si le plus petit temps des clients connecté est plus grand que le temps de la plus vielle action, on supprime cette action
-            if min([c.temps for c in self.client if c.estConnecte]) > self.actions[0][0]: #actions[element en orde chronologique][le temps de cette action]
-                if(self.test):print("_______Suppression",self.actions[1])
-                del self.actions[0]     # on enleve levenement le plus bas
-        except:
-            print(traceback.print_exc())
+        for clee in self.getActionDeleteList():
+            try:
+                if(self.test):print("________________________________Suppression",self.actions[clee],clee)
+                del self.actions[clee]     # on enleve levenement le plus bas
+            except KeyError:
+                print(traceback.print_exc())
 
     #Getter qui retourne si la partie est commancé
     def isGameStarted(self):
@@ -129,6 +122,7 @@ class ServerObject(object):
     #Fonction qui set la partie à l'état Started = TRUE
     def startGame(self):
         self.gameStarted = True
+        self.pastTime = time.time()
 
     #Getter qui retourne la liste du nom des client connecté au serveur
     def getStartingInfo(self):
@@ -164,7 +158,7 @@ class InternalClient(object):
 
         
 class Server(Thread):
-    def __init__(self, ns, nomServeur = "SpaceConquest3012", nomJoueurHost = "xavier", test = False):
+    def __init__(self, ns, nomServeur = "SpaceConquest3012", nomJoueurHost = "xavier", test = False, standAlone = False):
         super(Server, self).__init__()
         self.isReady = False
         self.nomServeur = nomServeur
@@ -173,6 +167,8 @@ class Server(Thread):
         self.serverObject = ServerObject(nomServeur, nomJoueurHost, self.ip, test)  #objet distant
         self.nameServerThread = None
         self.nameServer = ns
+        if(standAlone):
+            self.run()
 
 
     def run(self): #lance le serveur de jeu
@@ -203,19 +199,7 @@ class Server(Thread):
         if(self.nameServer):
             self.removeServerBroadcast()
         sys.exit()
- 
-
-
-class Actions(object): 
-    def __init__(self, nbClients):
-        self.action = []
-        
-        for i in range(nbClients):
-            self.action.append([])#chacune des actions prises chaque joueur
-           
-    def setAction(self,action,num):
-        self.action[num].append(action)
 
 
 if __name__ == '__main__':
-    s=Server(test = True)
+    s=Server(ns = None, nomServeur = "test", nomJoueurHost = "bob", test = True, standAlone = True)
