@@ -58,7 +58,7 @@ class Joueur():
                 or self.parent.getNode(x-1,y) in self.parent.cutNodes 
                 or self.parent.getNode(x,y-1) in self.parent.cutNodes):
                 valide = False
-            elif(valide):
+            if(valide):
                 for joueur in self.parent.listeJoueur:
                     print(joueur.nom)
                     for _, unit in joueur.listeUnite.items():
@@ -67,12 +67,13 @@ class Joueur():
                             or int(unit.position[0]/32) == x-1 and int(unit.position[1]/32) == y
                             or int(unit.position[0]/32) == x and int(unit.position[1]/32) == y-1 ):
                             valide = False
-            else:
+            if(valide):
                 self.parent.cutNode(self.parent.getNode(x-1,y-1))
                 self.parent.cutNode(self.parent.getNode(x-1,y))
                 self.parent.cutNode(self.parent.getNode(x,y-1))
         
         if (valide and attribut == 128):
+            
             if (self.parent.getNode(x+1,y+1) in self.parent.cutNodes 
                 or self.parent.getNode(x-2,y+1) in self.parent.cutNodes 
                 or self.parent.getNode(x+1,y-2) in self.parent.cutNodes 
@@ -88,7 +89,8 @@ class Joueur():
                 or self.parent.getNode(x,y+1) in self.parent.cutNodes
                 or self.parent.getNode(x-1,y+1) in self.parent.cutNodes):
                 valide = False
-            elif(valide):
+            
+            if(valide):
                 for joueur in self.parent.listeJoueur:
                     print(joueur.nom)
                     for _, unit in joueur.listeUnite.items():
@@ -110,7 +112,7 @@ class Joueur():
                             or int(unit.position[0]/32) == x-2 and int(unit.position[1]/32) == y
                             or int(unit.position[0]/32) == x-2 and int(unit.position[1]/32) == y+1):
                             valide = False
-            else:
+            if(valide):
                 self.parent.cutNode(self.parent.getNode(x-1,y-1))
                 self.parent.cutNode(self.parent.getNode(x-1,y))
                 self.parent.cutNode(self.parent.getNode(x,y-1))
@@ -129,6 +131,7 @@ class Joueur():
                 self.parent.cutNode(self.parent.getNode(x-2,y-1))
                 self.parent.cutNode(self.parent.getNode(x-2,y))
                 self.parent.cutNode(self.parent.getNode(x-2,y+1))
+        
         if valide:
             self.parent.cutNode(self.parent.getNode(x,y))
         
@@ -226,6 +229,3 @@ class Joueur():
 
     def retirerAllier(self,idAllier):
         self.listeAllier.remove(idAllier)
-        
-        
- 
