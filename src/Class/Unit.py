@@ -124,6 +124,9 @@ class Unit:    ##Laurence
                     self.position[1] = newY
                     self.depassementVertical   = False
                 self.path.pop(0)
+                if(self.path):
+                    if(self.getNode(self.path[0].x,self.path[0].y) in self.parent.cutNodes):
+                        self.calculatePath()
             else:
                 self.positionFluide[0] = self.position[0]
                 self.positionFluide[1] = self.position[1]
