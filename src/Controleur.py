@@ -141,7 +141,7 @@ class Controleur:
         self.modele.actualiser()
         self.vue.displayRessources(self.modele.listeJoueur[self.modele.noJoueurLocal].listeRessource)
         self.vue.displayObject(self.modele.listeJoueur,[],self.modele.noJoueurLocal,self.modele.selection)
-        self.vue.displayNodes(self.modele.cutNodes)
+        #self.vue.displayNodes(self.modele.cutNodes)
         self.compteur+=1
         self.vue.root.after(50,self.gameLoop) #monter a 50 pour tester le pathfinding plus facilement peux descendre si ca vs derange
 
@@ -190,12 +190,12 @@ class Controleur:
         self.modele.dicAction2Server['NewUnit'].append((unitName, (pX,pY)))
 
     def moveUnitWithMinimap(self, event):
-        print("Avant : ",event.x, event.y)
+        #print("Avant : ",event.x, event.y)
         event.x = event.x * (len(self.modele.map.map[0])*64)/self.vue.miniMapW
         event.y = event.y * (len(self.modele.map.map)*64)/self.vue.miniMapH
         self.modele.releasePosx = event.x
         self.modele.releasePosy = event.y
-        print("Apres : ",event.x, event.y)
+        #print("Apres : ",event.x, event.y)
         self.modele.gererMouseRelease(event,self.etatCreation, self.infoCreation)
         
         

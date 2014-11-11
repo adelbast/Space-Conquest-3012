@@ -446,6 +446,17 @@ class Vue:
                 pX = int((b.position[0]*self.miniMapW) / (len(self.parent.modele.map.map[0])*64))
                 pY = int((b.position[1]*self.miniMapH) / (len(self.parent.modele.map.map)*64))
                 rSize = int(b.size*self.miniMapW / (len(self.parent.modele.map.map[0])*64))
+
+                if(b.currentHp < b.maxHp):
+                    conversionVie = (b.size*b.currentHp)/b.maxHp
+                    offsetY = 70
+                    offsetX = 64
+                    height = 3
+                
+                    self.surfaceJeu.create_rectangle(b.position[0]-offsetX, (b.position[1])-offsetY, (b.position[0])+b.size-offsetX, (b.position[1])+(height-offsetY), fill="red", width=0, tags="healthbars")
+                    self.surfaceJeu.create_rectangle(b.position[0]-offsetX, (b.position[1])-offsetY, (b.position[0])+conversionVie-offsetX, (b.position[1])+(height-offsetY), fill="blue", width=0, tags="healthbars")
+
+
                 
                 
                 #Si l'unite est au joueur local
