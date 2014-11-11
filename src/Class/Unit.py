@@ -121,8 +121,8 @@ class Unit:    ##Laurence
             self.followModulator = 0
 
     def move(self):
-        if(self.type != "air"):
-            if ((self.depassementHorizontal or self.positionFluide[0] == self.position[0]) and (self.depassementVertical or self.positionFluide[1] == self.position[1])):
+        if ((self.depassementHorizontal or self.positionFluide[0] == self.position[0]) and (self.depassementVertical or self.positionFluide[1] == self.position[1])):
+            if(self.type != "air"):
                 if(self.path):
                     newX = self.path[0].x*32
                     newY = self.path[0].y*32
@@ -133,6 +133,9 @@ class Unit:    ##Laurence
                         self.position[1] = newY
                         self.depassementVertical   = False
                     self.path.pop(0)
+                    if(self.path):
+                        if(self.getNode(self.path[0].x,self.path[0].y) in self.parent.cutNodes):
+                            self.calculatePath()
                 else:
                     self.positionFluide[0] = self.position[0]
                     self.positionFluide[1] = self.position[1]
@@ -141,8 +144,7 @@ class Unit:    ##Laurence
                     if(self.etat == self.GOTO_POSITION):
                         self.etat = self.IDLE
                     return 1
-        else:
-            if ((self.depassementHorizontal or self.positionFluide[0] == self.position[0]) and (self.depassementVertical or self.positionFluide[1] == self.position[1])):
+            else:
                 self.isWalking = False
                 self.currentFrame = '1'
                 if(self.etat == self.GOTO_POSITION):
