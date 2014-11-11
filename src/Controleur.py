@@ -134,7 +134,8 @@ class Controleur:
             reception = self.client.pullAction()
             if(self.verbose):print("RECOIE : ", reception)
             if(not reception):
-                print("laaaaag!")
+                pass
+                #print("laaaaag!")
         self.modele.gestion( reception )
         """if(self.vue.etatCreation==True):
             self.vue.dessinerShadowBatiment()"""
