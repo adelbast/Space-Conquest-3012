@@ -23,10 +23,13 @@ class Joueur():
 
     def creerBatiment(self,position,worker,nom,attributs): #fr
         if self.assezRessources(attributs[1]): #pour savoir si assezRessource
+            print("1")
             if self.positionCreationValide(position,attributs[3]):
+                print("2")
                 if nom == "ferme" or nom == "mine" or nom == "solarPanel":
                     self.listeBatiment[self.idCountBatiment] = Generator(self.noJoueur, nom, position, attributs, self.idCountBatiment)
                 else:
+                    print("1")
                     self.listeBatiment[self.idCountBatiment] = Batiment(self.noJoueur, nom, position, attributs, self.idCountBatiment)
                 self.idCountBatiment+=1
                 self.listeRessource[0] -= attributs[1][0] #food
@@ -40,6 +43,12 @@ class Joueur():
         x = int(position[0]/32)
         y = int(position[1]/32)
         valide = True
+
+        for joueur in self.parent.listeJoueur:
+            print(joueur.nom)
+            for _, unit in joueur.listeUnite.items():
+                if(int(unit.position[0]/32) == x and int(unit.position[1]/32) == y):
+                    valide = False
         
         if self.parent.getNode(x,y) in self.parent.cutNodes:
             valide = False
@@ -49,12 +58,22 @@ class Joueur():
                 or self.parent.getNode(x-1,y) in self.parent.cutNodes 
                 or self.parent.getNode(x,y-1) in self.parent.cutNodes):
                 valide = False
-            else:
+            if(valide):
+                for joueur in self.parent.listeJoueur:
+                    print(joueur.nom)
+                    for _, unit in joueur.listeUnite.items():
+                        if(int(unit.position[0]/32) == x and int(unit.position[1]/32) == y
+                            or int(unit.position[0]/32) == x-1 and int(unit.position[1]/32) == y-1
+                            or int(unit.position[0]/32) == x-1 and int(unit.position[1]/32) == y
+                            or int(unit.position[0]/32) == x and int(unit.position[1]/32) == y-1 ):
+                            valide = False
+            if(valide):
                 self.parent.cutNode(self.parent.getNode(x-1,y-1))
                 self.parent.cutNode(self.parent.getNode(x-1,y))
                 self.parent.cutNode(self.parent.getNode(x,y-1))
         
         if (valide and attribut == 128):
+            
             if (self.parent.getNode(x+1,y+1) in self.parent.cutNodes 
                 or self.parent.getNode(x-2,y+1) in self.parent.cutNodes 
                 or self.parent.getNode(x+1,y-2) in self.parent.cutNodes 
@@ -70,7 +89,30 @@ class Joueur():
                 or self.parent.getNode(x,y+1) in self.parent.cutNodes
                 or self.parent.getNode(x-1,y+1) in self.parent.cutNodes):
                 valide = False
-            else:
+            
+            if(valide):
+                for joueur in self.parent.listeJoueur:
+                    print(joueur.nom)
+                    for _, unit in joueur.listeUnite.items():
+                        if(int(unit.position[0]/32) == x and int(unit.position[1]/32) == y
+                            or int(unit.position[0]/32) == x-1 and int(unit.position[1]/32) == y-1
+                            or int(unit.position[0]/32) == x-1 and int(unit.position[1]/32) == y
+                            or int(unit.position[0]/32) == x and int(unit.position[1]/32) == y-1
+                            or int(unit.position[0]/32) == x+1 and int(unit.position[1]/32) == y+1
+                            or int(unit.position[0]/32) == x+1 and int(unit.position[1]/32) == y
+                            or int(unit.position[0]/32) == x+1 and int(unit.position[1]/32) == y-1 
+                            or int(unit.position[0]/32) == x-1 and int(unit.position[1]/32) == y
+                            or int(unit.position[0]/32) == x-1 and int(unit.position[1]/32) == y+1
+                            or int(unit.position[0]/32) == x and int(unit.position[1]/32) == y+1
+                            or int(unit.position[0]/32) == x-2 and int(unit.position[1]/32) == y-2
+                            or int(unit.position[0]/32) == x-1 and int(unit.position[1]/32) == y-2
+                            or int(unit.position[0]/32) == x and int(unit.position[1]/32) == y-2
+                            or int(unit.position[0]/32) == x+1 and int(unit.position[1]/32) == y-2
+                            or int(unit.position[0]/32) == x-2 and int(unit.position[1]/32) == y-1
+                            or int(unit.position[0]/32) == x-2 and int(unit.position[1]/32) == y
+                            or int(unit.position[0]/32) == x-2 and int(unit.position[1]/32) == y+1):
+                            valide = False
+            if(valide):
                 self.parent.cutNode(self.parent.getNode(x-1,y-1))
                 self.parent.cutNode(self.parent.getNode(x-1,y))
                 self.parent.cutNode(self.parent.getNode(x,y-1))
@@ -89,6 +131,7 @@ class Joueur():
                 self.parent.cutNode(self.parent.getNode(x-2,y-1))
                 self.parent.cutNode(self.parent.getNode(x-2,y))
                 self.parent.cutNode(self.parent.getNode(x-2,y+1))
+        
         if valide:
             self.parent.cutNode(self.parent.getNode(x,y))
         
@@ -186,6 +229,3 @@ class Joueur():
 
     def retirerAllier(self,idAllier):
         self.listeAllier.remove(idAllier)
-        
-        
- 
