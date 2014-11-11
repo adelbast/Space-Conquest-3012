@@ -76,11 +76,19 @@ class Unit:    ##Laurence
             self.etat = self.GOTO_POSITION
         else:
             return None
-    
-        self.calculatePath()
+
+        if(self.type != "air"):
+            self.calculatePath()
+        else:
+            try:
+                self.position[0] = self.destination[0]
+                self.position[1] = self.destination[1]
+            except:
+                self.position[0] = self.destination.position[0]
+                self.position[1] = self.destination.position[1]
+
         self.depassementHorizontal = False
         self.depassementVertical   = False
-        #self.process()
 
     def selfDestroy(self): #Detruit la unit
         self.currentHp = 0
@@ -98,7 +106,7 @@ class Unit:    ##Laurence
             elif(self.attackAnimation == 0):
                 if(self.etat == self.FOLLOW):
                     self.followModulator += 1
-                    if ( self.destination.isWalking and (not self.path or not self.followModulator%self.MODULO) ):
+                    if (self.destination.isWalking and (not self.path or not self.followModulator%self.MODULO) and self.type != "air"):
                         self.calculatePath()
                 self.move()
             if(self.attackAnimation > 0):
@@ -114,28 +122,34 @@ class Unit:    ##Laurence
 
     def move(self):
         if ((self.depassementHorizontal or self.positionFluide[0] == self.position[0]) and (self.depassementVertical or self.positionFluide[1] == self.position[1])):
-            if(self.path):
-                newX = self.path[0].x*32
-                newY = self.path[0].y*32
-                if(self.position[0] != newX and not abs(newX-self.positionFluide[0]) < self.vitesse):
-                    self.position[0] = newX
-                    self.depassementHorizontal = False
-                if(self.position[1] != newY and not abs(newY-self.positionFluide[1]) < self.vitesse):
-                    self.position[1] = newY
-                    self.depassementVertical   = False
-                self.path.pop(0)
+            if(self.type != "air"):
                 if(self.path):
-                    if(self.getNode(self.path[0].x,self.path[0].y) in self.parent.cutNodes):
-                        self.calculatePath()
+                    newX = self.path[0].x*32
+                    newY = self.path[0].y*32
+                    if(self.position[0] != newX and not abs(newX-self.positionFluide[0]) < self.vitesse):
+                        self.position[0] = newX
+                        self.depassementHorizontal = False
+                    if(self.position[1] != newY and not abs(newY-self.positionFluide[1]) < self.vitesse):
+                        self.position[1] = newY
+                        self.depassementVertical   = False
+                    self.path.pop(0)
+                    if(self.path):
+                        if(self.getNode(self.path[0].x,self.path[0].y) in self.parent.cutNodes):
+                            self.calculatePath()
+                else:
+                    self.positionFluide[0] = self.position[0]
+                    self.positionFluide[1] = self.position[1]
+                    self.isWalking = False
+                    self.currentFrame = '1'
+                    if(self.etat == self.GOTO_POSITION):
+                        self.etat = self.IDLE
+                    return 1
             else:
-                self.positionFluide[0] = self.position[0]
-                self.positionFluide[1] = self.position[1]
                 self.isWalking = False
                 self.currentFrame = '1'
                 if(self.etat == self.GOTO_POSITION):
                     self.etat = self.IDLE
                 return 1
-
 
         self.isWalking = True
         if  (not self.depassementHorizontal and self.positionFluide[0] > self.position[0]):
@@ -164,6 +178,15 @@ class Unit:    ##Laurence
         
 
     def attaque(self):
+        if(self.type == "builder"):
+            if(self.destination.type == "infantry"):    # ==
+                self.destination.currentHp -= self.force-self.destination.armor*2
+            elif(self.destination.type == "air"):       # < peut pas attaquer
+                pass
+            elif(self.destination.type == "vehicule"):  # >
+                self.destination.currentHp -= self.force-self.destination.armor*3
+            elif(self.destination.type == "range"):     # <
+                self.destination.currentHp -= self.force
         if(self.type == "infantry"):
             if(self.destination.type == "infantry"):    # ==
                 self.destination.currentHp -= self.force-self.destination.armor

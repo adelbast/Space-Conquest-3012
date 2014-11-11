@@ -143,7 +143,7 @@ class Controleur:
         self.vue.displayObject(self.modele.listeJoueur,[],self.modele.noJoueurLocal,self.modele.selection)
         #self.vue.displayNodes(self.modele.cutNodes)
         self.compteur+=1
-        self.vue.root.after(50,self.gameLoop) #monter a 50 pour tester le pathfinding plus facilement peux descendre si ca vs derange
+        self.vue.root.after(24,self.gameLoop) #monter a 50 pour tester le pathfinding plus facilement peux descendre si ca vs derange
 
     def gererMouseClick(self,event):
         offset = self.vue.getSurfacePos()#Obtenir la position du canvas
@@ -173,10 +173,32 @@ class Controleur:
         self.vue.etatCreation = True
 
     def spawnUnit(self, unitName):
+
+        validateSpawn = False
+
         pX = self.modele.selection[0].position[0] - (self.modele.dictUnit[unitName][7] + self.modele.selection[0].size/2)
-        pY = self.modele.selection[0].position[1] - (self.modele.dictUnit[unitName][7] + self.modele.selection[0].size/2)
+        pY = self.modele.selection[0].position[1] - (self.modele.dictUnit[unitName][7] + self.modele.selection[0].size/2) 
+
+        while(not validateSpawn):
+
+            if(self.modele.getNode(int(pX/32), int(pY/32)) not in self.modele.cutNodes):
+                validateSpawn = True
+            else:
+                pY = pY + 32
+            
         self.modele.dicAction2Server['NewUnit'] = []
         self.modele.dicAction2Server['NewUnit'].append((unitName, (pX,pY)))
+
+    def moveUnitWithMinimap(self, event):
+        #print("Avant : ",event.x, event.y)
+        event.x = event.x * (len(self.modele.map.map[0])*64)/self.vue.miniMapW
+        event.y = event.y * (len(self.modele.map.map)*64)/self.vue.miniMapH
+        self.modele.releasePosx = event.x
+        self.modele.releasePosy = event.y
+        #print("Apres : ",event.x, event.y)
+        self.modele.gererMouseRelease(event,self.etatCreation, self.infoCreation)
+        
+        
 
     def getSizeBatiment(self, batiment):
         return self.modele.dictBatiment[batiment]
