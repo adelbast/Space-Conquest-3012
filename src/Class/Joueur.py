@@ -23,6 +23,7 @@ class Joueur():
 
     def creerBatiment(self,position,worker,nom,attributs): #fr
         if self.assezRessources(attributs[1]): #pour savoir si assezRessource
+            if self.positionCreationValide(position,attributs[3]):
                 if nom == "ferme" or nom == "mine" or nom == "solarPanel":
                     self.listeBatiment[self.idCountBatiment] = Generator(self.noJoueur, nom, position, attributs, self.idCountBatiment)
                 else:
@@ -32,33 +33,67 @@ class Joueur():
                 self.listeRessource[1] -= attributs[1][1] #metaux
                 self.listeRessource[2] -= attributs[1][2] #energie
                 #changer value des tiles sur lequel le batiment est ici ?? ou dans modele?
-                x = int(position[0]/32)
-                y = int(position[1]/32)
-                self.parent.cutNode(self.parent.getNode(x,y))
-                if(attributs[3] > 32):
-                    self.parent.cutNode(self.parent.getNode(x-1,y-1))
-                    self.parent.cutNode(self.parent.getNode(x-1,y))
-                    self.parent.cutNode(self.parent.getNode(x,y-1))
-                if (attributs[3] > 64):
-                    self.parent.cutNode(self.parent.getNode(x+1,y+1))
-                    self.parent.cutNode(self.parent.getNode(x+1,y))
-                    self.parent.cutNode(self.parent.getNode(x+1,y-1))
-                    self.parent.cutNode(self.parent.getNode(x-1,y))
-                    self.parent.cutNode(self.parent.getNode(x-1,y+1))
-                    self.parent.cutNode(self.parent.getNode(x,y+1))
-
-                    self.parent.cutNode(self.parent.getNode(x-2,y-2))
-                    self.parent.cutNode(self.parent.getNode(x-1,y-2))
-                    self.parent.cutNode(self.parent.getNode(x,y-2))
-                    self.parent.cutNode(self.parent.getNode(x+1,y-2))
-                    self.parent.cutNode(self.parent.getNode(x-2,y-1))
-                    self.parent.cutNode(self.parent.getNode(x-2,y))
-                    self.parent.cutNode(self.parent.getNode(x-2,y+1))
-
-
 
                 return print("batiment cree")
+    
+    def positionCreationValide(self,position,attribut):
+        x = int(position[0]/32)
+        y = int(position[1]/32)
+        valide = True
+        
+        if self.parent.getNode(x,y) in self.parent.cutNodes:
+            valide = False
+        
+        if(valide and attribut == 64):
+            if (self.parent.getNode(x-1,y-1) in self.parent.cutNodes 
+                or self.parent.getNode(x-1,y) in self.parent.cutNodes 
+                or self.parent.getNode(x,y-1) in self.parent.cutNodes):
+                valide = False
+            else:
+                self.parent.cutNode(self.parent.getNode(x-1,y-1))
+                self.parent.cutNode(self.parent.getNode(x-1,y))
+                self.parent.cutNode(self.parent.getNode(x,y-1))
+        
+        if (valide and attribut == 128):
+            if (self.parent.getNode(x+1,y+1) in self.parent.cutNodes 
+                or self.parent.getNode(x-2,y+1) in self.parent.cutNodes 
+                or self.parent.getNode(x+1,y-2) in self.parent.cutNodes 
+                or self.parent.getNode(x-2,y-2) in self.parent.cutNodes
+                or self.parent.getNode(x-2,y) in self.parent.cutNodes
+                or self.parent.getNode(x-2,y-1) in self.parent.cutNodes
+                or self.parent.getNode(x-1,y-2) in self.parent.cutNodes
+                or self.parent.getNode(x,y-2) in self.parent.cutNodes
+                or self.parent.getNode(x-2,y-2) in self.parent.cutNodes
+                or self.parent.getNode(x+1,y) in self.parent.cutNodes
+                or self.parent.getNode(x-2,y-2) in self.parent.cutNodes
+                or self.parent.getNode(x+1,y-1) in self.parent.cutNodes
+                or self.parent.getNode(x,y+1) in self.parent.cutNodes
+                or self.parent.getNode(x-1,y+1) in self.parent.cutNodes):
+                valide = False
+            else:
+                self.parent.cutNode(self.parent.getNode(x-1,y-1))
+                self.parent.cutNode(self.parent.getNode(x-1,y))
+                self.parent.cutNode(self.parent.getNode(x,y-1))
 
+                self.parent.cutNode(self.parent.getNode(x+1,y+1))
+                self.parent.cutNode(self.parent.getNode(x+1,y))
+                self.parent.cutNode(self.parent.getNode(x+1,y-1))
+                self.parent.cutNode(self.parent.getNode(x-1,y))
+                self.parent.cutNode(self.parent.getNode(x-1,y+1))
+                self.parent.cutNode(self.parent.getNode(x,y+1))
+
+                self.parent.cutNode(self.parent.getNode(x-2,y-2))
+                self.parent.cutNode(self.parent.getNode(x-1,y-2))
+                self.parent.cutNode(self.parent.getNode(x,y-2))
+                self.parent.cutNode(self.parent.getNode(x+1,y-2))
+                self.parent.cutNode(self.parent.getNode(x-2,y-1))
+                self.parent.cutNode(self.parent.getNode(x-2,y))
+                self.parent.cutNode(self.parent.getNode(x-2,y+1))
+        if valide:
+            self.parent.cutNode(self.parent.getNode(x,y))
+        
+        return valide
+        
     def assezRessources(self,couts): #fr
         if(self.listeRessource[0] < couts[0]
            or self.listeRessource[1] < couts[1]
