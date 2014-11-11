@@ -69,6 +69,7 @@ class Vue:
         #Pour le click sur la map
         self.miniMap.bind("<Button-1>", self.miniMapClick)
         self.miniMap.bind("<B1-Motion>", self.miniMapClick)
+        self.miniMap.bind("<Button-3>", self.parent.moveUnitWithMinimap)
 
         #Pour les clicks sur la surface de jeu
         self.surfaceJeu.bind("<B1-Motion>", self.parent.gererMouseDrag)
@@ -146,8 +147,8 @@ class Vue:
     def displayShadow(self, event):
         self.surfaceJeu.delete("shadow")
         if(self.parent.etatCreation == True):
-            x = int(event.x/32)*32
-            y = int(event.y/32)*32
+            x = int((event.x+self.surfaceJeu.canvasx(0))/32)*32
+            y = int((event.y+self.surfaceJeu.canvasy(0))/32)*32
             
             size = self.parent.getSizeBatiment(self.parent.infoCreation)[3]
             print(self.parent.getSizeBatiment(self.parent.infoCreation)[3])
@@ -429,6 +430,7 @@ class Vue:
     def displayObject(self, joueurs, artefacts, noLocal, selection):
         
         self.surfaceJeu.delete("unit","structure","artefact", "healthbars")
+        self.miniMap.delete("unit")
 
         #Affichage des artefacts
         for a in artefacts:
@@ -440,6 +442,12 @@ class Vue:
 
             #Affiche les batiments
             for _, b in joueur.listeBatiment.items():# _ == placeholder pour la clée
+
+                pX = int((b.position[0]*self.miniMapW) / (len(self.parent.modele.map.map[0])*64))
+                pY = int((b.position[1]*self.miniMapH) / (len(self.parent.modele.map.map)*64))
+                rSize = int(b.size*self.miniMapW / (len(self.parent.modele.map.map[0])*64))
+                
+                
                 #Si l'unite est au joueur local
                 if(joueur.noJoueur == noLocal):
 
@@ -452,22 +460,34 @@ class Vue:
                             self.surfaceJeu.create_image(b.position[0]-b.size/2, b.position[1]-b.size/2, anchor=NW, image=self.sprites[joueur.noJoueur][0].spriteDict[b.name], tags="structure")
                         else:
                             self.surfaceJeu.create_image(b.position[0], b.position[1], anchor=NW, image=self.sprites[joueur.noJoueur][0].spriteDict[b.name], tags="structure")
+
+                    #Afficher les unites sur la minimap
+                    self.miniMap.create_rectangle(pX, pY, pX+rSize, pY+rSize, fill="yellow", width=0, tags="structure")
+
                 #Sinon si l'unite est a un autre joueur
                 else:
                     self.surfaceJeu.create_image(b.position[0]-b.size/2, b.position[1]-b.size/2, anchor=NW, image=self.sprites[joueur.noJoueur].spriteDict[b.name], tags="structure")
-            
+
+                    #Afficher les unites sur la minimap
+                    self.miniMap.create_rectangle(pX, pY, pX+rSize, pY+rSize, fill="red", width=0, tags="structure")
+                    
             #Affiche les unités
             for _, u in joueur.listeUnite.items():# _ == placeholder pour la clée
+
+                pX = int((u.position[0]*self.miniMapW) / (len(self.parent.modele.map.map[0])*64))
+                pY = int((u.position[1]*self.miniMapH) / (len(self.parent.modele.map.map)*64))
+                rSize = int(u.size*self.miniMapW / (len(self.parent.modele.map.map[0])*64))
                 
                 if(u.isWalking):
                     self.animateSprites(u)
 
-                conversionVie = (u.size*u.currentHp)/u.maxHp
-                offsetY = 6
-                height = 3
+                if(u.currentHp < u.maxHp):
+                    conversionVie = (u.size*u.currentHp)/u.maxHp
+                    offsetY = 6
+                    height = 3
                 
-                self.surfaceJeu.create_rectangle(u.positionFluide[0], (u.positionFluide[1])-offsetY, (u.positionFluide[0])+u.size, (u.positionFluide[1])+(height-offsetY), fill="red", width=0, tags="healthbars")
-                self.surfaceJeu.create_rectangle(u.positionFluide[0], (u.positionFluide[1])-offsetY, (u.positionFluide[0])+conversionVie, (u.positionFluide[1])+(height-offsetY), fill="blue", width=0, tags="healthbars")
+                    self.surfaceJeu.create_rectangle(u.positionFluide[0], (u.positionFluide[1])-offsetY, (u.positionFluide[0])+u.size, (u.positionFluide[1])+(height-offsetY), fill="red", width=0, tags="healthbars")
+                    self.surfaceJeu.create_rectangle(u.positionFluide[0], (u.positionFluide[1])-offsetY, (u.positionFluide[0])+conversionVie, (u.positionFluide[1])+(height-offsetY), fill="blue", width=0, tags="healthbars")
 
                 #Si l'unite est au joueur local
                 if(joueur.noJoueur == noLocal):
@@ -479,10 +499,16 @@ class Vue:
                     else:
                         self.surfaceJeu.create_image(u.positionFluide[0], u.positionFluide[1], anchor=NW, image=self.sprites[joueur.noJoueur][0].spriteDict[u.name][u.orientation][u.currentFrame], tags="unit")
 
+                    
+                    #Afficher les unites sur la minimap
+                    self.miniMap.create_rectangle(pX, pY, pX+rSize, pY+rSize, fill="yellow", width=0, tags="unit")
+                    
                 #Sinon si l'unite est a un autre joueur
                 else:
                     self.surfaceJeu.create_image(u.positionFluide[0], u.positionFluide[1], anchor=NW, image=self.sprites[joueur.noJoueur].spriteDict[u.name][u.orientation][u.currentFrame], tags="unit")
 
+                    self.miniMap.create_rectangle(pX, pY, pX+rSize, pY+rSize, fill="red", width=0, tags="unit")
+                    
 
     
     #Affiche les tags des boutons sur le hud
