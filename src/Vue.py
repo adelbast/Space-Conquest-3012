@@ -485,8 +485,8 @@ class Vue:
             #Affiche les unités
             for _, u in joueur.listeUnite.items():# _ == placeholder pour la clée
 
-                pX = int((u.position[0]*self.miniMapW) / (len(self.parent.modele.map.map[0])*64))
-                pY = int((u.position[1]*self.miniMapH) / (len(self.parent.modele.map.map)*64))
+                pX = int((u.positionFluide[0]*self.miniMapW) / (len(self.parent.modele.map.map[0])*64))
+                pY = int((u.positionFluide[1]*self.miniMapH) / (len(self.parent.modele.map.map)*64))
                 rSize = int(u.size*self.miniMapW / (len(self.parent.modele.map.map[0])*64))
                 
                 if(u.isWalking):

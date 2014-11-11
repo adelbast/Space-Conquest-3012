@@ -85,11 +85,11 @@ class Client(object):
 
 	def disconnect(self):
 		try:
-			print("[Client] : ","Déconnection en cours...",end="  ")
+			print("[Client] : ","Déconnection en cours...")
 			self.proxy.seDeconnecter(self.noJoueur)
-			print("Réussi")
+			print("[Client] : ","Déconnection RÉUSSIT")
 		except Exception as e:
-			print("Raté")
+			print("[Client] : ","Déconnection RATÉ")
 			print(e)
 
 	#Getter des info que le serveur doit donner à chaque client pour démarrer la partie
