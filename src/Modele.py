@@ -440,34 +440,43 @@ class Modele(object):
     def cutNode(self, node):            #Coupe un node pour qu'il devienne un obstacle
         x = 0
         if isinstance(node.voisins, list) :
+            try:
                 if isinstance(self.getNode(node.voisins[0][0], node.voisins[0][1]).voisins, list):
                    self.getNode(node.voisins[0][0], node.voisins[0][1]).voisins[2] = [0,0]
                    x+=1
-                if isinstance(self.getNode(node.voisins[1][0], node.voisins[1][1]).voisins, list):
-                   self.getNode(node.voisins[1][0], node.voisins[1][1]).voisins[3] = [0,0]
-                   x+=1
-                if isinstance(self.getNode(node.voisins[2][0], node.voisins[2][1]).voisins, list):
-                   self.getNode(node.voisins[2][0], node.voisins[2][1]).voisins[0] = [0,0]
-                   x+=1
-                if isinstance(self.getNode(node.voisins[3][0], node.voisins[3][1]).voisins, list):
-                   self.getNode(node.voisins[3][0], node.voisins[3][1]).voisins[1] = [0,0]
-                   x+=1
+            except:
+                print("INDEX ERROR")
+            if isinstance(self.getNode(node.voisins[1][0], node.voisins[1][1]).voisins, list):
+                self.getNode(node.voisins[1][0], node.voisins[1][1]).voisins[3] = [0,0]
+                x+=1
+            if isinstance(self.getNode(node.voisins[2][0], node.voisins[2][1]).voisins, list):
+                self.getNode(node.voisins[2][0], node.voisins[2][1]).voisins[0] = [0,0]
+                x+=1
+            if isinstance(self.getNode(node.voisins[3][0], node.voisins[3][1]).voisins, list):
+                self.getNode(node.voisins[3][0], node.voisins[3][1]).voisins[1] = [0,0]
+                x+=1
+            try:
                 if isinstance(self.getNode(node.voisins[4][0], node.voisins[4][1]).voisins, list):
                    self.getNode(node.voisins[4][0], node.voisins[4][1]).voisins[6] = [0,0]
                    x+=1
-                if isinstance(self.getNode(node.voisins[5][0], node.voisins[5][1]).voisins, list):
-                   self.getNode(node.voisins[5][0], node.voisins[5][1]).voisins[7] = [0,0]
-                   x+=1
-                if isinstance(self.getNode(node.voisins[6][0], node.voisins[6][1]).voisins, list):
-                   self.getNode(node.voisins[6][0], node.voisins[6][1]).voisins[4] = [0,0]
-                   x+=1
+            except:
+                print("INDEX ERROR")
+            if isinstance(self.getNode(node.voisins[5][0], node.voisins[5][1]).voisins, list):
+                self.getNode(node.voisins[5][0], node.voisins[5][1]).voisins[7] = [0,0]
+                x+=1
+            if isinstance(self.getNode(node.voisins[6][0], node.voisins[6][1]).voisins, list):
+                self.getNode(node.voisins[6][0], node.voisins[6][1]).voisins[4] = [0,0]
+                x+=1
+            try:
                 if isinstance(self.getNode(node.voisins[7][0], node.voisins[7][1]).voisins, list):
                    self.getNode(node.voisins[7][0], node.voisins[7][1]).voisins[5] = [0,0]
+            except:
+                print("INDEX ERROR")
 
-                print("Node cut")
-                print(node.x, node.y)
-                node.voisins = None
-                self.cutNodes.append(node)
+            print("Node cut")
+            print(node.x, node.y)
+            node.voisins = None
+            self.cutNodes.append(node)
             
         print("Node failed to cut")
         print(node.x, node.y)
