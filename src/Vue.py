@@ -430,7 +430,7 @@ class Vue:
     def displayObject(self, joueurs, artefacts, noLocal, selection):
         
         self.surfaceJeu.delete("unit","structure","artefact", "healthbars")
-        self.miniMap.delete("unit")
+        self.miniMap.delete("unit", "structure")
 
         #Affichage des artefacts
         for a in artefacts:
@@ -447,39 +447,44 @@ class Vue:
                 pY = int((b.position[1]*self.miniMapH) / (len(self.parent.modele.map.map)*64))
                 rSize = int(b.size*self.miniMapW / (len(self.parent.modele.map.map[0])*64))
 
-                if(b.currentHp < b.maxHp):
-                    conversionVie = (b.size*b.currentHp)/b.maxHp
-                    offsetY = 70
-                    offsetX = 64
-                    height = 3
+                if((b.position[0] <= self.surfaceJeu.canvasx(0)+self.surfaceW and b.position[0] >= self.surfaceJeu.canvasx(0))or
+                       (b.position[1] <= self.surfaceJeu.canvasy(0)+self.surfaceW and b.position[1] >= self.surfaceJeu.canvasy(0))):
+                    
+
+                    if(b.currentHp < b.maxHp):
+                        conversionVie = (b.size*b.currentHp)/b.maxHp
+                        offsetY = 70
+                        offsetX = 64
+                        height = 3
                 
-                    self.surfaceJeu.create_rectangle(b.position[0]-offsetX, (b.position[1])-offsetY, (b.position[0])+b.size-offsetX, (b.position[1])+(height-offsetY), fill="red", width=0, tags="healthbars")
-                    self.surfaceJeu.create_rectangle(b.position[0]-offsetX, (b.position[1])-offsetY, (b.position[0])+conversionVie-offsetX, (b.position[1])+(height-offsetY), fill="blue", width=0, tags="healthbars")
+                        self.surfaceJeu.create_rectangle(b.position[0]-offsetX, (b.position[1])-offsetY, (b.position[0])+b.size-offsetX, (b.position[1])+(height-offsetY), fill="red", width=0, tags="healthbars")
+                        self.surfaceJeu.create_rectangle(b.position[0]-offsetX, (b.position[1])-offsetY, (b.position[0])+conversionVie-offsetX, (b.position[1])+(height-offsetY), fill="blue", width=0, tags="healthbars")
 
 
                 
                 
-                #Si l'unite est au joueur local
-                if(joueur.noJoueur == noLocal):
+                    #Si l'unite est au joueur local
+                    if(joueur.noJoueur == noLocal):
 
-                    #Si l'unite est selectionnee
-                    if(b in selection):
-                        self.surfaceJeu.create_image(b.position[0]-b.size/2, b.position[1]-b.size/2, anchor=NW, image=self.sprites[joueur.noJoueur][1].spriteDict[b.name], tags="structure")
-                    #Si l'unite n'est pas selectionnee
-                    else:
-                        if(b.size != 32):
-                            self.surfaceJeu.create_image(b.position[0]-b.size/2, b.position[1]-b.size/2, anchor=NW, image=self.sprites[joueur.noJoueur][0].spriteDict[b.name], tags="structure")
+                        #Si l'unite est selectionnee
+                        if(b in selection):
+                            self.surfaceJeu.create_image(b.position[0]-b.size/2, b.position[1]-b.size/2, anchor=NW, image=self.sprites[joueur.noJoueur][1].spriteDict[b.name], tags="structure")
+                        #Si l'unite n'est pas selectionnee
                         else:
-                            self.surfaceJeu.create_image(b.position[0], b.position[1], anchor=NW, image=self.sprites[joueur.noJoueur][0].spriteDict[b.name], tags="structure")
+                            if(b.size != 32):
+                                self.surfaceJeu.create_image(b.position[0]-b.size/2, b.position[1]-b.size/2, anchor=NW, image=self.sprites[joueur.noJoueur][0].spriteDict[b.name], tags="structure")
+                            else:
+                                self.surfaceJeu.create_image(b.position[0], b.position[1], anchor=NW, image=self.sprites[joueur.noJoueur][0].spriteDict[b.name], tags="structure")
 
-                    #Afficher les unites sur la minimap
-                    self.miniMap.create_rectangle(pX, pY, pX+rSize, pY+rSize, fill="yellow", width=0, tags="structure")
 
-                #Sinon si l'unite est a un autre joueur
+                    #Sinon si l'unite est a un autre joueur
+                    else:
+                        self.surfaceJeu.create_image(b.position[0]-b.size/2, b.position[1]-b.size/2, anchor=NW, image=self.sprites[joueur.noJoueur].spriteDict[b.name], tags="structure")
+
+                #Afficher les unites sur la minimap
+                if(joueur.noJoueur == noLocal):
+                   self.miniMap.create_rectangle(pX, pY, pX+rSize, pY+rSize, fill="yellow", width=0, tags="structure")
                 else:
-                    self.surfaceJeu.create_image(b.position[0]-b.size/2, b.position[1]-b.size/2, anchor=NW, image=self.sprites[joueur.noJoueur].spriteDict[b.name], tags="structure")
-
-                    #Afficher les unites sur la minimap
                     self.miniMap.create_rectangle(pX, pY, pX+rSize, pY+rSize, fill="red", width=0, tags="structure")
                     
             #Affiche les unités
@@ -488,39 +493,42 @@ class Vue:
                 pX = int((u.positionFluide[0]*self.miniMapW) / (len(self.parent.modele.map.map[0])*64))
                 pY = int((u.positionFluide[1]*self.miniMapH) / (len(self.parent.modele.map.map)*64))
                 rSize = int(u.size*self.miniMapW / (len(self.parent.modele.map.map[0])*64))
+
+                if((u.position[0] <= self.surfaceJeu.canvasx(0)+self.surfaceW and u.position[0] >= self.surfaceJeu.canvasx(0))or
+                       (u.position[1] <= self.surfaceJeu.canvasy(0)+self.surfaceW and u.position[1] >= self.surfaceJeu.canvasy(0))):
                 
-                if(u.isWalking):
-                    self.animateSprites(u)
+                    if(u.isWalking):
+                        self.animateSprites(u)
 
-                if(u.currentHp < u.maxHp):
-                    conversionVie = (u.size*u.currentHp)/u.maxHp
-                    offsetY = 6
-                    height = 3
+                    if(u.currentHp < u.maxHp):
+                        conversionVie = (u.size*u.currentHp)/u.maxHp
+                        offsetY = 6
+                        height = 3
                 
-                    self.surfaceJeu.create_rectangle(u.positionFluide[0], (u.positionFluide[1])-offsetY, (u.positionFluide[0])+u.size, (u.positionFluide[1])+(height-offsetY), fill="red", width=0, tags="healthbars")
-                    self.surfaceJeu.create_rectangle(u.positionFluide[0], (u.positionFluide[1])-offsetY, (u.positionFluide[0])+conversionVie, (u.positionFluide[1])+(height-offsetY), fill="blue", width=0, tags="healthbars")
+                        self.surfaceJeu.create_rectangle(u.positionFluide[0], (u.positionFluide[1])-offsetY, (u.positionFluide[0])+u.size, (u.positionFluide[1])+(height-offsetY), fill="red", width=0, tags="healthbars")
+                        self.surfaceJeu.create_rectangle(u.positionFluide[0], (u.positionFluide[1])-offsetY, (u.positionFluide[0])+conversionVie, (u.positionFluide[1])+(height-offsetY), fill="blue", width=0, tags="healthbars")
 
-                #Si l'unite est au joueur local
-                if(joueur.noJoueur == noLocal):
+                    #Si l'unite est au joueur local
+                    if(joueur.noJoueur == noLocal):
 
-                    #Si l'unite est selectionnee
-                    if(u in selection):
-                        self.surfaceJeu.create_image(u.positionFluide[0], u.positionFluide[1], anchor=NW, image=self.sprites[joueur.noJoueur][1].spriteDict[u.name][u.orientation][u.currentFrame], tags="unit")
-                    #Si l'unite n'est pas selectionnee
+                        #Si l'unite est selectionnee
+                        if(u in selection):
+                            self.surfaceJeu.create_image(u.positionFluide[0], u.positionFluide[1], anchor=NW, image=self.sprites[joueur.noJoueur][1].spriteDict[u.name][u.orientation][u.currentFrame], tags="unit")
+                        #Si l'unite n'est pas selectionnee
+                        else:
+                            self.surfaceJeu.create_image(u.positionFluide[0], u.positionFluide[1], anchor=NW, image=self.sprites[joueur.noJoueur][0].spriteDict[u.name][u.orientation][u.currentFrame], tags="unit")
+
+                    #Sinon si l'unite est a un autre joueur
                     else:
-                        self.surfaceJeu.create_image(u.positionFluide[0], u.positionFluide[1], anchor=NW, image=self.sprites[joueur.noJoueur][0].spriteDict[u.name][u.orientation][u.currentFrame], tags="unit")
+                        self.surfaceJeu.create_image(u.positionFluide[0], u.positionFluide[1], anchor=NW, image=self.sprites[joueur.noJoueur].spriteDict[u.name][u.orientation][u.currentFrame], tags="unit")
 
                     
-                    #Afficher les unites sur la minimap
-                    self.miniMap.create_rectangle(pX, pY, pX+rSize, pY+rSize, fill="yellow", width=0, tags="unit")
                     
-                #Sinon si l'unite est a un autre joueur
+                #Afficher les unites sur la minimap
+                if(joueur.noJoueur == noLocal):
+                   self.miniMap.create_rectangle(pX, pY, pX+rSize, pY+rSize, fill="yellow", width=0, tags="unit")
                 else:
-                    self.surfaceJeu.create_image(u.positionFluide[0], u.positionFluide[1], anchor=NW, image=self.sprites[joueur.noJoueur].spriteDict[u.name][u.orientation][u.currentFrame], tags="unit")
-
                     self.miniMap.create_rectangle(pX, pY, pX+rSize, pY+rSize, fill="red", width=0, tags="unit")
-                    
-
     
     #Affiche les tags des boutons sur le hud
     def getBuildInfo(self, event):
