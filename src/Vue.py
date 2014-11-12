@@ -447,8 +447,8 @@ class Vue:
                 pY = int((b.position[1]*self.miniMapH) / (len(self.parent.modele.map.map)*64))
                 rSize = int(b.size*self.miniMapW / (len(self.parent.modele.map.map[0])*64))
 
-                if((b.position[0] <= self.surfaceJeu.canvasx(0)+self.surfaceW and b.position[0] >= self.surfaceJeu.canvasx(0))or
-                       (b.position[1] <= self.surfaceJeu.canvasy(0)+self.surfaceW and b.position[1] >= self.surfaceJeu.canvasy(0))):
+                if((b.position[0] <= self.surfaceJeu.canvasx(0)+self.surfaceW and b.position[0] >= self.surfaceJeu.canvasx(0))and
+                       (b.position[1] <= self.surfaceJeu.canvasy(0)+self.surfaceH and b.position[1] >= self.surfaceJeu.canvasy(0))):
                     
 
                     if(b.currentHp < b.maxHp):
@@ -494,8 +494,9 @@ class Vue:
                 pY = int((u.positionFluide[1]*self.miniMapH) / (len(self.parent.modele.map.map)*64))
                 rSize = int(u.size*self.miniMapW / (len(self.parent.modele.map.map[0])*64))
 
-                if((u.position[0] <= self.surfaceJeu.canvasx(0)+self.surfaceW and u.position[0] >= self.surfaceJeu.canvasx(0))or
-                       (u.position[1] <= self.surfaceJeu.canvasy(0)+self.surfaceW and u.position[1] >= self.surfaceJeu.canvasy(0))):
+
+                if((u.position[0] <= self.surfaceJeu.canvasx(0)+self.surfaceW and u.position[0] >= self.surfaceJeu.canvasx(0))and
+                       (u.position[1] <= self.surfaceJeu.canvasy(0)+self.surfaceH and u.position[1] >= self.surfaceJeu.canvasy(0))):
                 
                     if(u.isWalking):
                         self.animateSprites(u)
