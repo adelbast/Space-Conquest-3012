@@ -108,7 +108,7 @@ class AI(Joueur):
                         return (x,y)
                   
                     
-     def construireWorkers(self):#automatise le nombre requis de workers    
+    def construireWorkers(self):#automatise le nombre requis de workers    
         print("construire workers")
         for i in self.listeBatiment:
             if (self.listeBatiment[i].name == "HQ"):
