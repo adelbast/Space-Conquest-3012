@@ -108,10 +108,21 @@ class AI(Joueur):
                         return (x,y)
                   
                     
-    def construireWorkers(self):
+     def construireWorkers(self):#automatise le nombre requis de workers    
+        print("construire workers")
         for i in self.listeBatiment:
-            if (i.name == "HQ"):
-                self.creerUnite("worker", (200,50),(i.position[0]+50,i.position+75))
+            if (self.listeBatiment[i].name == "HQ"):
+                print("HQ")
+                #for j in range (self.nbWorkersReq - self.nbWorkers):
+                    #print(j)
+                print(self.listeUnite)
+                self.creerUnite("worker", (200,50),(i.position[0]+50*1,i.position+75)) ##ici creerUnite ne semble pas fonctionner
+                print(self.listeUnite)
+                print("newunite")
+                self.parent.dicAction2Server['NewUnit'].append(("worker", (i.position[0]+50*1,i.position+75)))
+                print("ajout")
+                self.creerUnite("worker", (200,50),(i.position[0]+50*2,i.position+75))
+                self.creerUnite("worker", (200,50),(i.position[0]+50*3,i.position+75))
           
     def calculateGen():
         self.nbGen = [0,0,0]
