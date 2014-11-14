@@ -1,5 +1,5 @@
 class Batiment (object):
-    def __init__(self,owner,name,xy,attributs,idB):
+    def __init__(self,owner,name,xy,attributs,idB, initialisation = True):
         self.owner      = owner
         self.name       = name
         self.position   = xy
@@ -10,8 +10,20 @@ class Batiment (object):
         self.size       = attributs[3]
         self.canBuild   = attributs[4]
         self.id         = idB
-        self.currentHp = self.maxHp
+        self.currentHp  = self.maxHp
+        self.estConstruit = True
+        if(not initialisation):
+            self.currentHp  = 1
+            self.estConstruit = False
+        self.moduloConstruction = 5
+        self.compteurConstruction = 0
         
+        
+    def construire(self):
+        if(not self.compteurConstruction%self.moduloConstruction):
+            self.currentHp += 1
+            if(self.currentHp == self.maxHp):
+                self.estConstruit = True
 
     def selfDestroy(self):#Detruire le batiment 
         print("selfDestruct")
@@ -34,7 +46,7 @@ class Generator(Batiment):
     
 class Barrack(Batiment):
     def __init__(self,owner,name,xy,attributs,idB):
-        super(Generator,self).__init__(owner,name,xy,attributs,idB)
+        super(Barrack,self).__init__(owner,name,xy,attributs,idB)
         self.unitList = UnitList
         
         
