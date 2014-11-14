@@ -239,11 +239,11 @@ class Modele(object):
         elif(event.num == 1): #clic gauche
             if(etat==True and info != None):
                 if('NewBatiment' not in self.dicAction2Server):
-                    self.dicAction2Server['NewBatiment']=[]
-                self.dicAction2Server.append( (info,int(self.releasePosx/32)*32,int(self.releasePosy/32)*32) ) #packetage de creation batiment
-                self.parent.etatCreation = False
-                self.parent.infoCreation = None
-                return
+                    self.dicAction2Server['NewBatiment']=(info,int(self.releasePosx/32)*32,int(self.releasePosy/32)*32) #packetage de creation batiment
+                    #self.dicAction2Server.append( (info,int(self.releasePosx/32)*32,int(self.releasePosy/32)*32) ) #packetage de creation batiment
+                    self.parent.etatCreation = False
+                    self.parent.infoCreation = None
+                    return
             self.selection[:] = []
             if(self.clickPosx!=self.releasePosx or self.clickPosy!=self.releasePosy):
                 print(self.clickPosx,self.clickPosy,self.releasePosx,self.releasePosy)

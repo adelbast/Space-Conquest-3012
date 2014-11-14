@@ -107,21 +107,23 @@ class Unit:    ##Laurence
         try:
             if self.etat == self.IDLE:
                 pass
-            elif(not self.isAmi and self.reloading <= 0 and self.inRange(self.destination)):
+            elif(self.etat != self.GOTO_POSITION and not self.isAmi and self.inRange(self.destination)):
+             	if(self.reloading <= 0):
                     self.attaque()
                     self.tempsAnimation = self.attackSpeed/2
                     self.reloading = self.attackSpeed
+                    print("attaque")
             elif(self.tempsAnimation <= 0):
                 if(self.etat == self.FOLLOW):
                     self.followModulator += 1
                     if (self.destination.isWalking and not self.followModulator%self.MODULO and self.type != "air"):
                         self.calculatePath()
-                        print("Here is a whole brand new path")
                 self.move()
             self.tempsAnimation -= 1
             self.reloading -= 1
 
         except AttributeError as e:
+            print(traceback.print_exc())
             print("La cible n'existe plus pendant l'etat "+str(self.etat)+" du Unit \ ID \ noProprio : "+self.name+" \ "+str(self.id)+" \ "+str(self.owner))
             self.destination = None
             self.etat = self.IDLE
@@ -213,6 +215,7 @@ class Unit:    ##Laurence
             elif(self.destination.type == "range"):     # ==
                 self.destination.currentHp -= self.force-self.destination.armor
         elif(self.type == "air"):
+            print("Vehicule Aerien Attaque")
             if(self.destination.type == "builder"):    # ==
                 self.destination.currentHp -= self.force-self.destination.armor
             if(self.destination.type == "infantry"):    # >
@@ -224,6 +227,7 @@ class Unit:    ##Laurence
             elif(self.destination.type == "range"):     # <
                 self.destination.currentHp -= self.force-self.destination.armor
         elif(self.type == "vehicule"):
+            print("Attacker : ", self.name, "Target : ", self.destination.type)
             if(self.destination.type == "builder"):    # ==
                 self.destination.currentHp -= self.force-self.destination.armor
             if(self.destination.type == "infantry"):    # <

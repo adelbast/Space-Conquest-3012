@@ -79,9 +79,9 @@ class Vue:
         self.surfaceJeu.bind("<ButtonRelease-3>", self.parent.gererMouseRelease)
 
         #Widgets pour l'affichage de la liste de serveur/Joueur
-        self.buttonJoin = Button(self.root, width=100, text="Join Server", state=DISABLED, command=self.parent.joinLobby)
-        self.serverList = Listbox(self.root, width=100)
-        self.buttonCreate = Button(self.root, width=100, text="Create Server", state=DISABLED, command=self.parent.createLobby)
+        self.buttonJoin = Button(self.root, text="Join Server", state=DISABLED, command=self.parent.joinLobby)
+        self.serverList = Listbox(self.root)
+        self.buttonCreate = Button(self.root, text="Create Server", state=DISABLED, command=self.parent.createLobby)
         self.registreVerifEntry = self.root.register(self.verifEntry)
         self.entreClient = Entry(self.root)
         self.entreClient.insert(0, "Entrez votre nom")
@@ -91,13 +91,16 @@ class Vue:
         self.entreServeur.config(validate="key", validatecommand=(self.registreVerifEntry, '%P', '%W', '%S', '%d'))
         self.entreClientOK = False
         self.entreServeurOK = False
-        self.labelFrameSpinBox = LabelFrame(self.root, text="Nombre d'IA")
+        self.labelFrameSpinBox = LabelFrame(self.root, text="Nombre d'IA", width=50)
         self.spinBox = Spinbox(self.labelFrameSpinBox, from_=0, to=8)
-        
 
+        #Configuration du Grid Layout
+        self.root.columnconfigure(0, weight=1)
+        self.root.columnconfigure(1, weight=1)
+        
         #Widgets pour l'affichage du Lobby
-        self.playerList = Listbox(self.root, width=100)
-        self.buttonStart = Button(self.root, width=100, text="Start Game", command=self.parent.lancerPartie)
+        self.playerList = Listbox(self.root)
+        self.buttonStart = Button(self.root, text="Start Game", command=self.parent.lancerPartie)
         
 
         #TEST BOUTON HUD JUSTE TEST, PAS DEFINITIF
@@ -371,11 +374,11 @@ class Vue:
     #Affichage de la liste de serveur disponible
     def displayServers(self, serverList):
         #self.root.grid_propagate(0)
-        self.entreClient.grid(row=0, column=0)
-        self.entreServeur.grid(row=0, column=1)
-        self.serverList.grid(row=1, column=0)
-        self.buttonJoin.grid(row=2, column=0)
-        self.buttonCreate.grid(row=2, column=1)
+        self.entreClient.grid(row=0, column=0, sticky=N+S+E+W)
+        self.entreServeur.grid(row=0, column=1, sticky=N+S+E+W)
+        self.serverList.grid(row=1, column=0, sticky=N+S+E+W)
+        self.buttonJoin.grid(row=2, column=0, sticky=N+S+E+W)
+        self.buttonCreate.grid(row=2, column=1, sticky=N+S+E+W)
 
     def refreshServers(self, serverList):
         self.serverList.delete(0, END)
@@ -387,12 +390,12 @@ class Vue:
         
     #Affichage du Lobby avant de debuter une partie
     def displayLobby(self, isHost):
-        self.playerList.grid(row=0, column=0)
+        self.playerList.grid(row=0, column=0, sticky=N+S+E+W)
         
         if(isHost):
-            self.labelFrameSpinBox.grid(row=0, column=1)
+            self.labelFrameSpinBox.grid(row=0, column=1, sticky=N+S+E+W)
             self.spinBox.grid(row=0, column=0)
-            self.buttonStart.grid(row=1, column=0)
+            self.buttonStart.grid(row=1, column=0, sticky=N+S+E+W)
 
     def refreshLobby(self, listeClients):
         self.playerList.delete(0, END)
