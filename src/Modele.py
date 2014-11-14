@@ -114,9 +114,9 @@ class Modele(object):
                             noUnit, noProprio, uvB, noUnitCible = valeur
                             try:
                                 if uvB == 0:
-                                    self.listeJoueur[ii].listeUnite[ noUnit ].setDestination( unit = self.listeJoueur[ noProprio ].listeUnite[ noUnitCible ])
+                                    self.listeJoueur[ii].listeUnite[ noUnit ].setDestination(listeJoueurAmi = self.listeJoueur[ii].listeAllie, unit = self.listeJoueur[ noProprio ].listeUnite[ noUnitCible ])
                                 else:
-                                    self.listeJoueur[ii].listeUnite[ noUnit ].setDestination( batiment = self.listeJoueur[ noProprio ].listeBatiment[ noUnitCible ])
+                                    self.listeJoueur[ii].listeUnite[ noUnit ].setDestination(listeJoueurAmi = self.listeJoueur[ii].listeAllie, batiment = self.listeJoueur[ noProprio ].listeBatiment[ noUnitCible ])
                             except KeyError:
                                 pass
                     
@@ -136,13 +136,13 @@ class Modele(object):
                                 pass
                         
                     elif(clee == "NewBatiment"):
-        
-                        workerID = 0#TODO
-                        typeBatiment, x, y = listValeur
-                        try:
-                            self.listeJoueur[ii].creerBatiment((x,y), self.listeJoueur[ii].listeUnite[workerID], typeBatiment, self.dictBatiment[typeBatiment]) #position,worker,nom,attributs
-                        except KeyError:
-                            pass
+                        for valeur in listValeur:
+                            workerID = 0#TODO
+                            typeBatiment, x, y = listValeur
+                            try:
+                                self.listeJoueur[ii].creerBatiment((x,y), self.listeJoueur[ii].listeUnite[workerID], typeBatiment, self.dictBatiment[typeBatiment]) #position,worker,nom,attributs
+                            except KeyError:
+                                pass
 
                     elif(clee == "SuppressionBatiment"):
                         for valeur in listValeur:
@@ -188,7 +188,7 @@ class Modele(object):
         for joueur in self.listeJoueur:
             for _, uni in joueur.listeUnite.items():
                 if(uni.currentHp > 0):
-                    uni.autoGestion(joueur.listeAllie)#Fait bouger toutes les unitées
+                    uni.autoGestion()#Fait bouger toutes les unitées
                 elif(joueur.noJoueur == self.noJoueurLocal and not uni.deleteCallDone):
                     self.supprimerUnit(uni.id)
                     uni.deleteCallDone = True
@@ -238,13 +238,14 @@ class Modele(object):
             
         elif(event.num == 1): #clic gauche
             if(etat==True and info != None):
-                #self.listeJoueur[self.noJoueurLocal].creerBatiment([self.releasePosx,self.releasePosy],True,"HQ",self.dictBatiment["HQ"]) # pas bon, event.x,y doit etre changer pour map width et height 
-                self.dicAction2Server['NewBatiment']=(info,int(self.releasePosx/32)*32,int(self.releasePosy/32)*32) #packetage de creation batiment
+                if('NewBatiment' not in self.dicAction2Server):
+                    self.dicAction2Server['NewBatiment']=[]
+                self.dicAction2Server.append( (info,int(self.releasePosx/32)*32,int(self.releasePosy/32)*32) ) #packetage de creation batiment
                 self.parent.etatCreation = False
                 self.parent.infoCreation = None
                 return
             self.selection[:] = []
-            if(self.clickPosx!=self.releasePosx or self.clickPosy!=self.releasePosy):   #self.clickPosx+5 < self.releasePosx or self.clickPosx-5 > self.releasePosx or self.clickPosy+5 < self.releasePosy or self.clickPosy-5 > self.releasePosy
+            if(self.clickPosx!=self.releasePosx or self.clickPosy!=self.releasePosy):
                 print(self.clickPosx,self.clickPosy,self.releasePosx,self.releasePosy)
                 for _, unit in self.listeJoueur[self.noJoueurLocal].listeUnite.items(): #Je prends seulement les unites puisque selection multiple de batiment inutile
                     if(self.pointDansForme([self.releasePosx,self.clickPosx,self.clickPosx,self.releasePosx],[self.clickPosy,self.clickPosy,self.releasePosy,self.releasePosy],unit.position[0],unit.position[1])):#La fonction dont je t'ai parlé sur ts frank...
