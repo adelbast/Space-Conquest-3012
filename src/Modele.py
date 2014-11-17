@@ -138,7 +138,7 @@ class Modele(object):
                     elif(clee == "NewBatiment"):
                         for valeur in listValeur:
                             workerID = 0#TODO
-                            typeBatiment, x, y = listValeur
+                            typeBatiment, x, y = valeur
                             try:
                                 self.listeJoueur[ii].creerBatiment((x,y), self.listeJoueur[ii].listeUnite[workerID], typeBatiment, self.dictBatiment[typeBatiment]) #position,worker,nom,attributs
                             except KeyError:
@@ -239,11 +239,11 @@ class Modele(object):
         elif(event.num == 1): #clic gauche
             if(etat==True and info != None):
                 if('NewBatiment' not in self.dicAction2Server):
-                    self.dicAction2Server['NewBatiment']=(info,int(self.releasePosx/32)*32,int(self.releasePosy/32)*32) #packetage de creation batiment
-                    #self.dicAction2Server.append( (info,int(self.releasePosx/32)*32,int(self.releasePosy/32)*32) ) #packetage de creation batiment
-                    self.parent.etatCreation = False
-                    self.parent.infoCreation = None
-                    return
+                    self.dicAction2Server['NewBatiment']=[] #*La fonction gestion prend des dictionaire "contenant des listes!"
+                self.dicAction2Server['NewBatiment'].append( (info,int(self.releasePosx/32)*32,int(self.releasePosy/32)*32) ) #packetage de creation batiment ## quessé ça x/23*32?
+                self.parent.etatCreation = False
+                self.parent.infoCreation = None
+                return
             self.selection[:] = []
             if(self.clickPosx!=self.releasePosx or self.clickPosy!=self.releasePosy):
                 print(self.clickPosx,self.clickPosy,self.releasePosx,self.releasePosy)
