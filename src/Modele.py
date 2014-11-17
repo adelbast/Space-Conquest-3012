@@ -418,7 +418,7 @@ class Modele(object):
     def init_grid_Pathfinding(self,parent): #Initialise le graphe
         for x in range(self.map.numCol*2):
             for y in range(self.map.numRow*2):
-                self.graph.append(Node(x,y))    #Cree des nodes
+                self.graph.append(Node(x,y,self))    #Cree des nodes
                 
         print("row and col")
         print(self.map.numCol, self.map.numRow)
@@ -448,7 +448,7 @@ class Modele(object):
             print("erreur dans dans cutNodes")
         nodeAjouter = self.getNode(x,y)
         nodeAjouter.voisins = []
-        nodeAjouter.defineNeighbors()
+        nodeAjouter.defineNeighbors()  ##Si on appelle defineNeighbors on risque de refaire des liens non existant -> voir la fonction relink
         # on a attacher le node a ses voisins, maintenant doit attacher les voisins au node si ils ne sont pas dans cutNodes
         if(self.getNode(x+1,y).voisins):
             self.getNode(x+1,y).voisins[2] = [nodeAjouter.x,nodeAjouter.y]

@@ -108,7 +108,7 @@ class Unit:    ##Laurence
             if self.etat == self.IDLE:
                 pass
             elif(self.etat != self.GOTO_POSITION and not self.isAmi and self.inRange(self.destination)):
-             	if(self.reloading <= 0):
+                if(self.reloading <= 0):
                     self.attaque()
                     self.tempsAnimation = self.attackSpeed/2
                     self.reloading = self.attackSpeed
@@ -253,6 +253,10 @@ class Unit:    ##Laurence
         if isinstance(self.destination, tuple) or isinstance(self.destination, list):
             self.goal = self.getNode(int(self.destination[0]/32)
                                      ,int(self.destination[1]/32))
+        elif self.etat == self.GOTO_BATIMENT:
+            print("New destination")
+            self.goal = self.recalibrerDestination(self.parent.graph, self.getNode(int(self.destination.position[0]/32)
+                                     ,int(self.destination.position[1]/32)),self.getNode(math.trunc(self.position[0]/32), math.trunc(self.position[1])/32))
         else:
             self.goal = self.getNode(int(self.destination.position[0]/32),
                                      int(self.destination.position[1]/32))
@@ -270,7 +274,7 @@ class Unit:    ##Laurence
                                                  self.goal)
 
             for i in self.liste2:
-               self.liste.insert(0,Node(i.x,i.y))
+               self.liste.insert(0,self.getNode(i.x,i.y))
 
             self.path = self.liste
             self.path.pop(0)
@@ -286,7 +290,8 @@ class Unit:    ##Laurence
         ####
                         
     def getNode(self, x, y):
-        return self.parent.graph[x*(self.parent.map.numRow*2)+y]
+        
+        return self.parent.graph[int(x)*(self.parent.map.numRow*2)+int(y)]
 
     def heuristic(self, a, b):
        return abs(a.x - b.x) + abs(a.y - b.y)
@@ -323,6 +328,36 @@ class Unit:    ##Laurence
           path.append(current)
        return path
 
+
+    def recalibrerDestination(self,graph, start, goal):     #Algorithme pathfinder modifie, retourne une destination// Arguments : Node[] graph, Node start, Node goal
+       frontier = PriorityQueue()
+       frontier.put(start, 0)
+       came_from = {}
+       cost_so_far = {}
+       came_from[start] = None
+       cost_so_far[start] = 0
+       dirs = [[1, 0], [0, 1], [-1, 0], [0, -1], [1, 1], [-1, 1], [-1, -1],[1, -1]]
+       current = None
+   
+       while not frontier.empty():
+          print("not empty")
+          current = frontier.get()
+          print(current.voisins)
+          if current.voisins is not None:
+             print("valid")
+             print(current.x, current.y)
+             break
+          for next in dirs:
+                if next != 0:
+                   new_cost = cost_so_far[current] +1
+                   if self.getNode(  next[0]+current.x,   next[1]+current.y) not in cost_so_far or new_cost < cost_so_far[self.getNode(   next[0]+current.x,  next[1]+current.y)]:
+                      cost_so_far[self.getNode(  next[0]+current.x,   next[1]+current.y)] = new_cost
+                      priority = new_cost + self.heuristic(goal, self.getNode(   next[0]+current.x,   next[1]+current.y  ))
+                      frontier.put(self.getNode(  next[0]+current.x,  next[1] +current.y), priority)
+                      came_from[self.getNode(  next[0]+ current.x  ,  next[1]+current.y)  ] = current
+                
+       return current
+
     
 ###################
 class PriorityQueue:
@@ -344,16 +379,17 @@ class PriorityQueue:
 
     #Cette classe devrait etre mise dans un fichier a part verifier les imports puis retirer
 class Node:
-    def __init__(self,x,y):
+    def __init__(self,x,y,parent):
         self.x = x
         self.y = y
         self.voisins = []
         self.defineNeighbors()
+        self.parent = parent
 
     def defineNeighbors(self):
         #print("bien dans define")
-        dirs = [[1, 0], [0, 1], [-1, 0], [0, -1], [1, 1], [-1, 1], [-1, -1],[1, -1]]
-        for dir in dirs:    #attention, dir est un keyword de python...
+        self.dirs = [[1, 0], [0, 1], [-1, 0], [0, -1], [1, 1], [-1, 1], [-1, -1],[1, -1]]
+        for dir in self.dirs:    #attention, dir est un keyword de python...
             if self.x + dir[0] >= 0:
                 if  self.y + dir[1] >= 0:
                     self.voisins.append([self.x + dir[0], self.y + dir[1]])
@@ -361,6 +397,12 @@ class Node:
                     self.voisins.append([0,0])
             else:
                 self.voisins.append([0,0])
+
+    def relink(self):
+        for i in self.dirs:
+            if self.parent.getNode(i[0]+self.x,i[1]+self.y).voisins is not None:
+                voisins.append([i[0]+self.x,i[1]+self.y])
+                
    
 
    
