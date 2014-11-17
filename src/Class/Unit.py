@@ -351,6 +351,7 @@ class Node:
         self.defineNeighbors()
 
     def defineNeighbors(self):
+        #print("bien dans define")
         dirs = [[1, 0], [0, 1], [-1, 0], [0, -1], [1, 1], [-1, 1], [-1, -1],[1, -1]]
         for dir in dirs:    #attention, dir est un keyword de python...
             if self.x + dir[0] >= 0:

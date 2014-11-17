@@ -237,6 +237,9 @@ class Modele(object):
                                     #unite.setDestination(unePosition = cible)
             
         elif(event.num == 1): #clic gauche
+            #if(self.getNode(int(self.releasePosx/32),int(self.releasePosy/32)) in self.cutNodes):
+                #print("tente de delete un node couper")
+                #self.reattachNode(int(self.releasePosx/32),int(self.releasePosy/32))
             if(etat==True and info != None):
                 if('NewBatiment' not in self.dicAction2Server):
                     self.dicAction2Server['NewBatiment']=[] #*La fonction gestion prend des dictionaire "contenant des listes!"
@@ -436,7 +439,42 @@ class Modele(object):
       
     def getNode(self, x, y):  #Retourne un node au x y donnee du graphe
         return self.graph[x*self.height+y]
-                    
+    
+    def reattachNode(self,x,y): # juste passer un node a la place de x,y (encore en tests)
+        print("dans recreateNode")
+        try:
+            self.cutNodes.remove(self.getNode(x,y))
+        except ValueError as e:
+            print("erreur dans dans cutNodes")
+        nodeAjouter = self.getNode(x,y)
+        nodeAjouter.voisins = []
+        nodeAjouter.defineNeighbors()
+        # on a attacher le node a ses voisins, maintenant doit attacher les voisins au node si ils ne sont pas dans cutNodes
+        if(self.getNode(x+1,y).voisins):
+            self.getNode(x+1,y).voisins[2] = [nodeAjouter.x,nodeAjouter.y]
+        
+        if(self.getNode(x+1,y-1).voisins):
+            self.getNode(x+1,y-1).voisins[5] = [nodeAjouter.x,nodeAjouter.y]
+        
+        if(self.getNode(x,y-1).voisins):
+            self.getNode(x,y-1).voisins[1] = [nodeAjouter.x,nodeAjouter.y]
+        
+        if(self.getNode(x-1,y-1).voisins):
+            self.getNode(x-1,y-1).voisins[4] = [nodeAjouter.x,nodeAjouter.y]
+        
+        if(self.getNode(x-1,y).voisins):
+            self.getNode(x-1,y).voisins[0] = [nodeAjouter.x,nodeAjouter.y]
+        
+        if(self.getNode(x-1,y+1).voisins):
+            self.getNode(x-1,y+1).voisins[7] = [nodeAjouter.x,nodeAjouter.y]
+        
+        if(self.getNode(x,y+1).voisins):
+            self.getNode(x,y+1).voisins[3] = [nodeAjouter.x,nodeAjouter.y]
+        
+        if(self.getNode(x+1,y+1).voisins):
+            self.getNode(x+1,y+1).voisins[6] = [nodeAjouter.x,nodeAjouter.y]
+
+
 
     def cutNode(self, node):            #Coupe un node pour qu'il devienne un obstacle
         x = 0
