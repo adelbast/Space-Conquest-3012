@@ -1,0 +1,31 @@
+Scrum #7 18 novembre
+
+Arnaud
+fait: positionnement des unités lors de la position
+problemes rencontrés: oui, mais réglés
+à faire: les formations, que les unités ne se stackent plus
+
+Alex
+fait: sprites pour la ferme, solar panel, et factory
+problèmes: non
+à faire: finir les images de la plupart des batiments
+
+Antoine
+fait: automatisation des workers complétées
+problèmes: oui mais réglés
+à faire: downloader et étudier le programme de capture vidéo et faire une vidéo d'essai
+
+Francis
+fait: attaquer, supprimer les buildings et rattacher les nodes, optimisation
+problèmes: pas vraiment
+à faire: à déterminer
+
+Laurence
+fait: intégration de recalibrage (pathfinder) de destination et intégration des recherches
+problèmes: non
+à faire : finir l'intégration des recherches
+
+Xavier
+fait: construction de batiment
+problèmes: non 
+à faire: l'attaque

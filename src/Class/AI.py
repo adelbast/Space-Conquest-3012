@@ -166,3 +166,17 @@ class AI(Joueur):
 #------------------------------Aggresive------------------------------#
     def etatMilitaire(self):
         pass
+
+    def verifierNbTypeUnitAttaque(self):
+        pass
+    
+    def attaque(self):
+        #if self.verifierNbTypeAttaque():    
+        pass
+
+    def repliStrategique(self):
+        pass
+
+    
+
+    
