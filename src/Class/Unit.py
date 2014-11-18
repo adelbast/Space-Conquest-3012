@@ -40,11 +40,13 @@ class Unit:    ##Laurence
         self.IDLE           = 0
         self.GOTO_POSITION  = 1
         self.GOTO_BATIMENT  = 2
-        self.FOLLOW     = 3
-        self.etat       = self.IDLE
-        self.isWalking  = False
-        self.isAmi      = True
+        self.FOLLOW         = 3
+        self.etat           = self.IDLE
+        self.isWalking      = False
+        self.isAmi          = True
+        self.isbuildMission = False
 
+        self.isCut = False ;
         self.reloading = 0
         self.tempsAnimation = 0
         self.MODULO = 40
@@ -62,7 +64,13 @@ class Unit:    ##Laurence
 
         #On set un temps initial pour l'animation
         self.lastFrameTime = int(round(time.time()*1000))
-        #add condition si destination est nodeCoupe
+        try:
+            if(self.destination.owner not in listeJoueurAmi):
+                self.isAmi = False
+            else:
+                self.isAmi = True
+        except:#la destination n'a pas de owner
+            pass
         if unit:
             print("Deplacement vers unit")
             self.destination = unit         # Un Unit
@@ -72,11 +80,17 @@ class Unit:    ##Laurence
             print("Deplacement vers batiment")
             self.destination = batiment     # Un Batiment
             self.etat = self.GOTO_BATIMENT
-
+            if(self.type == "builder" and self.isAmi and self.destination.currentHp < self.destination.maxHp):
+                self.isbuildMission = True
         elif unePosition:
             print("Deplacement vers tile")
             self.destination = unePosition  # Un Tuple
             self.etat = self.GOTO_POSITION
+            self.isCut = False
+            if self.getNode(int(self.destination[0]/32),int(self.destination[1]/32)).voisins is None:
+                print("TRUUUUE")
+                self.isCut = True 
+            
         else:
             return None
 
@@ -89,10 +103,6 @@ class Unit:    ##Laurence
             except:
                 self.position[0] = self.destination.position[0]
                 self.position[1] = self.destination.position[1]
-                if(self.destination.owner not in listeJoueurAmi):
-                    self.isAmi = False
-                else:
-                    self.isAmi = True
 
         self.depassementHorizontal = False
         self.depassementVertical   = False
@@ -143,7 +153,7 @@ class Unit:    ##Laurence
                     self.depassementVertical   = False
                 self.path.pop(0)
                 if(self.path):
-                    if(self.getNode(self.path[0].x,self.path[0].y) in self.parent.cutNodes):
+                    if(self.getNode(self.path[0].x,self.path[0].y).voisins is None):
                         self.calculatePath()
             else:
                 self.positionFluide[0] = self.position[0]
@@ -151,6 +161,7 @@ class Unit:    ##Laurence
                 self.isWalking = False
                 self.currentFrame = '1'
                 if(self.etat == self.GOTO_POSITION):
+
 
                     newDestination = self.unitFormation()
                     print(newDestination)
@@ -165,7 +176,9 @@ class Unit:    ##Laurence
                         print("Pas de formation")
                         self.etat = self.IDLE
                 
-                    
+                elif(self.type == "builder" and self.isAmi and self.destination.currentHp < self.destination.maxHp):
+                	   self.destination.construire()
+
                 return 1
 
         self.isWalking = True
@@ -195,69 +208,80 @@ class Unit:    ##Laurence
         
 
     def attaque(self):
-        if(self.type == "builder"):
-            if(self.destination.type == "builder"):    # ==
-                self.destination.currentHp -= self.force-self.destination.armor
-            elif(self.destination.type == "infantry"):  # >
-                self.destination.currentHp -= self.force-self.destination.armor
-            elif(self.destination.type == "air"):       # > peut pas attaquer
-                pass
-            elif(self.destination.type == "vehicule"):  # >
-                self.destination.currentHp -= self.force-self.destination.armor
-            elif(self.destination.type == "range"):     # >
-                self.destination.currentHp -= self.force-self.destination.armor
-        elif(self.type == "infantry"):
-            if(self.destination.type == "builder"):    # ==
-                self.destination.currentHp -= self.force-self.destination.armor
-            elif(self.destination.type == "infantry"):    # ==
-                self.destination.currentHp -= self.force-self.destination.armor
-            elif(self.destination.type == "air"):       # > peut pas attaquer
-                pass
-            elif(self.destination.type == "vehicule"):  # >
-                self.destination.currentHp -= self.force-self.destination.armor*2
-            elif(self.destination.type == "range"):     # <
-                self.destination.currentHp -= self.force*.5
-        elif(self.type == "range"):
-            if(self.destination.type == "builder"):    # ==
-                self.destination.currentHp -= self.force-self.destination.armor
-            elif(self.destination.type == "infantry"):    # <
-                self.destination.currentHp -= self.force
-            elif(self.destination.type == "air"):       # <
-                self.destination.currentHp -= self.force-self.destination.armor
-            elif(self.destination.type == "vehicule"):  # >
-                self.destination.currentHp -= self.force-self.destination.armor*2
-            elif(self.destination.type == "range"):     # ==
-                self.destination.currentHp -= self.force-self.destination.armor
-        elif(self.type == "air"):
-            print("Vehicule Aerien Attaque")
-            if(self.destination.type == "builder"):    # ==
-                self.destination.currentHp -= self.force-self.destination.armor
-            if(self.destination.type == "infantry"):    # >
-                self.destination.currentHp -= self.force-self.destination.armor
-            elif(self.destination.type == "air"):       # ==
-                self.destination.currentHp -= self.force-self.destination.armor
-            elif(self.destination.type == "vehicule"):  # <
-                self.destination.currentHp -= self.force-self.destination.armor
-            elif(self.destination.type == "range"):     # <
-                self.destination.currentHp -= self.force-self.destination.armor
-        elif(self.type == "vehicule"):
-            print("Attacker : ", self.name, "Target : ", self.destination.type)
-            if(self.destination.type == "builder"):    # ==
-                self.destination.currentHp -= self.force-self.destination.armor
-            if(self.destination.type == "infantry"):    # <
-                self.destination.currentHp -= self.force-self.destination.armor
-            elif(self.destination.type == "air"):       # >
-                self.destination.currentHp -= self.force/2-self.destination.armor
-            elif(self.destination.type == "vehicule"):  # ==
-                self.destination.currentHp -= self.force-self.destination.armor
-            elif(self.destination.type == "range"):     # <
-                self.destination.currentHp -= self.force-self.destination.armor
-        if(self.destination.currentHp<0):
-            self.destination.currentHp=0
+        if(self.destination.currentHp > 0):
+            try:
+                if(self.type == "builder"):
+                    if(self.destination.type == "builder"):    # ==
+                        self.destination.currentHp -= self.force-self.destination.armor
+                    elif(self.destination.type == "infantry"):  # >
+                        self.destination.currentHp -= self.force-self.destination.armor
+                    elif(self.destination.type == "air"):       # > peut pas attaquer
+                        pass
+                    elif(self.destination.type == "vehicule"):  # >
+                        self.destination.currentHp -= self.force-self.destination.armor
+                    elif(self.destination.type == "range"):     # >
+                        self.destination.currentHp -= self.force-self.destination.armor
+                elif(self.type == "infantry"):
+                    if(self.destination.type == "builder"):    # ==
+                        self.destination.currentHp -= self.force-self.destination.armor
+                    elif(self.destination.type == "infantry"):    # ==
+                        self.destination.currentHp -= self.force-self.destination.armor
+                    elif(self.destination.type == "air"):       # > peut pas attaquer
+                        pass
+                    elif(self.destination.type == "vehicule"):  # >
+                        self.destination.currentHp -= self.force-self.destination.armor*2
+                    elif(self.destination.type == "range"):     # <
+                        self.destination.currentHp -= self.force*.5
+                elif(self.type == "range"):
+                    if(self.destination.type == "builder"):    # ==
+                        self.destination.currentHp -= self.force-self.destination.armor
+                    elif(self.destination.type == "infantry"):    # <
+                        self.destination.currentHp -= self.force
+                    elif(self.destination.type == "air"):       # <
+                        self.destination.currentHp -= self.force-self.destination.armor
+                    elif(self.destination.type == "vehicule"):  # >
+                        self.destination.currentHp -= self.force-self.destination.armor*2
+                    elif(self.destination.type == "range"):     # ==
+                        self.destination.currentHp -= self.force-self.destination.armor
+                elif(self.type == "air"):
+                    print("Vehicule Aerien Attaque")
+                    if(self.destination.type == "builder"):    # ==
+                        self.destination.currentHp -= self.force-self.destination.armor
+                    if(self.destination.type == "infantry"):    # >
+                        self.destination.currentHp -= self.force-self.destination.armor
+                    elif(self.destination.type == "air"):       # ==
+                        self.destination.currentHp -= self.force-self.destination.armor
+                    elif(self.destination.type == "vehicule"):  # <
+                        self.destination.currentHp -= self.force-self.destination.armor
+                    elif(self.destination.type == "range"):     # <
+                        self.destination.currentHp -= self.force-self.destination.armor
+                elif(self.type == "vehicule"):
+                    print("Attacker : ", self.name, "Target : ", self.destination.type)
+                    if(self.destination.type == "builder"):    # ==
+                        self.destination.currentHp -= self.force-self.destination.armor
+                    if(self.destination.type == "infantry"):    # <
+                        self.destination.currentHp -= self.force-self.destination.armor
+                    elif(self.destination.type == "air"):       # >
+                        self.destination.currentHp -= self.force/2-self.destination.armor
+                    elif(self.destination.type == "vehicule"):  # ==
+                        self.destination.currentHp -= self.force-self.destination.armor
+                    elif(self.destination.type == "range"):     # <
+                        self.destination.currentHp -= self.force-self.destination.armor
+            except:
+                    print("dans attaque de batiment")
+                    self.destination.currentHp -= self.force
+            if(self.destination.currentHp<0):
+                self.destination.currentHp=-1
+        else:
+            self.etat = self.IDLE
     
     def inRange(self,unit):
-        if  math.sqrt(abs(self.positionFluide[0] - unit.positionFluide[0])**2 + abs(self.positionFluide[1] - unit.positionFluide[1])**2) < self.rangeAtt:
-            return True
+        try:
+            if  math.sqrt(abs(self.positionFluide[0] - unit.positionFluide[0])**2 + abs(self.positionFluide[1] - unit.positionFluide[1])**2) < self.rangeAtt:
+                return True
+        except:
+            if  math.sqrt(abs(self.position[0] - unit.position[0])**2 + abs(self.position[1] - unit.position[1])**2) < self.rangeAtt:
+                return True
         return False
 
     #Place les units en formation
@@ -343,10 +367,13 @@ class Unit:    ##Laurence
     def calculatePath(self):
         ####  Va chercher le node du graphe qui correspond a la destination
         if self.etat == self.GOTO_POSITION:
-            self.goal = self.getNode(int(self.destination[0]/32)
-                                     ,int(self.destination[1]/32))
+            if self.isCut :
+                self.goal = self.recalibrerDestination(self.parent.graph, self.getNode(int(self.destination[0]/32)
+                                     ,int(self.destination[1]/32)),self.getNode(math.trunc(self.position[0]/32), math.trunc(self.position[1])/32))
+            else:
+                self.goal = self.getNode(int(self.destination[0]/32)
+                                         ,int(self.destination[1]/32))
         elif self.etat == self.GOTO_BATIMENT:
-            print("New destination")
             self.goal = self.recalibrerDestination(self.parent.graph, self.getNode(int(self.destination.position[0]/32)
                                      ,int(self.destination.position[1]/32)),self.getNode(math.trunc(self.position[0]/32), math.trunc(self.position[1])/32))
         else:

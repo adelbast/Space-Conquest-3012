@@ -1,6 +1,7 @@
 import configparser
 from Class.Structure import *
 from Class.Unit import Unit
+from Class.Modif import Modif
 
 class Joueur():
     def __init__(self, parent,nom,noJoueur):
@@ -10,32 +11,108 @@ class Joueur():
         self.listeUnite={}
         self.listeBatiment={}
         self.listeArtefact=[]
+
         self.listeRessource=[110000,110000,110000] #nourriture,metaux,energie
+
         self.maxPop=None
         self.ageRendu=None
         self.diplomatieStatus=False
         self.nbBatiment=0
         self.nbUnite=0
-        self.idCountBatiment=0
-        self.idCountUnit=0
+        self.idCountBatiment=1  #Car le zero est réservé pour le unit de départ
+        self.idCountUnit=1      #" "
         self.listeAllie = [self.noJoueur]#self.noJoueur
-        
 
-    def creerBatiment(self,position,worker,nom,attributs): #fr
+        
+##In dev
+        self.currentUnits = ["greenBeret", "trooper", "halfTrack", "tank"]
+        self.nbRecherches = 0
+        self.availableResearch = []
+    
+        self.recherches = []
+        self.modif = Modif()
+
+        self.remplirRecherches() 
+
+        self.rechercher(self.availableResearch[0])
+
+
+    def remplirRecherches(self):
+        self.availableResearch = []
+        for i in self.parent.dictRecherche:
+            indx = self.parent.dictRecherche.get(i)
+            if indx[4] <= self.nbRecherches:
+                self.availableResearch.append(i)
+
+    def rechercher(self,nomRecherche):
+        indx = self.parent.dictRecherche.get(nomRecherche)
+
+        if self.assezRessources(indx[3]):
+            self.recherches.append(nomRecherche)
+            self.appliquerModif(indx[0], indx[1], indx[2])
+            self.remplirRecherches()
+
+    def appliquerModif(self, attribute1, attribute2, bonus):
+        if attribute1 == "infantryBoost":
+            if attribute2 == "force":
+                self.modif.infantryBoost[self.modif.FORCE] += bonus
+            elif attribute2 == "vitesse":
+                self.modif.infantryBoost[self.modif.VITESSE] += bonus
+            elif attribute2 == "armor":
+                self.modif.infantryBoost[self.modif.ARMOR] += bonus
+
+        elif attribute1 == "rangeBoost":
+            if attribute2 == "force":
+                self.modif.infantryBoost[self.modif.FORCE] += bonus
+            elif attribute2 == "vitesse":
+                self.modif.infantryBoost[self.modif.VITESSE] += bonus
+            elif attribute2 == "armor":
+                self.modif.infantryBoost[self.modif.ARMOR] += bonus
+        
+        elif attribute1 == "vehiculeBoost":
+            if attribute2 == "force":
+                self.modif.infantryBoost[self.modif.FORCE] += bonus
+            elif attribute2 == "vitesse":
+                self.modif.infantryBoost[self.modif.VITESSE] += bonus
+            elif attribute2 == "armor":
+                self.modif.infantryBoost[self.modif.ARMOR] += bonus
+
+        elif attribute1 == "airBoost":
+            if attribute2 == "force":
+                self.modif.infantryBoost[self.modif.FORCE] += bonus
+            elif attribute2 == "vitesse":
+                self.modif.infantryBoost[self.modif.VITESSE] += bonus
+            elif attribute2 == "armor":
+                self.modif.infantryBoost[self.modif.ARMOR] += bonus
+
+        elif attribute1 == "generatorProduction":
+            if attribute2 == "mine":
+                self.modif.generatorProduction[self.modif.MINE] += bonus
+            elif attribute2 == "farm":
+                self.modif.generatorProduction[self.modif.FARM] += bonus
+            elif attribute2 == "solarPanel":
+                self.modif.generatorProduction[self.modif.SOLARPANEL] += bonus
+
+        elif attribute1 == "hpBoost":
+            if attribute2 == "building":
+                self.modif.hp[self.modif.BUILDING] += bonus
+            elif attribute2 == "unit":
+                self.modif.hp[self.modif.UNIT] += bonus
+
+
+    def creerBatiment(self,position,nom,attributs): #fr
         if self.assezRessources(attributs[1]): #pour savoir si assezRessource
             if self.positionCreationValide(position,attributs[3]):
                 if nom == "farm" or nom == "mine" or nom == "solarPanel":
-                    self.listeBatiment[self.idCountBatiment] = Generator(self.noJoueur, nom, position, attributs, self.idCountBatiment)
+                    self.listeBatiment[self.idCountBatiment] = Generator(self.noJoueur, nom, position, attributs, self.idCountBatiment, initialisation = False)
                 else:
-                    print("1")
-                    self.listeBatiment[self.idCountBatiment] = Batiment(self.noJoueur, nom, position, attributs, self.idCountBatiment)
+                    self.listeBatiment[self.idCountBatiment] = Batiment(self.noJoueur, nom, position, attributs, self.idCountBatiment, initialisation = False)
                 self.idCountBatiment+=1
                 self.listeRessource[0] -= attributs[1][0] #food
                 self.listeRessource[1] -= attributs[1][1] #metaux
                 self.listeRessource[2] -= attributs[1][2] #energie
-                #changer value des tiles sur lequel le batiment est ici ?? ou dans modele?
-
-                return print("batiment cree")
+                print("batiment cree")
+                return self.idCountBatiment-1 #Ce retour sert dans gestion pour que le builder qui doit le construire connaisse le id de sa cible
     
     def positionCreationValide(self,position,attribut):
         x = int(position[0]/32)
@@ -48,13 +125,13 @@ class Joueur():
                 if(int(unit.position[0]/32) == x and int(unit.position[1]/32) == y):
                     valide = False
         
-        if self.parent.getNode(x,y) in self.parent.cutNodes:
+        if self.parent.getNode(x,y).voisins is None:
             valide = False
         
         if(valide and attribut == 64):
-            if (self.parent.getNode(x-1,y-1) in self.parent.cutNodes 
-                or self.parent.getNode(x-1,y) in self.parent.cutNodes 
-                or self.parent.getNode(x,y-1) in self.parent.cutNodes):
+            if (self.parent.getNode(x-1,y-1).voisins is None 
+                or self.parent.getNode(x-1,y).voisins is None
+                or self.parent.getNode(x,y-1).voisins is None):
                 valide = False
             if(valide):
                 for joueur in self.parent.listeJoueur:
@@ -72,20 +149,20 @@ class Joueur():
         
         if (valide and attribut == 128):
             
-            if (self.parent.getNode(x+1,y+1) in self.parent.cutNodes 
-                or self.parent.getNode(x-2,y+1) in self.parent.cutNodes 
-                or self.parent.getNode(x+1,y-2) in self.parent.cutNodes 
-                or self.parent.getNode(x-2,y-2) in self.parent.cutNodes
-                or self.parent.getNode(x-2,y) in self.parent.cutNodes
-                or self.parent.getNode(x-2,y-1) in self.parent.cutNodes
-                or self.parent.getNode(x-1,y-2) in self.parent.cutNodes
-                or self.parent.getNode(x,y-2) in self.parent.cutNodes
-                or self.parent.getNode(x-2,y-2) in self.parent.cutNodes
-                or self.parent.getNode(x+1,y) in self.parent.cutNodes
-                or self.parent.getNode(x-2,y-2) in self.parent.cutNodes
-                or self.parent.getNode(x+1,y-1) in self.parent.cutNodes
-                or self.parent.getNode(x,y+1) in self.parent.cutNodes
-                or self.parent.getNode(x-1,y+1) in self.parent.cutNodes):
+            if (self.parent.getNode(x+1,y+1).voisins is None
+                or self.parent.getNode(x-2,y+1).voisins is None 
+                or self.parent.getNode(x+1,y-2).voisins is None
+                or self.parent.getNode(x-2,y-2).voisins is None
+                or self.parent.getNode(x-2,y).voisins is None
+                or self.parent.getNode(x-2,y-1).voisins is None
+                or self.parent.getNode(x-1,y-2).voisins is None
+                or self.parent.getNode(x,y-2).voisins is None
+                or self.parent.getNode(x-2,y-2).voisins is None
+                or self.parent.getNode(x+1,y).voisins is None
+                or self.parent.getNode(x-2,y-2).voisins is None
+                or self.parent.getNode(x+1,y-1).voisins is None
+                or self.parent.getNode(x,y+1).voisins is None
+                or self.parent.getNode(x-1,y+1).voisins is None):
                 valide = False
             
             if(valide):
@@ -179,6 +256,7 @@ class Joueur():
             
             del self.listeBatiment[idBatiment]
             print("batiment supprime")
+        
         except KeyError:
             pass
 

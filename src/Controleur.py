@@ -134,7 +134,7 @@ class Controleur:
             reception = self.client.pullAction()
             if(self.verbose):print("RECOIE : ", reception)
             if(not reception):
-                pass
+                time.sleep(0.01)
                 #print("laaaaag!")
         self.modele.gestion( reception )
         """if(self.vue.etatCreation==True):
@@ -168,10 +168,7 @@ class Controleur:
             self.vue.hud.delete("button")
             print("Pas de selection!")
         self.vue.etatCreation = False
-
-    def creationBatiment(self,nom):  # A AJOUTER!!!!!!
-        self.nomBatiment = nom
-        self.vue.etatCreation = True
+        
 
     #Validation de la spawning position
     def spawnUnit(self, unitName):
@@ -191,7 +188,7 @@ class Controleur:
         compteurY = 0
 
         #Regarde si la case choisit est valide
-        if(self.modele.getNode(int(pX/32), int(pY/32)) not in self.modele.cutNodes):
+        if(self.modele.getNode(int(pX/32), int(pY/32)).voisins is not None):
                 
             for _,unit in self.modele.listeJoueur[self.modele.noJoueurLocal].listeUnite.items():
                 node1, node2 = self.modele.getNode(int(pX/32), int(pY/32)), self.modele.getNode(int(unit.position[0]/32), int(unit.position[1]/32))
@@ -234,7 +231,7 @@ class Controleur:
                 compteurY = 0
                 
             #Regarde si la case choisit est valide
-            if(self.modele.getNode(int(pX/32), int(pY/32)) not in self.modele.cutNodes):
+            if(self.modele.getNode(int(pX/32), int(pY/32)).voisins is not None):
                 
                 for _,unit in self.modele.listeJoueur[self.modele.noJoueurLocal].listeUnite.items():
                     node1, node2 = self.modele.getNode(int(pX/32), int(pY/32)), self.modele.getNode(int(unit.position[0]/32), int(unit.position[1]/32))
