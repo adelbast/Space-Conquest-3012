@@ -21,9 +21,10 @@ class Batiment (object):
         
     def construire(self):
         if(not self.compteurConstruction%self.moduloConstruction):
-            self.currentHp += 1
-            if(self.currentHp == self.maxHp):
+            self.currentHp += 5
+            if(self.currentHp >= self.maxHp):
                 self.estConstruit = True
+                self.currentHp = self.maxHp
 
     def selfDestroy(self):#Detruire le batiment 
         print("selfDestruct")
@@ -36,22 +37,9 @@ class Batiment (object):
 
 
 class Generator(Batiment):
-    def __init__(self,owner,name,xy,attributs,idB):
+    def __init__(self,owner,name,xy,attributs,idB, initialisation = True):
         super(Generator,self).__init__(owner,name,xy,attributs,idB)
         self.production = attributs[2]
 
     def generate(self):#retourne le nombre de ressource  generer
         return self.production
-
-    
-class Barrack(Batiment):
-    def __init__(self,owner,name,xy,attributs,idB):
-        super(Barrack,self).__init__(owner,name,xy,attributs,idB)
-        self.unitList = UnitList
-        
-        
-    def createUnit(self,unitListID):
-        return self.unitList[unitListID]
-    
-        
-        

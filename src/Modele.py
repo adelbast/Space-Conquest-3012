@@ -77,19 +77,10 @@ class Modele(object):
 
         print("Nom du joueur local : " + self.listeJoueur[self.noJoueurLocal].nom + ", numero : " + str(self.noJoueurLocal))
         for i in range(len(self.listeJoueur)):
-            print("SPAWNPOINT NUM---------------------------------")
-            print(self.map.startingPoint[i])
-            print("=====1=====")
-            a =[self.map.startingPoint[i][0]*64,self.map.startingPoint[i][1]*64]
-            print("=====2=====")
-            #self.listeJoueur[i].creerBatiment((a),True,"guardTower",self.dictBatiment["guardTower"])
-            print("=====3=====")
-            self.listeJoueur[i].creerBatiment(a,True,"HQ",self.dictBatiment["HQ"])
-            print("=====4=====")
-            self.listeJoueur[i].creerUnite("worker", (a[0]+100,a[1]+100), self.dictUnit["worker"])
-               
+            positionDepartxy =[self.map.startingPoint[i][0]*64,self.map.startingPoint[i][1]*64]
+            self.listeJoueur[i].listeBatiment[0] = Batiment(self.noJoueurLocal, "HQ", positionDepartxy, self.dictBatiment["HQ"], 0) #owner,name,xy,attributs,idB, initialisation = True
+            self.listeJoueur[i].listeUnite[0] = Unit(self, "worker", (positionDepartxy[0]+96,positionDepartxy[1]+96), self.noJoueurLocal, self.dictUnit["worker"], 0)    #parent, name, xy, owner, attribut, idU, destination = None
 
-        print("FIN")
 
 
     def gestion(self,dicActionFromServer):
@@ -137,10 +128,10 @@ class Modele(object):
                         
                     elif(clee == "NewBatiment"):
                         for valeur in listValeur:
-                            workerID = 0#TODO
-                            typeBatiment, x, y = valeur
+                            typeBatiment, workerID, x, y = valeur
                             try:
-                                self.listeJoueur[ii].creerBatiment((x,y), self.listeJoueur[ii].listeUnite[workerID], typeBatiment, self.dictBatiment[typeBatiment]) #position,worker,nom,attributs
+                                idNewBatiment = self.listeJoueur[ii].creerBatiment((x,y), typeBatiment, self.dictBatiment[typeBatiment]) #position,nom,attributs
+                                self.listeJoueur[ii].listeUnite[workerID].setDestination(listeJoueurAmi = self.listeJoueur[ ii ].listeAllie, batiment = self.listeJoueur[ ii ].listeBatiment[ idNewBatiment ])
                             except KeyError:
                                 pass
 
@@ -204,11 +195,6 @@ class Modele(object):
 
     def gererMouseRelease(self, event, etat, info):
         if(event.num == 3): #clic droit
-           # print(self.graph[int(self.releasePosx/64) * self.map.numRow + int(self.releasePosy/64)].walkable,
-            #    self.graph[int(self.releasePosx/64) * self.map.numRow + int(self.releasePosy/64)].x,
-             #   self.graph[int(self.releasePosx/64) * self.map.numRow + int(self.releasePosy/64)].y)
-            #print((int)(self.releasePosx/32), (int)(self.releasePosy/32))
-            print(self.releasePosx,self.releasePosy)
             if(self.selection): #Si le joueur a quelque chose de sélectionné, sinon inutile
                 if(self.selection[0].owner == self.noJoueurLocal):
                     try:            #Duck typing
@@ -242,10 +228,10 @@ class Modele(object):
                                     #unite.setDestination(unePosition = cible)
             
         elif(event.num == 1): #clic gauche
-            if(etat==True and info != None):
+            if(etat==True and info != None and self.selection[0].type == "builder"):
                 if('NewBatiment' not in self.dicAction2Server):
                     self.dicAction2Server['NewBatiment']=[] #*La fonction gestion prend des dictionaire "contenant des listes!"
-                self.dicAction2Server['NewBatiment'].append( (info,int(self.releasePosx/32)*32,int(self.releasePosy/32)*32) ) #packetage de creation batiment ## quessé ça x/23*32?
+                self.dicAction2Server['NewBatiment'].append( (info, self.selection[0].id, int(self.releasePosx/32)*32, int(self.releasePosy/32)*32) ) #packetage de creation batiment ## quessé ça x/23*32?
                 self.parent.etatCreation = False
                 self.parent.infoCreation = None
                 return
@@ -438,8 +424,8 @@ class Modele(object):
                     self.cutNode(self.getNode(y*2+1,x*2+1))
 
         self.cutNode(self.getNode(0,0))            
-        print("Cut Nodes")
-        print(len(self.cutNodes))           
+        #print("Cut Nodes")
+        #print(len(self.cutNodes))           
       
     def getNode(self, x, y):  #Retourne un node au x y donnee du graphe
         return self.graph[x*self.height+y]
