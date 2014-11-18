@@ -179,6 +179,7 @@ class Joueur():
             
             del self.listeBatiment[idBatiment]
             print("batiment supprime")
+        
         except KeyError:
             pass
 

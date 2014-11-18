@@ -204,11 +204,6 @@ class Modele(object):
 
     def gererMouseRelease(self, event, etat, info):
         if(event.num == 3): #clic droit
-           # print(self.graph[int(self.releasePosx/64) * self.map.numRow + int(self.releasePosy/64)].walkable,
-            #    self.graph[int(self.releasePosx/64) * self.map.numRow + int(self.releasePosy/64)].x,
-             #   self.graph[int(self.releasePosx/64) * self.map.numRow + int(self.releasePosy/64)].y)
-            #print((int)(self.releasePosx/32), (int)(self.releasePosy/32))
-            print(self.releasePosx,self.releasePosy)
             if(self.selection): #Si le joueur a quelque chose de sélectionné, sinon inutile
                 if(self.selection[0].owner == self.noJoueurLocal):
                     try:            #Duck typing
@@ -438,8 +433,8 @@ class Modele(object):
                     self.cutNode(self.getNode(y*2+1,x*2+1))
 
         self.cutNode(self.getNode(0,0))            
-        print("Cut Nodes")
-        print(len(self.cutNodes))           
+        #print("Cut Nodes")
+        #print(len(self.cutNodes))           
       
     def getNode(self, x, y):  #Retourne un node au x y donnee du graphe
         return self.graph[x*self.height+y]

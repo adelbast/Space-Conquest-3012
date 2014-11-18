@@ -190,7 +190,7 @@ class Controleur:
         compteurY = 0
 
         #Regarde si la case choisit est valide
-        if(self.modele.getNode(int(pX/32), int(pY/32)) not in self.modele.cutNodes):
+        if(self.modele.getNode(int(pX/32), int(pY/32)).voisins is not None):
                 
             for _,unit in self.modele.listeJoueur[self.modele.noJoueurLocal].listeUnite.items():
                 node1, node2 = self.modele.getNode(int(pX/32), int(pY/32)), self.modele.getNode(int(unit.position[0]/32), int(unit.position[1]/32))
@@ -233,7 +233,7 @@ class Controleur:
                 compteurY = 0
                 
             #Regarde si la case choisit est valide
-            if(self.modele.getNode(int(pX/32), int(pY/32)) not in self.modele.cutNodes):
+            if(self.modele.getNode(int(pX/32), int(pY/32)).voisins is not None):
                 
                 for _,unit in self.modele.listeJoueur[self.modele.noJoueurLocal].listeUnite.items():
                     node1, node2 = self.modele.getNode(int(pX/32), int(pY/32)), self.modele.getNode(int(unit.position[0]/32), int(unit.position[1]/32))
