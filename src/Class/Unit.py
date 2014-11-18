@@ -401,7 +401,9 @@ class Node:
     def relink(self):
         for i in self.dirs:
             if self.parent.getNode(i[0]+self.x,i[1]+self.y).voisins is not None:
-                voisins.append([i[0]+self.x,i[1]+self.y])
+                self.voisins.append([i[0]+self.x,i[1]+self.y])
+            else:
+                self.voisins.append([0,0])
                 
    
 
