@@ -182,8 +182,9 @@ class Controleur:
         pY = self.modele.selection[0].position[1] - (self.modele.dictUnit[unitName][7] + self.modele.selection[0].size/2)
 
         #Nombre de fois qu'il faut passer dans la boucle Ex : 6 options = 0,1,2,3,4,5
+        size = self.modele.dictUnit[unitName][7]
         
-        numOption = (self.modele.selection[0].size/32)+1 #Le +1 est en fait -1 + 2, parce qu'il faut aller un cube en haut (-1) et il faut rajouter 2 pour aller 1 cube en bas
+        numOption = (self.modele.selection[0].size/size)+1 #Le +1 est en fait -1 + 2, parce qu'il faut aller un cube en haut (-1) et il faut rajouter 2 pour aller 1 cube en bas
 
         #Compteurs
         compteurX = 0
@@ -206,29 +207,29 @@ class Controleur:
 
             #En partant du coin en haut a gauche du batiment
             if(compteurX == 0 and compteurY < numOption): 
-                pY = pY + 32
+                pY = pY + size
                 compteurY += 1
                 
             #En partant du coin en bas a gauche du batiment
             elif (compteurX < numOption and compteurY == numOption):
-                pX = pX + 32
+                pX = pX + size
                 compteurX += 1
                 
             #En partant du coin en bas a gauche du batiment
             elif(compteurX == numOption and compteurY > 0):
-                pY = pY - 32
+                pY = pY - size
                 compteurY -= 1
                 
             #En partant du coin en haut a droite
             elif(compteurY == 0 and compteurX > 1):
-                pX = pX - 32
+                pX = pX - size
                 compteurX -= 1
 
             #Si on a fnit de regarder toutes les positions posibles
             elif(compteurX == 1 and compteurY == 0):
                 numOption += 2
-                pX = pX - 64
-                pY = pY - 32
+                pX = pX - size*2
+                pY = pY - size
                 compteurX = 0
                 compteurY = 0
                 

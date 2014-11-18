@@ -151,7 +151,21 @@ class Unit:    ##Laurence
                 self.isWalking = False
                 self.currentFrame = '1'
                 if(self.etat == self.GOTO_POSITION):
-                    self.etat = self.IDLE
+
+                    newDestination = self.unitFormation()
+                    print(newDestination)
+                    
+                    #Si la unit doit se mettre en formation
+                    if(newDestination is not None):
+                        print("Formation", self.destination, newDestination)
+                        self.destination = newDestination
+                        self.calculatePath()
+                           
+                    else:
+                        print("Pas de formation")
+                        self.etat = self.IDLE
+                
+                    
                 return 1
 
         self.isWalking = True
@@ -245,6 +259,84 @@ class Unit:    ##Laurence
         if  math.sqrt(abs(self.positionFluide[0] - unit.positionFluide[0])**2 + abs(self.positionFluide[1] - unit.positionFluide[1])**2) < self.rangeAtt:
             return True
         return False
+
+    #Place les units en formation
+    def unitFormation(self):
+        
+        newDestination = None
+
+        #Position du Unit
+        pX = self.position[0]
+        pY = self.position[1]
+
+        #Compteurs
+        compteurX = 0
+        compteurY = 0
+
+        numOption = (1)+1 #Le +1 est en fait -1 + 2, parce qu'il faut aller un cube en haut (-1) et il faut rajouter 2 pour aller 1 cube en bas
+        
+        #Regarde si la case choisit est valide
+        if(self.parent.getNode(int(pX/32), int(pY/32)) not in self.parent.cutNodes):
+            #Compare les autres unites du joueur
+            for _,unit in self.parent.listeJoueur[self.parent.noJoueurLocal].listeUnite.items():
+                node1, node2 = self.parent.getNode(int(pX/32), int(pY/32)), self.parent.getNode(int(unit.position[0]/32), int(unit.position[1]/32))
+
+                if(node1.x == node2.x and node1.y == node2.y and self.id != unit.id):
+                    validatePosition = False
+                    break
+                else:
+                    validatePosition = True
+
+        if(not validatePosition):
+            pX -= 32
+            pY -= 32
+
+        while(not validatePosition):
+
+            #En partant du coin en haut a gauche du batiment
+            if(compteurX == 0 and compteurY < numOption): 
+                pY = pY + self.size
+                compteurY += 1
+                
+            #En partant du coin en bas a gauche du batiment
+            elif (compteurX < numOption and compteurY == numOption):
+                pX = pX + self.size
+                compteurX += 1
+                
+            #En partant du coin en bas a gauche du batiment
+            elif(compteurX == numOption and compteurY > 0):
+                pY = pY - self.size
+                compteurY -= 1
+                
+            #En partant du coin en haut a droite
+            elif(compteurY == 0 and compteurX > 1):
+                pX = pX - self.size
+                compteurX -= 1
+
+            #Si on a finit de regarder toutes les positions posibles
+            elif(compteurX == 1 and compteurY == 0):
+                numOption += 2
+                pX = pX - self.size*2
+                pY = pY - self.size
+                compteurX = 0
+                compteurY = 0
+                
+            #Regarde si la case choisit est valide
+            if(self.parent.getNode(int(pX/32), int(pY/32)) not in self.parent.cutNodes):
+                #Compare les autres unites du joueur
+                for _,unit in self.parent.listeJoueur[self.parent.noJoueurLocal].listeUnite.items():
+                    node1, node2 = self.parent.getNode(int(pX/32), int(pY/32)), self.parent.getNode(int(unit.position[0]/32), int(unit.position[1]/32))
+
+                    if(node1.x == node2.x and node1.y == node2.y and self.id != unit.id):
+                        validatePosition = False
+                        break
+                    else:
+                        validatePosition = True
+                        
+        if(self.destination != (pX,pY)):
+            newDestination = (pX, pY)
+                
+        return newDestination
 
 ######################################################################################################Fonctions du pathfinder
 
