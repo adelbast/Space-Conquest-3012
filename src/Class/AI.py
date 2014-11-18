@@ -16,17 +16,13 @@ class AI(Joueur):
 
     def faireQqch(self):#bouge automatiquement(arbitrairement) l'unité 0
         self.compteur += 1
-
+        self.dictionaireAction.clear()
         
         #self.construireBatiment(0,"HQ")
 
         #self.etatCroissance()
         #self.etatMilitaire()
-    
-        print("9999099090990")
-        for i in self.listeBatiment:
-            print(1)
-        print("AI batiment")
+        self.construireWorkers()
 #------------------------------Croissance------------------------------#
 
     def etatCroissance(self):
@@ -108,21 +104,32 @@ class AI(Joueur):
                         return (x,y)
                   
                     
-    def construireWorkers(self):#automatise le nombre requis de workers    
-        print("construire workers")
+    def construireWorkers(self):#automatise le nombre requis de workers     #Antoine
         for i in self.listeBatiment:
             if (self.listeBatiment[i].name == "HQ"):
-                print("HQ")
-                #for j in range (self.nbWorkersReq - self.nbWorkers):
-                    #print(j)
-                print(self.listeUnite)
-                self.creerUnite("worker", (200,50),(i.position[0]+50*1,i.position+75)) ##ici creerUnite ne semble pas fonctionner
-                print(self.listeUnite)
-                print("newunite")
-                self.parent.dicAction2Server['NewUnit'].append(("worker", (i.position[0]+50*1,i.position+75)))
-                print("ajout")
-                self.creerUnite("worker", (200,50),(i.position[0]+50*2,i.position+75))
-                self.creerUnite("worker", (200,50),(i.position[0]+50*3,i.position+75))
+                for j in range(self.nbWorkersReq - self.nbWorkers):
+                    print(j)
+                    print(self.nbWorkersReq - self.nbWorkers)
+                    if 'NewUnit' in self.dictionaireAction:
+                        print("dic existe")
+                        print(j)
+                        self.dictionaireAction['NewUnit'].append(("worker", (self.listeBatiment[i].position[0]+60,self.listeBatiment[i].position[1]+50*j)))
+                        self.nbWorkers+=1
+                        print("unit cree")
+                    else:
+                        print("dic existe pas")
+                        self.dictionaireAction['NewUnit'] =[("worker", (self.listeBatiment[i].position[0]+60,self.listeBatiment[i].position[1]+(50*j*2)))]
+                        self.nbWorkers+=1
+                        print(j)
+                        print("unit cree no dic")
+            #else: créer un HQ
+            
+               
+
+
+                  
+
+     
           
     def calculateGen():
         self.nbGen = [0,0,0]
