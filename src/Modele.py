@@ -103,7 +103,7 @@ class Modele(object):
                         for valeur in listValeur:
                             noUnit, cibleX, cibleY = valeur
                             try:
-                                self.listeJoueur[ii].listeUnite[noUnit].setDestination( unePosition = [cibleX,cibleY])
+                                self.listeJoueur[ii].listeUnite[noUnit].setDestination( unePosition = (cibleX,cibleY) )
                             except KeyError as e:
                                 print(e)
                                 print("Déplacement a chier")

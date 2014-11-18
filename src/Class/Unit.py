@@ -250,7 +250,7 @@ class Unit:    ##Laurence
 
     def calculatePath(self):
         ####  Va chercher le node du graphe qui correspond a la destination
-        if isinstance(self.destination, tuple) or isinstance(self.destination, list):
+        if self.etat == self.GOTO_POSITION:
             self.goal = self.getNode(int(self.destination[0]/32)
                                      ,int(self.destination[1]/32))
         elif self.etat == self.GOTO_BATIMENT:
