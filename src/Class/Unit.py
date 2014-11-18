@@ -40,10 +40,11 @@ class Unit:    ##Laurence
         self.IDLE           = 0
         self.GOTO_POSITION  = 1
         self.GOTO_BATIMENT  = 2
-        self.FOLLOW     = 3
-        self.etat       = self.IDLE
-        self.isWalking  = False
-        self.isAmi      = True
+        self.FOLLOW         = 3
+        self.etat           = self.IDLE
+        self.isWalking      = False
+        self.isAmi          = True
+        self.isbuildMission = False
 
         self.reloading = 0
         self.tempsAnimation = 0
@@ -62,7 +63,13 @@ class Unit:    ##Laurence
 
         #On set un temps initial pour l'animation
         self.lastFrameTime = int(round(time.time()*1000))
-        #add condition si destination est nodeCoupe
+        try:
+            if(self.destination.owner not in listeJoueurAmi):
+                self.isAmi = False
+            else:
+                self.isAmi = True
+        except:#la destination n'a pas de owner
+            pass
         if unit:
             print("Deplacement vers unit")
             self.destination = unit         # Un Unit
@@ -72,7 +79,8 @@ class Unit:    ##Laurence
             print("Deplacement vers batiment")
             self.destination = batiment     # Un Batiment
             self.etat = self.GOTO_BATIMENT
-
+            if(self.type == "builder" and self.isAmi and self.destination.currentHp < self.destination.maxHp):
+                self.isbuildMission = True
         elif unePosition:
             print("Deplacement vers tile")
             self.destination = unePosition  # Un Tuple
@@ -89,10 +97,6 @@ class Unit:    ##Laurence
             except:
                 self.position[0] = self.destination.position[0]
                 self.position[1] = self.destination.position[1]
-                if(self.destination.owner not in listeJoueurAmi):
-                    self.isAmi = False
-                else:
-                    self.isAmi = True
 
         self.depassementHorizontal = False
         self.depassementVertical   = False
@@ -143,7 +147,7 @@ class Unit:    ##Laurence
                     self.depassementVertical   = False
                 self.path.pop(0)
                 if(self.path):
-                    if(self.getNode(self.path[0].x,self.path[0].y) in self.parent.cutNodes):
+                    if(self.getNode(self.path[0].x,self.path[0].y).voisins is None):
                         self.calculatePath()
             else:
                 self.positionFluide[0] = self.position[0]
@@ -152,6 +156,8 @@ class Unit:    ##Laurence
                 self.currentFrame = '1'
                 if(self.etat == self.GOTO_POSITION):
                     self.etat = self.IDLE
+                elif(self.type == "builder" and self.isAmi and self.destination.currentHp < self.destination.maxHp):
+                	   self.destination.construire()
                 return 1
 
         self.isWalking = True

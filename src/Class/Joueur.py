@@ -16,26 +16,24 @@ class Joueur():
         self.diplomatieStatus=False
         self.nbBatiment=0
         self.nbUnite=0
-        self.idCountBatiment=0
-        self.idCountUnit=0
+        self.idCountBatiment=1  #Car le zero est réservé pour le unit de départ
+        self.idCountUnit=1      #" "
         self.listeAllie = [self.noJoueur]#self.noJoueur
         
 
-    def creerBatiment(self,position,worker,nom,attributs): #fr
+    def creerBatiment(self,position,nom,attributs): #fr
         if self.assezRessources(attributs[1]): #pour savoir si assezRessource
             if self.positionCreationValide(position,attributs[3]):
                 if nom == "farm" or nom == "mine" or nom == "solarPanel":
-                    self.listeBatiment[self.idCountBatiment] = Generator(self.noJoueur, nom, position, attributs, self.idCountBatiment)
+                    self.listeBatiment[self.idCountBatiment] = Generator(self.noJoueur, nom, position, attributs, self.idCountBatiment, initialisation = False)
                 else:
-                    print("1")
-                    self.listeBatiment[self.idCountBatiment] = Batiment(self.noJoueur, nom, position, attributs, self.idCountBatiment)
+                    self.listeBatiment[self.idCountBatiment] = Batiment(self.noJoueur, nom, position, attributs, self.idCountBatiment, initialisation = False)
                 self.idCountBatiment+=1
                 self.listeRessource[0] -= attributs[1][0] #food
                 self.listeRessource[1] -= attributs[1][1] #metaux
                 self.listeRessource[2] -= attributs[1][2] #energie
-                #changer value des tiles sur lequel le batiment est ici ?? ou dans modele?
-
-                return print("batiment cree")
+                print("batiment cree")
+                return self.idCountBatiment-1 #Ce retour sert dans gestion pour que le builder qui doit le construire connaisse le id de sa cible
     
     def positionCreationValide(self,position,attribut):
         x = int(position[0]/32)
