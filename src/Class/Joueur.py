@@ -48,13 +48,13 @@ class Joueur():
                 if(int(unit.position[0]/32) == x and int(unit.position[1]/32) == y):
                     valide = False
         
-        if self.parent.getNode(x,y) in self.parent.cutNodes:
+        if self.parent.getNode(x,y).voisins is None:
             valide = False
         
         if(valide and attribut == 64):
-            if (self.parent.getNode(x-1,y-1) in self.parent.cutNodes 
-                or self.parent.getNode(x-1,y) in self.parent.cutNodes 
-                or self.parent.getNode(x,y-1) in self.parent.cutNodes):
+            if (self.parent.getNode(x-1,y-1).voisins is None 
+                or self.parent.getNode(x-1,y).voisins is None
+                or self.parent.getNode(x,y-1).voisins is None):
                 valide = False
             if(valide):
                 for joueur in self.parent.listeJoueur:
@@ -72,20 +72,20 @@ class Joueur():
         
         if (valide and attribut == 128):
             
-            if (self.parent.getNode(x+1,y+1) in self.parent.cutNodes 
-                or self.parent.getNode(x-2,y+1) in self.parent.cutNodes 
-                or self.parent.getNode(x+1,y-2) in self.parent.cutNodes 
-                or self.parent.getNode(x-2,y-2) in self.parent.cutNodes
-                or self.parent.getNode(x-2,y) in self.parent.cutNodes
-                or self.parent.getNode(x-2,y-1) in self.parent.cutNodes
-                or self.parent.getNode(x-1,y-2) in self.parent.cutNodes
-                or self.parent.getNode(x,y-2) in self.parent.cutNodes
-                or self.parent.getNode(x-2,y-2) in self.parent.cutNodes
-                or self.parent.getNode(x+1,y) in self.parent.cutNodes
-                or self.parent.getNode(x-2,y-2) in self.parent.cutNodes
-                or self.parent.getNode(x+1,y-1) in self.parent.cutNodes
-                or self.parent.getNode(x,y+1) in self.parent.cutNodes
-                or self.parent.getNode(x-1,y+1) in self.parent.cutNodes):
+            if (self.parent.getNode(x+1,y+1).voisins is None
+                or self.parent.getNode(x-2,y+1).voisins is None 
+                or self.parent.getNode(x+1,y-2).voisins is None
+                or self.parent.getNode(x-2,y-2).voisins is None
+                or self.parent.getNode(x-2,y).voisins is None
+                or self.parent.getNode(x-2,y-1).voisins is None
+                or self.parent.getNode(x-1,y-2).voisins is None
+                or self.parent.getNode(x,y-2).voisins is None
+                or self.parent.getNode(x-2,y-2).voisins is None
+                or self.parent.getNode(x+1,y).voisins is None
+                or self.parent.getNode(x-2,y-2).voisins is None
+                or self.parent.getNode(x+1,y-1).voisins is None
+                or self.parent.getNode(x,y+1).voisins is None
+                or self.parent.getNode(x-1,y+1).voisins is None):
                 valide = False
             
             if(valide):

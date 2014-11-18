@@ -185,6 +185,7 @@ class Modele(object):
             
         
     def gestionAuto(self):
+        #ajout suppression de batiments
         for joueur in self.listeJoueur:
             for _, uni in joueur.listeUnite.items():
                 if(uni.currentHp > 0):
@@ -237,9 +238,6 @@ class Modele(object):
                                     #unite.setDestination(unePosition = cible)
             
         elif(event.num == 1): #clic gauche
-            #cible = self.clickCibleOuTile(self.releasePosx,self.releasePosy)
-            #if isinstance (cible, Batiment):
-                #self.listeJoueur[0].supprimerBatiment(cible.id)
             if(etat==True and info != None):
                 if('NewBatiment' not in self.dicAction2Server):
                     self.dicAction2Server['NewBatiment']=[] #*La fonction gestion prend des dictionaire "contenant des listes!"
