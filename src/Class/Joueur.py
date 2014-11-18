@@ -10,7 +10,7 @@ class Joueur():
         self.listeUnite={}
         self.listeBatiment={}
         self.listeArtefact=[]
-        self.listeRessource=[10000,10000,10000] #nourriture,metaux,energie
+        self.listeRessource=[100000,100000,100000] #nourriture,metaux,energie
         self.maxPop=None
         self.ageRendu=None
         self.diplomatieStatus=False
