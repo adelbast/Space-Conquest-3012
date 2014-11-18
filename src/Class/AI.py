@@ -16,17 +16,13 @@ class AI(Joueur):
 
     def faireQqch(self):#bouge automatiquement(arbitrairement) l'unité 0
         self.compteur += 1
-
+        self.dictionaireAction.clear()
         
         #self.construireBatiment(0,"HQ")
 
         #self.etatCroissance()
         #self.etatMilitaire()
         self.construireWorkers()
-        print("9999099090990")
-        for i in self.listeBatiment:
-            print(1)
-        print("AI batiment")
 #------------------------------Croissance------------------------------#
 
     def etatCroissance(self):
@@ -111,25 +107,27 @@ class AI(Joueur):
     def construireWorkers(self):#automatise le nombre requis de workers     #Antoine
         for i in self.listeBatiment:
             if (self.listeBatiment[i].name == "HQ"):
-                while (self.nbWorkersReq - self.nbWorkers) > 1:
-                    j=1
+                for j in range(self.nbWorkersReq - self.nbWorkers):
+                    print(j)
                     print(self.nbWorkersReq - self.nbWorkers)
                     if 'NewUnit' in self.dictionaireAction:
                         print("dic existe")
-                        self.dictionaireAction['NewUnit'].append("worker", (self.listeBatiment[i].position[0]+50,self.listeBatiment[i].position[1]+50*j))
+                        print(j)
+                        self.dictionaireAction['NewUnit'].append(("worker", (self.listeBatiment[i].position[0]+60,self.listeBatiment[i].position[1]+50*j)))
                         self.nbWorkers+=1
-                        j+=1
+                        print("unit cree")
                     else:
                         print("dic existe pas")
-                        self.dictionaireAction['NewUnit'] =[("worker", (self.listeBatiment[i].position[0]+50*j,self.listeBatiment[i].position[1]+32))]
+                        self.dictionaireAction['NewUnit'] =[("worker", (self.listeBatiment[i].position[0]+60,self.listeBatiment[i].position[1]+(50*j*2)))]
                         self.nbWorkers+=1
-                        j+=1
-                        print("unit cree")
+                        print(j)
+                        print("unit cree no dic")
+            #else: créer un HQ
+            
                
 
 
-                   # print(j)
-                   # self.dictionaireAction['NewUnit'] =[("worker", (self.listeBatiment[i].position[0]+50*j,self.listeBatiment[i].position[1]+32))]
+                  
 
      
           

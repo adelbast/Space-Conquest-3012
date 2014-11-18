@@ -185,6 +185,7 @@ class Modele(object):
             
         
     def gestionAuto(self):
+        #ajout suppression de batiments
         for joueur in self.listeJoueur:
             for _, uni in joueur.listeUnite.items():
                 if(uni.currentHp > 0):
@@ -196,15 +197,13 @@ class Modele(object):
                 joueur.faireQqch() # AI
             except:
                 pass
+            for _, batiment in joueur.listeBatiment.items():
+                if(batiment.currentHp < 0):
+                    self.supprimerBatiment(batiment.id)
 
 
     def gererMouseRelease(self, event, etat, info):
         if(event.num == 3): #clic droit
-           # print(self.graph[int(self.releasePosx/64) * self.map.numRow + int(self.releasePosy/64)].walkable,
-            #    self.graph[int(self.releasePosx/64) * self.map.numRow + int(self.releasePosy/64)].x,
-             #   self.graph[int(self.releasePosx/64) * self.map.numRow + int(self.releasePosy/64)].y)
-            #print((int)(self.releasePosx/32), (int)(self.releasePosy/32))
-            print(self.releasePosx,self.releasePosy)
             if(self.selection): #Si le joueur a quelque chose de sélectionné, sinon inutile
                 if(self.selection[0].owner == self.noJoueurLocal):
                     try:            #Duck typing
@@ -397,7 +396,9 @@ class Modele(object):
 
 
     def supprimerBatiment (self,idBatiment):
-        self.dicAction2Server["SuppressionBatiment"].append(idBatiment)
+        if 'SuppressionBatiment' not in self.dicAction2Server:
+            self.dicAction2Server['SuppressionBatiment'] = []
+        self.dicAction2Server['SuppressionBatiment'].append(idBatiment)
 
     def supprimerUnit (self,idUnite):
         if 'SuppressionUnit' not in self.dicAction2Server:
@@ -433,8 +434,8 @@ class Modele(object):
                     self.cutNode(self.getNode(y*2+1,x*2+1))
 
         self.cutNode(self.getNode(0,0))            
-        print("Cut Nodes")
-        print(len(self.cutNodes))           
+        #print("Cut Nodes")
+        #print(len(self.cutNodes))           
       
     def getNode(self, x, y):  #Retourne un node au x y donnee du graphe
         return self.graph[x*self.height+y]
