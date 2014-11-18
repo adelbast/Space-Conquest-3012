@@ -214,8 +214,9 @@ class Modele(object):
                     else:#si pas d'exception
 
                         cible = self.clickCibleOuTile(self.releasePosx,self.releasePosy)
-                        if(not cible and self.getNode(int(self.releasePosx/32),int(self.releasePosy/32)).voisins is not None):#voir si ou on clique est un node couper
+                        if(not cible):#voir si ou on clique est un node couper
                             cible = (self.releasePosx,self.releasePosy)
+
                         if(cible):    
                             for unite in self.selection: #Donne un ordre de déplacement à la sélection
                                 try:
@@ -237,9 +238,9 @@ class Modele(object):
                                     #unite.setDestination(unePosition = cible)
             
         elif(event.num == 1): #clic gauche
-            if(self.getNode(int(self.releasePosx/32),int(self.releasePosy/32)) in self.cutNodes):
-                print("tente de delete un node couper")
-                self.reattachNode(int(self.releasePosx/32),int(self.releasePosy/32))
+            #if(self.getNode(int(self.releasePosx/32),int(self.releasePosy/32)) in self.cutNodes):
+             #   print("tente de delete un node couper")
+              #  self.reattachNode(int(self.releasePosx/32),int(self.releasePosy/32))
             if(etat==True and info != None):
                 if('NewBatiment' not in self.dicAction2Server):
                     self.dicAction2Server['NewBatiment']=[] #*La fonction gestion prend des dictionaire "contenant des listes!"
