@@ -10,7 +10,9 @@ class Joueur():
         self.listeUnite={}
         self.listeBatiment={}
         self.listeArtefact=[]
-        self.listeRessource=[100000,100000,100000] #nourriture,metaux,energie
+
+        self.listeRessource=[110000,110000,110000] #nourriture,metaux,energie
+
         self.maxPop=None
         self.ageRendu=None
         self.diplomatieStatus=False
@@ -48,13 +50,13 @@ class Joueur():
                 if(int(unit.position[0]/32) == x and int(unit.position[1]/32) == y):
                     valide = False
         
-        if self.parent.getNode(x,y) in self.parent.cutNodes:
+        if self.parent.getNode(x,y).voisins is None:
             valide = False
         
         if(valide and attribut == 64):
-            if (self.parent.getNode(x-1,y-1) in self.parent.cutNodes 
-                or self.parent.getNode(x-1,y) in self.parent.cutNodes 
-                or self.parent.getNode(x,y-1) in self.parent.cutNodes):
+            if (self.parent.getNode(x-1,y-1).voisins is None 
+                or self.parent.getNode(x-1,y).voisins is None
+                or self.parent.getNode(x,y-1).voisins is None):
                 valide = False
             if(valide):
                 for joueur in self.parent.listeJoueur:
@@ -72,20 +74,20 @@ class Joueur():
         
         if (valide and attribut == 128):
             
-            if (self.parent.getNode(x+1,y+1) in self.parent.cutNodes 
-                or self.parent.getNode(x-2,y+1) in self.parent.cutNodes 
-                or self.parent.getNode(x+1,y-2) in self.parent.cutNodes 
-                or self.parent.getNode(x-2,y-2) in self.parent.cutNodes
-                or self.parent.getNode(x-2,y) in self.parent.cutNodes
-                or self.parent.getNode(x-2,y-1) in self.parent.cutNodes
-                or self.parent.getNode(x-1,y-2) in self.parent.cutNodes
-                or self.parent.getNode(x,y-2) in self.parent.cutNodes
-                or self.parent.getNode(x-2,y-2) in self.parent.cutNodes
-                or self.parent.getNode(x+1,y) in self.parent.cutNodes
-                or self.parent.getNode(x-2,y-2) in self.parent.cutNodes
-                or self.parent.getNode(x+1,y-1) in self.parent.cutNodes
-                or self.parent.getNode(x,y+1) in self.parent.cutNodes
-                or self.parent.getNode(x-1,y+1) in self.parent.cutNodes):
+            if (self.parent.getNode(x+1,y+1).voisins is None
+                or self.parent.getNode(x-2,y+1).voisins is None 
+                or self.parent.getNode(x+1,y-2).voisins is None
+                or self.parent.getNode(x-2,y-2).voisins is None
+                or self.parent.getNode(x-2,y).voisins is None
+                or self.parent.getNode(x-2,y-1).voisins is None
+                or self.parent.getNode(x-1,y-2).voisins is None
+                or self.parent.getNode(x,y-2).voisins is None
+                or self.parent.getNode(x-2,y-2).voisins is None
+                or self.parent.getNode(x+1,y).voisins is None
+                or self.parent.getNode(x-2,y-2).voisins is None
+                or self.parent.getNode(x+1,y-1).voisins is None
+                or self.parent.getNode(x,y+1).voisins is None
+                or self.parent.getNode(x-1,y+1).voisins is None):
                 valide = False
             
             if(valide):
@@ -143,7 +145,40 @@ class Joueur():
         return True;
             
     def supprimerBatiment(self,idBatiment): #fr
-        try:    
+        try:
+            size = self.listeBatiment[idBatiment].size
+            x = int(self.listeBatiment[idBatiment].position[0]/32)
+            y = int(self.listeBatiment[idBatiment].position[1]/32)
+            
+            if(size == 32):
+                self.parent.reattachNode(self.parent.getNode(x,y))
+            
+            if(size == 64):
+                self.parent.reattachNode(self.parent.getNode(x,y))
+                self.parent.reattachNode(self.parent.getNode(x-1,y-1))
+                self.parent.reattachNode(self.parent.getNode(x-1,y))
+                self.parent.reattachNode(self.parent.getNode(x,y-1))
+            
+            if(size == 128):
+                self.parent.reattachNode(self.parent.getNode(x,y))
+
+                self.parent.reattachNode(self.parent.getNode(x-1,y-1))
+                self.parent.reattachNode(self.parent.getNode(x-1,y))
+                self.parent.reattachNode(self.parent.getNode(x,y-1))
+
+                self.parent.reattachNode(self.parent.getNode(x+1,y+1))
+                self.parent.reattachNode(self.parent.getNode(x+1,y))
+                self.parent.reattachNode(self.parent.getNode(x+1,y-1))
+                self.parent.reattachNode(self.parent.getNode(x-1,y+1))
+                self.parent.reattachNode(self.parent.getNode(x,y+1))
+                self.parent.reattachNode(self.parent.getNode(x-2,y-2))
+                self.parent.reattachNode(self.parent.getNode(x-1,y-2))
+                self.parent.reattachNode(self.parent.getNode(x,y-2))
+                self.parent.reattachNode(self.parent.getNode(x+1,y-2))
+                self.parent.reattachNode(self.parent.getNode(x-2,y-1))
+                self.parent.reattachNode(self.parent.getNode(x-2,y))
+                self.parent.reattachNode(self.parent.getNode(x-2,y+1))
+            
             del self.listeBatiment[idBatiment]
             print("batiment supprime")
         except KeyError:
