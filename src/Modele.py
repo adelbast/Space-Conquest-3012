@@ -197,6 +197,9 @@ class Modele(object):
                 joueur.faireQqch() # AI
             except:
                 pass
+            for _, batiment in joueur.listeBatiment.items():
+                if(batiment.currentHp < 0):
+                    self.supprimerBatiment(batiment.id)
 
 
     def gererMouseRelease(self, event, etat, info):
@@ -397,7 +400,9 @@ class Modele(object):
 
 
     def supprimerBatiment (self,idBatiment):
-        self.dicAction2Server["SuppressionBatiment"].append(idBatiment)
+        if 'SuppressionBatiment' not in self.dicAction2Server:
+            self.dicAction2Server['SuppressionBatiment'] = []
+        self.dicAction2Server['SuppressionBatiment'].append(idBatiment)
 
     def supprimerUnit (self,idUnite):
         if 'SuppressionUnit' not in self.dicAction2Server:
