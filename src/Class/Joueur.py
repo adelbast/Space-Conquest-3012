@@ -1,6 +1,7 @@
 import configparser
 from Class.Structure import *
 from Class.Unit import Unit
+from Class.Modif import Modif
 
 class Joueur():
     def __init__(self, parent,nom,noJoueur):
@@ -19,12 +20,90 @@ class Joueur():
         self.idCountBatiment=0
         self.idCountUnit=0
         self.listeAllie = [self.noJoueur]#self.noJoueur
-        
 
+        
+##In dev
+        self.currentUnits = ["greenBeret", "trooper", "halfTrack", "tank"]
+        self.nbRecherches = 0
+        self.availableResearch = []
+    
+        self.recherches = []
+        self.modif = Modif()
+
+        self.remplirRecherches() 
+
+        self.rechercher(self.availableResearch[0])
+
+
+    def remplirRecherches(self):
+        self.availableResearch = []
+        for i in self.parent.dictRecherche:
+            indx = self.parent.dictRecherche.get(i)
+            if indx[4] <= self.nbRecherches:
+                self.availableResearch.append(i)
+
+    def rechercher(self,nomRecherche):
+        indx = self.parent.dictRecherche.get(nomRecherche)
+
+        if self.assezRessources(indx[3]):
+            self.recherches.append(nomRecherche)
+            self.appliquerModif(indx[0], indx[1], indx[2])
+            self.remplirRecherches()
+
+    def appliquerModif(self, attribute1, attribute2, bonus):
+        if attribute1 == "infantryBoost":
+            if attribute2 == "force":
+                self.modif.infantryBoost[self.modif.FORCE] += bonus
+            elif attribute2 == "vitesse":
+                self.modif.infantryBoost[self.modif.VITESSE] += bonus
+            elif attribute2 == "armor":
+                self.modif.infantryBoost[self.modif.ARMOR] += bonus
+
+        elif attribute1 == "rangeBoost":
+            if attribute2 == "force":
+                self.modif.infantryBoost[self.modif.FORCE] += bonus
+            elif attribute2 == "vitesse":
+                self.modif.infantryBoost[self.modif.VITESSE] += bonus
+            elif attribute2 == "armor":
+                self.modif.infantryBoost[self.modif.ARMOR] += bonus
+        
+        elif attribute1 == "vehiculeBoost":
+            if attribute2 == "force":
+                self.modif.infantryBoost[self.modif.FORCE] += bonus
+            elif attribute2 == "vitesse":
+                self.modif.infantryBoost[self.modif.VITESSE] += bonus
+            elif attribute2 == "armor":
+                self.modif.infantryBoost[self.modif.ARMOR] += bonus
+
+        elif attribute1 == "airBoost":
+            if attribute2 == "force":
+                self.modif.infantryBoost[self.modif.FORCE] += bonus
+            elif attribute2 == "vitesse":
+                self.modif.infantryBoost[self.modif.VITESSE] += bonus
+            elif attribute2 == "armor":
+                self.modif.infantryBoost[self.modif.ARMOR] += bonus
+
+        elif attribute1 == "generatorProduction":
+            if attribute2 == "mine":
+                self.modif.generatorProduction[self.modif.MINE] += bonus
+            elif attribute2 == "farm":
+                self.modif.generatorProduction[self.modif.FARM] += bonus
+            elif attribute2 == "solarPanel":
+                self.modif.generatorProduction[self.modif.SOLARPANEL] += bonus
+
+        elif attribute1 == "hpBoost":
+            if attribute2 == "building":
+                self.modif.hp[self.modif.BUILDING] += bonus
+            elif attribute2 == "unit":
+                self.modif.hp[self.modif.UNIT] += bonus
+
+    
     def creerBatiment(self,position,worker,nom,attributs): #fr
         if self.assezRessources(attributs[1]): #pour savoir si assezRessource
             if self.positionCreationValide(position,attributs[3]):
                 if nom == "farm" or nom == "mine" or nom == "solarPanel":
+                	#if nom == "farm":
+                		#attributs[2]+= 
                     self.listeBatiment[self.idCountBatiment] = Generator(self.noJoueur, nom, position, attributs, self.idCountBatiment)
                 else:
                     print("1")

@@ -385,7 +385,8 @@ class Modele(object):
             self.attribute  = str (parserRecherche.get(name,'attribute'))
             self.bonus      = float (parserRecherche.get(name, 'bonus'))
             self.cost       = [int(parserRecherche.get(name,'costFood')), int(parserRecherche.get(name,'costMetal')), int(parserRecherche.get(name,'costPower'))]
-            self.dictRecherche[name] = [self.type, self.attribute, self.bonus, self.cost]
+            self.req        = int (parserRecherche.get(name, 'req'))
+            self.dictRecherche[name] = [self.type, self.attribute, self.bonus, self.cost, self.req]
             
     def getAIcount(self):
         retour = 0
