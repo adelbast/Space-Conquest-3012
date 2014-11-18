@@ -45,6 +45,7 @@ class Unit:    ##Laurence
         self.isWalking  = False
         self.isAmi      = True
 
+        self.isCut = False ;
         self.reloading = 0
         self.tempsAnimation = 0
         self.MODULO = 40
@@ -77,6 +78,11 @@ class Unit:    ##Laurence
             print("Deplacement vers tile")
             self.destination = unePosition  # Un Tuple
             self.etat = self.GOTO_POSITION
+            self.isCut = False
+            if self.getNode(int(self.destination[0]/32),int(self.destination[1]/32)).voisins is None:
+                print("TRUUUUE")
+                self.isCut = True 
+            
         else:
             return None
 
@@ -259,10 +265,13 @@ class Unit:    ##Laurence
     def calculatePath(self):
         ####  Va chercher le node du graphe qui correspond a la destination
         if self.etat == self.GOTO_POSITION:
-            self.goal = self.getNode(int(self.destination[0]/32)
-                                     ,int(self.destination[1]/32))
+            if self.isCut :
+                self.goal = self.recalibrerDestination(self.parent.graph, self.getNode(int(self.destination[0]/32)
+                                     ,int(self.destination[1]/32)),self.getNode(math.trunc(self.position[0]/32), math.trunc(self.position[1])/32))
+            else:
+                self.goal = self.getNode(int(self.destination[0]/32)
+                                         ,int(self.destination[1]/32))
         elif self.etat == self.GOTO_BATIMENT:
-            print("New destination")
             self.goal = self.recalibrerDestination(self.parent.graph, self.getNode(int(self.destination.position[0]/32)
                                      ,int(self.destination.position[1]/32)),self.getNode(math.trunc(self.position[0]/32), math.trunc(self.position[1])/32))
         else:
