@@ -143,7 +143,40 @@ class Joueur():
         return True;
             
     def supprimerBatiment(self,idBatiment): #fr
-        try:    
+        try:
+            size = self.listeBatiment[idBatiment].size
+            x = int(self.listeBatiment[idBatiment].position[0]/32)
+            y = int(self.listeBatiment[idBatiment].position[1]/32)
+            
+            if(size == 32):
+                self.parent.reattachNode(self.parent.getNode(x,y))
+            
+            if(size == 64):
+                self.parent.reattachNode(self.parent.getNode(x,y))
+                self.parent.reattachNode(self.parent.getNode(x-1,y-1))
+                self.parent.reattachNode(self.parent.getNode(x-1,y))
+                self.parent.reattachNode(self.parent.getNode(x,y-1))
+            
+            if(size == 128):
+                self.parent.reattachNode(self.parent.getNode(x,y))
+
+                self.parent.reattachNode(self.parent.getNode(x-1,y-1))
+                self.parent.reattachNode(self.parent.getNode(x-1,y))
+                self.parent.reattachNode(self.parent.getNode(x,y-1))
+
+                self.parent.reattachNode(self.parent.getNode(x+1,y+1))
+                self.parent.reattachNode(self.parent.getNode(x+1,y))
+                self.parent.reattachNode(self.parent.getNode(x+1,y-1))
+                self.parent.reattachNode(self.parent.getNode(x-1,y+1))
+                self.parent.reattachNode(self.parent.getNode(x,y+1))
+                self.parent.reattachNode(self.parent.getNode(x-2,y-2))
+                self.parent.reattachNode(self.parent.getNode(x-1,y-2))
+                self.parent.reattachNode(self.parent.getNode(x,y-2))
+                self.parent.reattachNode(self.parent.getNode(x+1,y-2))
+                self.parent.reattachNode(self.parent.getNode(x-2,y-1))
+                self.parent.reattachNode(self.parent.getNode(x-2,y))
+                self.parent.reattachNode(self.parent.getNode(x-2,y+1))
+            
             del self.listeBatiment[idBatiment]
             print("batiment supprime")
         except KeyError:

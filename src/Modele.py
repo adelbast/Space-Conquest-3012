@@ -237,9 +237,9 @@ class Modele(object):
                                     #unite.setDestination(unePosition = cible)
             
         elif(event.num == 1): #clic gauche
-            if(self.getNode(int(self.releasePosx/32),int(self.releasePosy/32)) in self.cutNodes):
-                print("tente de delete un node couper")
-                self.reattachNode(int(self.releasePosx/32),int(self.releasePosy/32))
+            #cible = self.clickCibleOuTile(self.releasePosx,self.releasePosy)
+            #if isinstance (cible, Batiment):
+                #self.listeJoueur[0].supprimerBatiment(cible.id)
             if(etat==True and info != None):
                 if('NewBatiment' not in self.dicAction2Server):
                     self.dicAction2Server['NewBatiment']=[] #*La fonction gestion prend des dictionaire "contenant des listes!"
@@ -440,32 +440,40 @@ class Modele(object):
     def getNode(self, x, y):  #Retourne un node au x y donnee du graphe
         return self.graph[x*self.height+y]
     
-    def reattachNode(self,x,y): # juste passer un node a la place de x,y (encore en tests)
+    def reattachNode(self,node): # juste passer un node a la place de x,y (encore en tests)
         print("dans recreateNode")
         try:
-            self.cutNodes.remove(self.getNode(x,y))
+            self.cutNodes.remove(node)
         except ValueError as e:
             print("erreur dans dans cutNodes")
-        nodeAjouter = self.getNode(x,y)
-        nodeAjouter.voisins = []
-        nodeAjouter.relink()  ##Si on appelle defineNeighbors on risque de refaire des liens non existant -> voir la fonction relink
+        node.voisins = []
+        node.relink()  ##Si on appelle defineNeighbors on risque de refaire des liens non existant -> voir la fonction relink
         # on a attacher le node a ses voisins, maintenant doit attacher les voisins au node si ils ne sont pas dans cutNodes
-        if(self.getNode(x-1,y).voisins):
-            self.getNode(x-1,y).voisins[0] = [nodeAjouter.x,nodeAjouter.y]
-        if(self.getNode(x,y-1).voisins):
-            self.getNode(x,y-1).voisins[1] = [nodeAjouter.x,nodeAjouter.y]
+        x = node.x
+        y = node.y
         if(self.getNode(x+1,y).voisins):
-            self.getNode(x+1,y).voisins[2] = [nodeAjouter.x,nodeAjouter.y]
-        if(self.getNode(x,y+1).voisins):
-            self.getNode(x,y+1).voisins[3] = [nodeAjouter.x,nodeAjouter.y]
-        if(self.getNode(x-1,y-1).voisins):
-            self.getNode(x-1,y-1).voisins[4] = [nodeAjouter.x,nodeAjouter.y]
+            self.getNode(x+1,y).voisins[2] = [node.x,node.y]
+        
         if(self.getNode(x+1,y-1).voisins):
-            self.getNode(x+1,y-1).voisins[5] = [nodeAjouter.x,nodeAjouter.y]
-        if(self.getNode(x+1,y+1).voisins):
-            self.getNode(x+1,y+1).voisins[6] = [nodeAjouter.x,nodeAjouter.y]
+            self.getNode(x+1,y-1).voisins[5] = [node.x,node.y]
+        
+        if(self.getNode(x,y-1).voisins):
+            self.getNode(x,y-1).voisins[1] = [node.x,node.y]
+        
+        if(self.getNode(x-1,y-1).voisins):
+            self.getNode(x-1,y-1).voisins[4] = [node.x,node.y]
+        
+        if(self.getNode(x-1,y).voisins):
+            self.getNode(x-1,y).voisins[0] = [node.x,node.y]
+        
         if(self.getNode(x-1,y+1).voisins):
-            self.getNode(x-1,y+1).voisins[7] = [nodeAjouter.x,nodeAjouter.y]
+            self.getNode(x-1,y+1).voisins[7] = [node.x,node.y]
+        
+        if(self.getNode(x,y+1).voisins):
+            self.getNode(x,y+1).voisins[3] = [node.x,node.y]
+        
+        if(self.getNode(x+1,y+1).voisins):
+            self.getNode(x+1,y+1).voisins[6] = [node.x,node.y]
 
 
 
@@ -505,13 +513,13 @@ class Modele(object):
             except:
                 print("INDEX ERROR")
 
-            print("Node cut")
-            print(node.x, node.y)
+            #print("Node cut")
+            #print(node.x, node.y)
             node.voisins = None
             self.cutNodes.append(node)
             
-        print("Node failed to cut")
-        print(node.x, node.y)
+        #print("Node failed to cut")
+        #print(node.x, node.y)
         
 
  
