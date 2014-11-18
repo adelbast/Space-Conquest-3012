@@ -173,21 +173,81 @@ class Controleur:
         self.nomBatiment = nom
         self.vue.etatCreation = True
 
+    #Validation de la spawning position
     def spawnUnit(self, unitName):
 
         validateSpawn = False
-
+        
         pX = self.modele.selection[0].position[0] - (self.modele.dictUnit[unitName][7] + self.modele.selection[0].size/2)
-        pY = self.modele.selection[0].position[1] - (self.modele.dictUnit[unitName][7] + self.modele.selection[0].size/2) 
+        pY = self.modele.selection[0].position[1] - (self.modele.dictUnit[unitName][7] + self.modele.selection[0].size/2)
+
+        #Nombre de fois qu'il faut passer dans la boucle Ex : 6 options = 0,1,2,3,4,5
+        
+        numOption = (self.modele.selection[0].size/32)+1 #Le +1 est en fait -1 + 2, parce qu'il faut aller un cube en haut (-1) et il faut rajouter 2 pour aller 1 cube en bas
+
+        #Compteurs
+        compteurX = 0
+        compteurY = 0
+
+        #Regarde si la case choisit est valide
+        if(self.modele.getNode(int(pX/32), int(pY/32)) not in self.modele.cutNodes):
+                
+            for _,unit in self.modele.listeJoueur[self.modele.noJoueurLocal].listeUnite.items():
+                node1, node2 = self.modele.getNode(int(pX/32), int(pY/32)), self.modele.getNode(int(unit.position[0]/32), int(unit.position[1]/32))
+                    
+                if(node1.x == node2.x and node1.y == node2.y):
+                    validateSpawn = False
+                    break
+                else:
+                    validateSpawn = True
+        
 
         while(not validateSpawn):
 
-            if(self.modele.getNode(int(pX/32), int(pY/32)) not in self.modele.cutNodes):
-                validateSpawn = True
-            else:
+            #En partant du coin en haut a gauche du batiment
+            if(compteurX == 0 and compteurY < numOption): 
                 pY = pY + 32
+                compteurY += 1
+                
+            #En partant du coin en bas a gauche du batiment
+            elif (compteurX < numOption and compteurY == numOption):
+                pX = pX + 32
+                compteurX += 1
+                
+            #En partant du coin en bas a gauche du batiment
+            elif(compteurX == numOption and compteurY > 0):
+                pY = pY - 32
+                compteurY -= 1
+                
+            #En partant du coin en haut a droite
+            elif(compteurY == 0 and compteurX > 1):
+                pX = pX - 32
+                compteurX -= 1
+
+            #Si on a fnit de regarder toutes les positions posibles
+            elif(compteurX == 1 and compteurY == 0):
+                numOption += 2
+                pX = pX - 64
+                pY = pY - 32
+                compteurX = 0
+                compteurY = 0
+                
+            #Regarde si la case choisit est valide
+            if(self.modele.getNode(int(pX/32), int(pY/32)) not in self.modele.cutNodes):
+                
+                for _,unit in self.modele.listeJoueur[self.modele.noJoueurLocal].listeUnite.items():
+                    node1, node2 = self.modele.getNode(int(pX/32), int(pY/32)), self.modele.getNode(int(unit.position[0]/32), int(unit.position[1]/32))
+                    
+                    if(node1.x == node2.x and node1.y == node2.y):
+                        validateSpawn = False
+                        break
+                    else:
+                        validateSpawn = True
+
+              
+        if('NewUnit' not in self.modele.dicAction2Server):  
+            self.modele.dicAction2Server['NewUnit'] = []
             
-        self.modele.dicAction2Server['NewUnit'] = []
         self.modele.dicAction2Server['NewUnit'].append((unitName, (pX,pY)))
 
     def moveUnitWithMinimap(self, event):
