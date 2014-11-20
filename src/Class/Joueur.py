@@ -34,9 +34,9 @@ class Joueur():
 
         self.remplirRecherches() 
 
-        self.rechercher(self.availableResearch[0])
+        self.rechercher(self.availableResearch[1])
 
-
+####################################################################Recherches
     def remplirRecherches(self):
         self.availableResearch = []
         for i in self.parent.dictRecherche:
@@ -50,6 +50,7 @@ class Joueur():
         if self.assezRessources(indx[3]):
             self.recherches.append(nomRecherche)
             self.appliquerModif(indx[0], indx[1], indx[2])
+            self.parent.rechercher(nomRecherche)
             self.remplirRecherches()
 
     def appliquerModif(self, attribute1, attribute2, bonus):
@@ -87,7 +88,9 @@ class Joueur():
 
         elif attribute1 == "generatorProduction":
             if attribute2 == "mine":
+                print("ici")
                 self.modif.generatorProduction[self.modif.MINE] += bonus
+                print(self.modif.generatorProduction[self.modif.MINE])
             elif attribute2 == "farm":
                 self.modif.generatorProduction[self.modif.FARM] += bonus
             elif attribute2 == "solarPanel":
@@ -99,11 +102,20 @@ class Joueur():
             elif attribute2 == "unit":
                 self.modif.hp[self.modif.UNIT] += bonus
 
+####################################################################
 
+                
     def creerBatiment(self,position,nom,attributs): #fr
         if self.assezRessources(attributs[1]): #pour savoir si assezRessource
             if self.positionCreationValide(position,attributs[3]):
+                attributs[0] += self.modif.hp[self.modif.BUILDING]
                 if nom == "farm" or nom == "mine" or nom == "solarPanel":
+                    '''if nom == "farm":
+                        attributs[2] += self.modif.generatorProduction[self.modif.FARM]
+                    elif nom == "mine":
+                        attributs[2] += self.modif.generatorProduction[self.modif.MINE]
+                    elif nom == "solarPanel":
+                        attributs[2] += self.modif.generatorProduction[self.modif.SOLARPANEL]'''
                     self.listeBatiment[self.idCountBatiment] = Generator(self.noJoueur, nom, position, attributs, self.idCountBatiment, initialisation = False)
                 else:
                     self.listeBatiment[self.idCountBatiment] = Batiment(self.noJoueur, nom, position, attributs, self.idCountBatiment, initialisation = False)
@@ -297,23 +309,17 @@ class Joueur():
 
     def generateFerme(self,ferme):
         self.ressource=ferme.generate()
-        for i in self.listeArtefact:
-            if (i == "Corne_abondance"):
-                self.ressource = self.ressource * 1.5
+        self.ressource = self.ressource * self.modif.generatorProduction[self.modif.FARM]
         return self.ressource
 
     def generateMine(self,mine):
         self.ressource=mine.generate()
-        for i in self.listeArtefact:
-            if (i == "Marteau_de_gnome"):
-                self.ressource = self.ressource * 1.5
+        self.ressource = self.ressource * self.modif.generatorProduction[self.modif.MINE]
         return self.ressource
 
     def generateSolar(self,solar):
         self.ressource=solar.generate()
-        for i in self.listeArtefact:
-            if (i == "Miroir_des_dieux"):
-                self.ressource = self.ressource * 1.5
+        self.ressource = self.ressource * self.modif.generatorProduction[self.modif.SOLARPANEL]
         return self.ressource
 
     

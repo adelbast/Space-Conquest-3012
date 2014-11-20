@@ -158,6 +158,11 @@ class Modele(object):
                             noArtefact = valeur
 
                             self.listeJoueur[ii].listeArtefact.remove(self.listeArtefact[noArtefact])
+                    elif(clee == 'Recherche'):      #A tester
+                        for valeur in listeValeur:
+                            recherche = valeur
+
+                            self.listeJoueur[ii].rechercher(valeur)
             ii+=1
 
 
@@ -367,8 +372,12 @@ class Modele(object):
             self.positionX      = int (parserArtefact.get(name,'positionX'))
             self.positionY      = int (parserArtefact.get(name,'positionY'))
             self.size           = int (parserArtefact.get(name, 'size'))
-            self.modif          = float (parserArtefact.get(name, 'modif'))
-            self.dictArtefact[name] = [self.positionX,self.positionX, self.size,self.modif]
+            self.bonus          = float (parserArtefact.get(name, 'bonus'))
+
+            self.type           = str(parserArtefact.get(name, 'type'))
+            self.attribute      = str (parserArtefact.get(name,'attribute'))
+            
+            self.dictArtefact[name] = [self.positionX,self.positionX, self.size,self.bonus, self.type, self.attribute]
 
         for name in recherches:
             self.type       = str (parserRecherche.get(name,'type'))
@@ -394,6 +403,11 @@ class Modele(object):
         if 'SuppressionUnit' not in self.dicAction2Server:
             self.dicAction2Server['SuppressionUnit'] = []
         self.dicAction2Server["SuppressionUnit"].append(idUnite)
+
+    def rechercher (self,recherche):  #Passe une string (le nom de la recherche
+        if 'Rechercher' not in self.dicAction2Server:
+            self.dicAction2Server['Rechercher'] = []
+        self.dicAction2Server["Rechercher"].append((recherche,))
             
     def changerAge (self):
         self.dicAction2Server["RechercheAge"]+= 1
@@ -502,13 +516,13 @@ class Modele(object):
             except:
                 print("INDEX ERROR")
 
-            print("Node cut")
-            print(node.x, node.y)
+            #print("Node cut")
+            #print(node.x, node.y)
             node.voisins = None
             self.cutNodes.append(node)
             
-        print("Node failed to cut")
-        print(node.x, node.y)
+        #print("Node failed to cut")
+        #print(node.x, node.y)
         
 
  

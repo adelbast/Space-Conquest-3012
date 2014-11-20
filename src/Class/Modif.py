@@ -15,7 +15,7 @@ class Modif:
         self.FARM = 1
         self.SOLARPANEL = 2
 
-        self.generatorProduction = [0,0,0]
+        self.generatorProduction = [1,1,1]
 
         self.BUILDING = 0
         self.UNIT = 1

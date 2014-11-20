@@ -163,8 +163,8 @@ class Unit:    ##Laurence
                 if(self.etat == self.GOTO_POSITION):
 
 
-                    newDestination = self.unitFormation()
-                    print(newDestination)
+                    newDestination = None #self.unitFormation() #A debug svp
+                    #print(newDestination)
                     
                     #Si la unit doit se mettre en formation
                     if(newDestination is not None):
