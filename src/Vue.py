@@ -251,6 +251,8 @@ class Vue:
 
         offset=0
 
+
+        print(unit.owner, noLocal)
         #Affichage de l'image de l'unité
         try:
             if(unit.owner == noLocal):
