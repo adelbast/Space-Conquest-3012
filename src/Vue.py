@@ -248,6 +248,7 @@ class Vue:
 
         self.hud.delete("build")
         self.hud.delete("infos")
+        self.hud.delete("button")
 
         offset=0
 
