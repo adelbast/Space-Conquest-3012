@@ -79,6 +79,7 @@ class Modele(object):
         for i in range(len(self.listeJoueur)):
             positionDepartxy =[self.map.startingPoint[i][0]*64,self.map.startingPoint[i][1]*64]
             self.listeJoueur[i].listeBatiment[0] = Batiment(self.noJoueurLocal, "HQ", positionDepartxy, self.dictBatiment["HQ"], 0) #owner,name,xy,attributs,idB, initialisation = True
+            self.listeJoueur[i].positionCreationValide(self.listeJoueur[i].listeBatiment[0].position, self.dictBatiment["HQ"][3]) # pour couper les nodes du batiment de depart
             self.listeJoueur[i].listeUnite[0] = Unit(self, "worker", (positionDepartxy[0]+96,positionDepartxy[1]+96), self.noJoueurLocal, self.dictUnit["worker"], 0)    #parent, name, xy, owner, attribut, idU, destination = None
 
 
