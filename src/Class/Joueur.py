@@ -12,7 +12,7 @@ class Joueur():
         self.listeBatiment={}
         self.listeArtefact=[]
 
-        self.listeRessource=[1000,1000,1000] #nourriture,metaux,energie
+        self.listeRessource=[1000000,1000000,1000000] #nourriture,metaux,energie
 
         self.maxPop=None
         self.ageRendu=1
@@ -114,7 +114,7 @@ class Joueur():
 
                 
     def creerBatiment(self,position,nom,attributs): #fr
-        if self.parent.noJoueurLocal == self.noJoueur and self.assezRessources(attributs[1]): #TODO
+        if self.assezRessources(attributs[1]): #TODO
             if self.positionCreationValide(position,attributs[3]):
                 attributs[0] += self.modif.hp[self.modif.BUILDING]
                 if nom == "farm" or nom == "mine" or nom == "solarPanel":
