@@ -113,13 +113,8 @@ class Unit:    ##Laurence
         self.currentHp = 0
         print("Unit self-destruct")
 
-<<<<<<< HEAD
+
     def autoGestion(self, listeJoueur):
-=======
-
-
-    def autoGestion(self,listeJoueur):
->>>>>>> 6bf766892246cbf0010b11e65ef721e6f2a0b21d
         try:
             if self.etat == self.IDLE:
                 for joueur in listeJoueur:
