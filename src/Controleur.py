@@ -166,6 +166,7 @@ class Controleur:
         except Exception:
             self.vue.hud.delete("infos")
             self.vue.hud.delete("button")
+            self.vue.hud.delete("thumbnail")
             print("Pas de selection!")
         self.vue.etatCreation = False
 

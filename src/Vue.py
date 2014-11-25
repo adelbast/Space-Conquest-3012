@@ -19,6 +19,9 @@ class Vue:
 
         self.sprites = []
 
+        #THumbnails
+        self.thumbnails = {}
+
         #Mesures de la fenetre
         self.windowWidth = 1200
         self.windowHeight = 800
@@ -43,6 +46,20 @@ class Vue:
         self.photoImageHUD = ImageTk.PhotoImage(self.imageHUD)
         self.boutonUP = Image.open("image/gui/boutonUP.png")
         self.photoImageBoutonUP = ImageTk.PhotoImage(self.boutonUP)
+
+        #Creation des Thumbnails
+        directories = os.listdir("Image/gui/thumbnails")
+
+        for d in directories:
+            #Creation des images
+            image = Image.open("image/gui/thumbnails/"+d)
+            photoImage = ImageTk.PhotoImage(image)
+
+            #Insertion des images dans un dictionnaire
+            index1 = d.find("_")+1
+            index2 = d.find(".")
+            name = d[index1:index2]
+            self.thumbnails[name] = [image, photoImage]
 
         #Pour transferer les images en PhotoImage
         for tile in self.tileset.tileset: 
@@ -242,6 +259,7 @@ class Vue:
         self.hud.delete("build")
         self.hud.delete("infos")
         self.hud.delete("button")
+        self.hud.delete("thumbnail")
 
         offset=0
 
@@ -326,7 +344,11 @@ class Vue:
                 
                     #print(u)
                     self.hud.create_image(startX+((column*size)+margin*(column+1)), startY+((row*size)+margin*(row+1)), anchor=NW, image=self.photoImageBoutonUP, tags=("button", u, build_type))
-                
+                    try:
+                        self.hud.create_image(startX+((column*size)+margin*(column+1)), startY+((row*size)+margin*(row+1)), anchor=NW, image=self.thumbnails[u][1], tags=("thumbnail", u, build_type))
+                    except:
+                        pass
+                    
                     if(column%3 == 0 and column != 0):
                         #print("row : ",row)
                         row +=1
@@ -337,6 +359,7 @@ class Vue:
                 
             else:
                 self.hud.delete("button")
+                self.hud.delete("thumbnail")
         
     
         
