@@ -243,6 +243,7 @@ class Unit:    ##Laurence
     def attaque(self):
         if(self.destination.currentHp > 0):
             try:
+                forceTemp = 0
                 if(self.type == "builder"):
                     bonus = 0 
                     own = self.parent.listeJoueur[self.owner]
