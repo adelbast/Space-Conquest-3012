@@ -168,6 +168,9 @@ class Controleur:
             self.vue.hud.delete("button")
             print("Pas de selection!")
         self.vue.etatCreation = False
+
+    def getResearch(self, noLocal):
+        return self.modele.listeJoueur[noLocal].availableResearch
         
 
     #Validation de la spawning position
