@@ -49,7 +49,7 @@ class Unit:    ##Laurence
         self.isCut = False ;
         self.reloading = 0
         self.tempsAnimation = 0
-        self.MODULO = 40
+        self.MODULO = 30
         self.followModulator = 0
 
         self.deleteCallDone = False #Variable d'état de suppression pour éviter de caller deux fois le serveur pour supprimer la meme unité
@@ -114,7 +114,11 @@ class Unit:    ##Laurence
         print("Unit self-destruct")
 
 
+<<<<<<< HEAD
     def autoGestion(self, listeJoueur):
+=======
+    def autoGestion(self,listeJoueur):
+>>>>>>> 14d1797f8bddd3c30cf240e23c0077e312926e3b
         try:
             if self.etat == self.IDLE:
                 for joueur in listeJoueur:
@@ -141,7 +145,7 @@ class Unit:    ##Laurence
                     print("dans follow")
                     if (self.destination.isWalking and not self.followModulator%self.MODULO and self.type != "air"):
                         self.calculatePath()
-                self.move()
+                self.move(listeJoueur)
             self.tempsAnimation -= 1
             self.reloading -= 1
 
@@ -153,7 +157,7 @@ class Unit:    ##Laurence
             self.followModulator = 0
 
 
-    def move(self):
+    def move(self,listeJoueur):
         if ((self.depassementHorizontal or self.positionFluide[0] == self.position[0]) and (self.depassementVertical or self.positionFluide[1] == self.position[1])):
             if( self.path and self.type != "air" ):
                 newX = self.path[0].x*32
@@ -175,8 +179,8 @@ class Unit:    ##Laurence
                 self.currentFrame = '1'
                 if(self.etat == self.GOTO_POSITION):
 
-
-                    newDestination = None #self.unitFormation() #A debug svp
+                    #for unit in [ u for _, u in [joueur.listeUnite.items() for joueur in listeJoueur] if self.positionFluide[0] == u.positionFluide[0] and self.positionFluide[1] == u.positionFluide[1]]
+                    newDestination = None#self.unitFormation() #A debug svp
                     #print(newDestination)
                     
                     #Si la unit doit se mettre en formation
@@ -322,35 +326,38 @@ class Unit:    ##Laurence
             for _,unit in self.parent.listeJoueur[self.parent.noJoueurLocal].listeUnite.items():
                 node1, node2 = self.parent.getNode(int(pX/32), int(pY/32)), self.parent.getNode(int(unit.position[0]/32), int(unit.position[1]/32))
 
-                if(node1.x == node2.x and node1.y == node2.y and self.id != unit.id):
+                if((node1.x == node2.x and node1.y == node2.y) and self.id != unit.id):
                     validatePosition = False
+                    pX -= 32
+                    pY -= 32
                     break
                 else:
                     validatePosition = True
 
-        if(not validatePosition):
-            pX -= 32
-            pY -= 32
 
         while(not validatePosition):
 
             #En partant du coin en haut a gauche du batiment
-            if(compteurX == 0 and compteurY < numOption): 
+            if(compteurX == 0 and compteurY < numOption):
+                print("bas")
                 pY = pY + self.size
                 compteurY += 1
                 
             #En partant du coin en bas a gauche du batiment
             elif (compteurX < numOption and compteurY == numOption):
+                print("droite")
                 pX = pX + self.size
                 compteurX += 1
                 
             #En partant du coin en bas a gauche du batiment
             elif(compteurX == numOption and compteurY > 0):
+                print("haut")
                 pY = pY - self.size
                 compteurY -= 1
                 
             #En partant du coin en haut a droite
             elif(compteurY == 0 and compteurX > 1):
+                print("droite")
                 pX = pX - self.size
                 compteurX -= 1
 
@@ -362,17 +369,15 @@ class Unit:    ##Laurence
                 compteurX = 0
                 compteurY = 0
                 
-            #Regarde si la case choisit est valide
-            if(self.parent.getNode(int(pX/32), int(pY/32)) not in self.parent.cutNodes):
-                #Compare les autres unites du joueur
-                for _,unit in self.parent.listeJoueur[self.parent.noJoueurLocal].listeUnite.items():
-                    node1, node2 = self.parent.getNode(int(pX/32), int(pY/32)), self.parent.getNode(int(unit.position[0]/32), int(unit.position[1]/32))
-
-                    if(node1.x == node2.x and node1.y == node2.y and self.id != unit.id):
-                        validatePosition = False
-                        break
-                    else:
-                        validatePosition = True
+            
+            if(node1.x == node2.x and node1.y == node2.y and self.id != unit.id):
+                print("Invalide")
+                validatePosition = False
+                node2 = self.parent.getNode(int(unit.position[0]/32), int(unit.position[1]/32))
+                break
+            else:
+                print("Valide")
+                validatePosition = True
                         
         if(self.destination != (pX,pY)):
             newDestination = (pX, pY)

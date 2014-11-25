@@ -181,8 +181,95 @@ class Modele(object):
         
     def incrementerRessource(self):
         self.listeJoueur[self.noJoueurLocal].compterRessource() #Incremente les ressources du joueur local
+
+    #Formation pour les units a la fin d'un deplacement
+    def formationUnit(self):
+
+        newDestination = None
+
+        #Position du Unit
+        pX = self.position[0]
+        pY = self.position[1]
+
+        #Compteurs
+        compteurX = 0
+        compteurY = 0
+
+        numOption = (1)+1 #Le +1 est en fait -1 + 2, parce qu'il faut aller un cube en haut (-1) et il faut rajouter 2 pour aller 1 cube en bas
+
+        #Pour chaque unite dans le groupe qui se deplace
+        for unitF in self.formation:
+
+            #Si l'unite est rendu a destination
+            if(unitF.position == unitF.destination):
+
+                #Si la case n'est pas dans les nodes coupees
+                if(self.parent.getNode(int(pX/32), int(pY/32)) not in self.parent.cutNodes):
+
+                    #Pour chaque element dans la liste complete d'unites
+                    for _, u in self.listeJoueur[self.parent.noJoueurLocal].listeUnite.items():
+                        #node1 = position hypothetique & node2 = position d'une unit
+                        node1, node2 = self.parent.getNode(int(pX/32), int(pY/32)), self.parent.getNode(int(u.position[0]/32), int(u.position[1]/32))
+
+                        #Si la node hypothetique est la meme que celle du unit
+                        if((node1.x == node2.x and node1.y == node2.y) and unitF.id != unit.id):
+                            validatePosition = False
+                            pX -= 32
+                            pY -= 32
+                            break
+                        else:
+                            validatePosition = True
+                
+
+            while(not validatePosition):
+
+                #En partant du coin en haut a gauche du batiment
+                if(compteurX == 0 and compteurY < numOption):
+                    print("bas")
+                    pY = pY + self.size
+                    compteurY += 1
+                
+                #En partant du coin en bas a gauche du batiment
+                elif (compteurX < numOption and compteurY == numOption):
+                    print("droite")
+                    pX = pX + self.size
+                    compteurX += 1
+                
+                #En partant du coin en bas a gauche du batiment
+                elif(compteurX == numOption and compteurY > 0):
+                    print("haut")
+                    pY = pY - self.size
+                    compteurY -= 1
+                
+                #En partant du coin en haut a droite
+                elif(compteurY == 0 and compteurX > 1):
+                    print("droite")
+                    pX = pX - self.size
+                    compteurX -= 1
+
+                #Si on a finit de regarder toutes les positions posibles
+                elif(compteurX == 1 and compteurY == 0):
+                    numOption += 2
+                    pX = pX - self.size*2
+                    pY = pY - self.size
+                    compteurX = 0
+                    compteurY = 0
+                
             
-        
+                if(node1.x == node2.x and node1.y == node2.y and self.id != unit.id):
+                    print("Invalide")
+                    validatePosition = False
+                    node2 = self.parent.getNode(int(unit.position[0]/32), int(unit.position[1]/32))
+                    break
+                else:
+                    print("Valide")
+                    validatePosition = True
+                        
+            if(self.destination != (pX,pY)):
+                newDestination = (pX, pY)
+                
+            return newDestination
+    
     def gestionAuto(self):
         #ajout suppression de batiments
         for joueur in self.listeJoueur:
@@ -252,6 +339,8 @@ class Modele(object):
                         print(unit.name)
                     else:
                         pass#print("Pas cible")
+
+                self.formation = self.selection
             else:
                 cible = self.clickCibleOuTile(self.releasePosx,self.releasePosy)
                 if(cible):
