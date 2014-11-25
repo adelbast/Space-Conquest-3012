@@ -188,7 +188,7 @@ class Modele(object):
         for joueur in self.listeJoueur:
             for _, uni in joueur.listeUnite.items():
                 if(uni.currentHp > 0):
-                    uni.autoGestion()#Fait bouger toutes les unitées
+                    uni.autoGestion(self.listeJoueur)#Fait bouger toutes les unitées
                 elif(joueur.noJoueur == self.noJoueurLocal and not uni.deleteCallDone):
                     self.supprimerUnit(uni.id)
                     uni.deleteCallDone = True
