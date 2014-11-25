@@ -512,7 +512,7 @@ class Unit:    ##Laurence
        while not frontier.empty():
           #print("not empty")
           current = frontier.get()
-          print(current.voisins)
+          #print(current.voisins)
           if current.voisins is not None:
              #print("valid")
              #print(current.x, current.y)

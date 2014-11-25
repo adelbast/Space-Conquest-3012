@@ -295,11 +295,11 @@ class Vue:
 
                 self.hud.create_rectangle(600, 25, 881, 237, fill='black', tags="infos")
 
-                print("Construction", self.parent.getResearch(noLocal))
+                #print("Construction", self.parent.getResearch(noLocal))
 
                 for u in self.parent.getResearch(noLocal):
                     
-                    print(u)
+                    #print(u)
                     self.hud.create_image(startX+((column*size)+margin*(column+1)), startY+((row*size)+margin*(row+1)), anchor=NW, image=self.photoImageBoutonUP, tags=("button", u, build_type))
                 
                     if(column%3 == 0 and column != 0):
