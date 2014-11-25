@@ -290,8 +290,37 @@ class Vue:
             build_type = "unit"
 
         if(unit.owner == noLocal and ( build_type == "structure" or unit.estConstruit )):
+
+            
+            if(unit.name == "researchCenter"):
+                build_type = "research"
+                
+                margin = 5
+                startX = 600
+                startY = 25
+                size = 64
+                row = 0
+                column = 0
+
+                self.hud.create_rectangle(600, 25, 881, 237, fill='black', tags="infos")
+
+                print("Construction", self.parent.getResearch(noLocal))
+
+                for u in self.parent.getResearch(noLocal):
+                    
+                    print(u)
+                    self.hud.create_image(startX+((column*size)+margin*(column+1)), startY+((row*size)+margin*(row+1)), anchor=NW, image=self.photoImageBoutonUP, tags=("button", u, build_type))
+                
+                    if(column%3 == 0 and column != 0):
+                        #print("row : ",row)
+                        row +=1
+                        #print("column : ", column)
+                        column = 0
+                    else:
+                        column += 1
+
             #Afficher les unités qui peuvent être produites
-            if( len(unit.canBuild) > 0 ):
+            elif( len(unit.canBuild) > 0 ):
 
                 margin = 5
                 startX = 600
@@ -314,7 +343,6 @@ class Vue:
                         column = 0
                     else:
                         column += 1
-                    
                 
             else:
                 self.hud.delete("button")
@@ -537,6 +565,8 @@ class Vue:
         if(self.hud.gettags(item)[2] == "structure"):
             self.parent.etatCreation = True
             self.parent.infoCreation = self.hud.gettags(item)[1]
+        elif(self.hud.gettags(item)[2] == "research"):
+            print("Recherche : ", self.hud.gettags(item)[1],", dans la fonction getBuildInfo() de la Vue")
         else:
             print(self.hud.gettags(item)[1])
             self.parent.spawnUnit(self.hud.gettags(item)[1])
