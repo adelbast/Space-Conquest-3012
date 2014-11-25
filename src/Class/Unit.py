@@ -66,18 +66,18 @@ class Unit:    ##Laurence
         self.lastFrameTime = int(round(time.time()*1000))
         
         if unit:
-            print("Deplacement vers unit")
+            #print("Deplacement vers unit")
             self.destination = unit         # Un Unit
             self.etat = self.FOLLOW
 
         elif batiment:
-            print("Deplacement vers batiment")
+            #print("Deplacement vers batiment")
             self.destination = batiment     # Un Batiment
             self.etat = self.GOTO_BATIMENT
             if(self.type == "builder" and self.isAmi and self.destination.currentHp < self.destination.maxHp):
                 self.isbuildMission = True
         elif unePosition:
-            print("Deplacement vers tile")
+            #print("Deplacement vers tile")
             self.destination = unePosition  # Un Tuple
             self.etat = self.GOTO_POSITION
             self.isCut = False
@@ -241,6 +241,7 @@ class Unit:    ##Laurence
         
 
     def attaque(self):
+        forceTemp = self.force
         if(self.destination.currentHp > 0):
             try:
                 if(self.type == "builder"):
@@ -512,7 +513,7 @@ class Unit:    ##Laurence
        while not frontier.empty():
           #print("not empty")
           current = frontier.get()
-          print(current.voisins)
+          #print(current.voisins)
           if current.voisins is not None:
              #print("valid")
              #print(current.x, current.y)

@@ -12,7 +12,7 @@ class Joueur():
         self.listeBatiment={}
         self.listeArtefact=[]
 
-        self.listeRessource=[110000,110000,110000] #nourriture,metaux,energie
+        self.listeRessource=[1000,1000,1000] #nourriture,metaux,energie
 
         self.maxPop=None
         self.ageRendu=1
@@ -98,7 +98,7 @@ class Joueur():
         elif attribute1 == "generatorProduction":
             if attribute2 == "mine":
                 self.modif.generatorProduction[self.modif.MINE] += bonus
-                print(self.modif.generatorProduction[self.modif.MINE])
+                #print(self.modif.generatorProduction[self.modif.MINE])
             elif attribute2 == "farm":
                 self.modif.generatorProduction[self.modif.FARM] += bonus
             elif attribute2 == "solarPanel":
@@ -131,7 +131,7 @@ class Joueur():
                 self.listeRessource[0] -= attributs[1][0] #food
                 self.listeRessource[1] -= attributs[1][1] #metaux
                 self.listeRessource[2] -= attributs[1][2] #energie
-                print("batiment cree")
+                #print("batiment cree")
                 return self.idCountBatiment-1 #Ce retour sert dans gestion pour que le builder qui doit le construire connaisse le id de sa cible
     
     def positionCreationValide(self,position,attribut):
@@ -272,7 +272,7 @@ class Joueur():
                 self.parent.reattachNode(self.parent.getNode(x-2,y+1))
             
             del self.listeBatiment[idBatiment]
-            print("batiment supprime")
+            #print("batiment supprime")
         
         except KeyError:
             pass
@@ -284,7 +284,7 @@ class Joueur():
             self.listeRessource[0] -= attributs[2][0] #food
             self.listeRessource[1] -= attributs[2][1] #metaux
             self.listeRessource[2] -= attributs[2][2] #energie
-            print(self.listeUnite[self.idCountUnit-1].name,"cree")
+            #print(self.listeUnite[self.idCountUnit-1].name,"cree")
             return 1
         else:
             print("Ressource insuffisante")
