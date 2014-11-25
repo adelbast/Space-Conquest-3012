@@ -66,18 +66,18 @@ class Unit:    ##Laurence
         self.lastFrameTime = int(round(time.time()*1000))
         
         if unit:
-            print("Deplacement vers unit")
+            #print("Deplacement vers unit")
             self.destination = unit         # Un Unit
             self.etat = self.FOLLOW
 
         elif batiment:
-            print("Deplacement vers batiment")
+            #print("Deplacement vers batiment")
             self.destination = batiment     # Un Batiment
             self.etat = self.GOTO_BATIMENT
             if(self.type == "builder" and self.isAmi and self.destination.currentHp < self.destination.maxHp):
                 self.isbuildMission = True
         elif unePosition:
-            print("Deplacement vers tile")
+            #print("Deplacement vers tile")
             self.destination = unePosition  # Un Tuple
             self.etat = self.GOTO_POSITION
             self.isCut = False
