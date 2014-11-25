@@ -113,12 +113,7 @@ class Unit:    ##Laurence
         self.currentHp = 0
         print("Unit self-destruct")
 
-
-<<<<<<< HEAD
     def autoGestion(self, listeJoueur):
-=======
-    def autoGestion(self,listeJoueur):
->>>>>>> 14d1797f8bddd3c30cf240e23c0077e312926e3b
         try:
             if self.etat == self.IDLE:
                 for joueur in listeJoueur:
@@ -126,7 +121,6 @@ class Unit:    ##Laurence
                         for _, unite in joueur.listeUnite.items():
                             #print("estAmi",unite.owner not in listeJoueur[self.owner].listeAllie,"enRangfe",self.inRange(unite))
                             if self.inRange(unite):
-                                print("Owner = ",unite.owner)
                                 self.setDestination(listeJoueurAmi = listeJoueur[self.owner].listeAllie, unit = unite)
                 #listeUnite = [unite for _, unite in  if unite.owner not in listeJoueur[self.owner].listeAllie and self.inRange(unite)]
                 #if(listeUnite):
@@ -136,13 +130,11 @@ class Unit:    ##Laurence
                     self.attaque()
                     self.tempsAnimation = self.attackSpeed/2
                     self.reloading = self.attackSpeed
-                    print("attaque")
-                else:print("reloading")
+                    #print("attaque")
+                #else:print("reloading")
             elif(self.tempsAnimation <= 0):
-                print(self.etat)
                 if(self.etat == self.FOLLOW):
                     self.followModulator += 1
-                    print("dans follow")
                     if (self.destination.isWalking and not self.followModulator%self.MODULO and self.type != "air"):
                         self.calculatePath()
                 self.move(listeJoueur)
@@ -185,12 +177,12 @@ class Unit:    ##Laurence
                     
                     #Si la unit doit se mettre en formation
                     if(newDestination is not None):
-                        print("Formation", self.destination, newDestination)
+                        #print("Formation", self.destination, newDestination)
                         self.destination = newDestination
                         self.calculatePath()
                            
                     else:
-                        print("Pas de formation")
+                        #print("Pas de formation")
                         self.etat = self.IDLE
 
                 elif(self.etat == self.FOLLOW):
@@ -265,7 +257,7 @@ class Unit:    ##Laurence
                     elif(self.destination.type == "range"):     # ==
                         self.destination.currentHp -= self.force-self.destination.armor
                 elif(self.type == "air"):
-                    print("Vehicule Aerien Attaque")
+                    #print("Vehicule Aerien Attaque")
                     if(self.destination.type == "builder"):    # ==
                         self.destination.currentHp -= self.force-self.destination.armor
                     if(self.destination.type == "infantry"):    # >
@@ -277,7 +269,7 @@ class Unit:    ##Laurence
                     elif(self.destination.type == "range"):     # <
                         self.destination.currentHp -= self.force-self.destination.armor
                 elif(self.type == "vehicule"):
-                    print("Attacker : ", self.name, "Target : ", self.destination.type)
+                    #print("Attacker : ", self.name, "Target : ", self.destination.type)
                     if(self.destination.type == "builder"):    # ==
                         self.destination.currentHp -= self.force-self.destination.armor
                     if(self.destination.type == "infantry"):    # <
@@ -289,7 +281,7 @@ class Unit:    ##Laurence
                     elif(self.destination.type == "range"):     # <
                         self.destination.currentHp -= self.force-self.destination.armor
             except:
-                    print("dans attaque de batiment")
+                    #print("dans attaque de batiment")
                     self.destination.currentHp -= self.force
             if(self.destination.currentHp<0):
                 self.destination.currentHp=-1
@@ -339,25 +331,25 @@ class Unit:    ##Laurence
 
             #En partant du coin en haut a gauche du batiment
             if(compteurX == 0 and compteurY < numOption):
-                print("bas")
+                #print("bas")
                 pY = pY + self.size
                 compteurY += 1
                 
             #En partant du coin en bas a gauche du batiment
             elif (compteurX < numOption and compteurY == numOption):
-                print("droite")
+                #print("droite")
                 pX = pX + self.size
                 compteurX += 1
                 
             #En partant du coin en bas a gauche du batiment
             elif(compteurX == numOption and compteurY > 0):
-                print("haut")
+                #print("haut")
                 pY = pY - self.size
                 compteurY -= 1
                 
             #En partant du coin en haut a droite
             elif(compteurY == 0 and compteurX > 1):
-                print("droite")
+                #print("droite")
                 pX = pX - self.size
                 compteurX -= 1
 
@@ -371,12 +363,12 @@ class Unit:    ##Laurence
                 
             
             if(node1.x == node2.x and node1.y == node2.y and self.id != unit.id):
-                print("Invalide")
+                #print("Invalide")
                 validatePosition = False
                 node2 = self.parent.getNode(int(unit.position[0]/32), int(unit.position[1]/32))
                 break
             else:
-                print("Valide")
+                #print("Valide")
                 validatePosition = True
                         
         if(self.destination != (pX,pY)):
@@ -481,12 +473,12 @@ class Unit:    ##Laurence
        current = None
    
        while not frontier.empty():
-          print("not empty")
+          #print("not empty")
           current = frontier.get()
           print(current.voisins)
           if current.voisins is not None:
-             print("valid")
-             print(current.x, current.y)
+             #print("valid")
+             #print(current.x, current.y)
              break
           for next in dirs:
                 if next != 0:

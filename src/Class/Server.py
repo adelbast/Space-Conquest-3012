@@ -33,7 +33,7 @@ class ServerObject(object):
         self.pastTime = None#time.time()
 
     def ping(self):
-        if(self.test):print("[Serveur] : ping")
+        #if(self.test):print("[Serveur] : ping")
         return True
         
     def nbPlayer(self):
@@ -63,13 +63,13 @@ class ServerObject(object):
                 highestRead = self.getHighestRead()
                 
                 if not self.actions or highestRead >= self.getHighestActionTime():
-                    if(self.test):print("[Serveur] : ","Ajout d'un temps d'action")
+                    #if(self.test):print("[Serveur] : ","Ajout d'un temps d'action")
                     uneListe = [None]*(len(self.client)+self.cpuClient)
                     self.actions[highestRead+1] = uneListe  #+1 pour mettre cette action dans le future
                 
                 #print(self.actions[len(self.actions)-1][1])
                 self.actions[self.getHighestActionTime()][num] = package     # on ajoute le package representant l'action  a la derniere place du dictionnaire
-                if(self.test):print("[Serveur] : ","Action Sauvegarder")
+                #if(self.test):print("[Serveur] : ","Action Sauvegarder")
 
         except:
             print(traceback.print_exc())
@@ -110,7 +110,7 @@ class ServerObject(object):
     def deleteLowest(self): # cherche le client qui est le plus en retard dans la lecture des evenement
         for clee in self.getActionDeleteList():
             try:
-                if(self.test):print("[Serveur] : ","_______________Suppression",self.actions[clee],clee)
+                #if(self.test):print("[Serveur] : ","_______________Suppression",self.actions[clee],clee)
                 del self.actions[clee]     # on enleve levenement le plus bas
             except KeyError:
                 print(traceback.print_exc())

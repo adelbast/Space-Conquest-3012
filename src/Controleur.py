@@ -132,7 +132,7 @@ class Controleur:
         self.modele.dicAction2Server.clear()
         while not reception:
             reception = self.client.pullAction()
-            if(self.verbose):print("RECOIE : ", reception)
+            #if(self.verbose):print("RECOIE : ", reception)
             if(not reception):
                 time.sleep(0.01)
                 #print("laaaaag!")

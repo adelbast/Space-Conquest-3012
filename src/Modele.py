@@ -82,8 +82,6 @@ class Modele(object):
         
         self.host = host
 
-        print("Nom du joueur local : " + self.listeJoueur[self.noJoueurLocal].nom + ", numero : " + str(self.noJoueurLocal))
-
 
 
     def gestion(self,dicActionFromServer):
@@ -225,25 +223,25 @@ class Modele(object):
 
                 #En partant du coin en haut a gauche du batiment
                 if(compteurX == 0 and compteurY < numOption):
-                    print("bas")
+                    #print("bas")
                     pY = pY + self.size
                     compteurY += 1
                 
                 #En partant du coin en bas a gauche du batiment
                 elif (compteurX < numOption and compteurY == numOption):
-                    print("droite")
+                    #print("droite")
                     pX = pX + self.size
                     compteurX += 1
                 
                 #En partant du coin en bas a gauche du batiment
                 elif(compteurX == numOption and compteurY > 0):
-                    print("haut")
+                    #print("haut")
                     pY = pY - self.size
                     compteurY -= 1
                 
                 #En partant du coin en haut a droite
                 elif(compteurY == 0 and compteurX > 1):
-                    print("droite")
+                    #print("droite")
                     pX = pX - self.size
                     compteurX -= 1
 
@@ -257,12 +255,12 @@ class Modele(object):
                 
             
                 if(node1.x == node2.x and node1.y == node2.y and self.id != unit.id):
-                    print("Invalide")
+                    #print("Invalide")
                     validatePosition = False
                     node2 = self.parent.getNode(int(unit.position[0]/32), int(unit.position[1]/32))
                     break
                 else:
-                    print("Valide")
+                    #print("Valide")
                     validatePosition = True
                         
             if(self.destination != (pX,pY)):
@@ -332,11 +330,11 @@ class Modele(object):
                 return
             self.selection[:] = []
             if(self.clickPosx!=self.releasePosx or self.clickPosy!=self.releasePosy):
-                print(self.clickPosx,self.clickPosy,self.releasePosx,self.releasePosy)
+                #print(self.clickPosx,self.clickPosy,self.releasePosx,self.releasePosy)
                 for _, unit in self.listeJoueur[self.noJoueurLocal].listeUnite.items(): #Je prends seulement les unites puisque selection multiple de batiment inutile
                     if(self.pointDansForme([self.releasePosx,self.clickPosx,self.clickPosx,self.releasePosx],[self.clickPosy,self.clickPosy,self.releasePosy,self.releasePosy],unit.position[0],unit.position[1])):#La fonction dont je t'ai parlé sur ts frank...
                         self.selection.append(unit)
-                        print(unit.name)
+                        #print(unit.name)
                     else:
                         pass#print("Pas cible")
 
@@ -345,7 +343,7 @@ class Modele(object):
                 cible = self.clickCibleOuTile(self.releasePosx,self.releasePosy)
                 if(cible):
                     self.selection.append(cible)
-                    print(cible.name)
+                    #print(cible.name)
                 else:
                     pass#print("Pas cible")
             
@@ -516,14 +514,14 @@ class Modele(object):
             for y in range(self.map.numRow*2):
                 self.graph.append(Node(x,y,self))    #Cree des nodes
                 
-        print("row and col")
-        print(self.map.numCol, self.map.numRow)
+        #print("row and col")
+        #print(self.map.numCol, self.map.numRow)
                     
         for y in range(self.map.numCol):
             for x in range(self.map.numRow):
                 if parent.vue.tileset.tileset[(int)(self.map.map[x][y])].isWalkable is False:   #Coupe les nodes des tiles qui ne sont pas walkable
-                    print("Nodes Cutting")
-                    print(x, y)
+                    #print("Nodes Cutting")
+                    #print(x, y)
                     self.cutNode(self.getNode(y*2,x*2))
                     self.cutNode(self.getNode(y*2+1,x*2))
                     self.cutNode(self.getNode(y*2,x*2+1))
@@ -537,11 +535,10 @@ class Modele(object):
         return self.graph[x*self.height+y]
     
     def reattachNode(self,x,y): # juste passer un node a la place de x,y (encore en tests)
-        print("dans recreateNode")
         try:
             self.cutNodes.remove(self.getNode(x,y))
         except ValueError as e:
-            print("erreur dans dans cutNodes")
+            pass#print("erreur dans dans cutNodes")
         nodeAjouter = self.getNode(x,y)
         nodeAjouter.voisins = []
         nodeAjouter.defineNeighbors()  ##Si on appelle defineNeighbors on risque de refaire des liens non existant -> voir la fonction relink
