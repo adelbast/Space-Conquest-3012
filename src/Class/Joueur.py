@@ -15,7 +15,7 @@ class Joueur():
         self.listeRessource=[110000,110000,110000] #nourriture,metaux,energie
 
         self.maxPop=None
-        self.ageRendu=None
+        self.ageRendu=1
         self.diplomatieStatus=False
         self.nbBatiment=0
         self.nbUnite=0
@@ -34,7 +34,6 @@ class Joueur():
 
         self.remplirRecherches() 
 
-        self.rechercher(self.availableResearch[1])
 
 ####################################################################Recherches
     def remplirRecherches(self):
@@ -42,16 +41,18 @@ class Joueur():
         for i in self.parent.dictRecherche:
             indx = self.parent.dictRecherche.get(i)
             if indx[4] <= self.nbRecherches:
-                self.availableResearch.append(i)
+                if i not in self.recherches :
+                    if indx[5] <= self.ageRendu:
+                        self.availableResearch.append(i)
 
     def rechercher(self,nomRecherche):
         indx = self.parent.dictRecherche.get(nomRecherche)
-
         if self.assezRessources(indx[3]):
-            self.recherches.append(nomRecherche)
-            self.appliquerModif(indx[0], indx[1], indx[2])
-            self.parent.rechercher(nomRecherche)
-            self.remplirRecherches()
+            if nomRecherche not in self.recherches:
+                self.recherches.append(nomRecherche)
+                self.appliquerModif(indx[0], indx[1], indx[2])
+                self.nbRecherches += 1 
+                self.remplirRecherches()
 
     def appliquerModif(self, attribute1, attribute2, bonus):
         if attribute1 == "infantryBoost":
@@ -79,6 +80,14 @@ class Joueur():
                 self.modif.infantryBoost[self.modif.ARMOR] += bonus
 
         elif attribute1 == "airBoost":
+            if attribute2 == "force":
+                self.modif.infantryBoost[self.modif.FORCE] += bonus
+            elif attribute2 == "vitesse":
+                self.modif.infantryBoost[self.modif.VITESSE] += bonus
+            elif attribute2 == "armor":
+                self.modif.infantryBoost[self.modif.ARMOR] += bonus
+
+        elif attribute1 == "builderBoost":
             if attribute2 == "force":
                 self.modif.infantryBoost[self.modif.FORCE] += bonus
             elif attribute2 == "vitesse":
