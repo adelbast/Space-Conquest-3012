@@ -1,0 +1,30 @@
+﻿Scrum #8
+
+Antoine
+fait: spawn points, icones pour menu (gui)
+problèmes: pas vraiment
+à faire : peaufiner l'AI, finir les icones
+
+Alex
+fait: l'image des mines, l'AI
+prob: oui, probleme de syntaxe avec l'AI
+à faire : finir la fonction pour les bâtiments avec l'AI
+
+Arnaud:
+fait: implementation des thumbnail, création de spritespour les infanteries
+prob: j'ai un probleme avec les formation
+à fait: je vais essayer de faire les formations,dautres sprites, 
+
+Laurence:
+fait: sur les sprites, les recherches
+prob: la recherche ne donne pas le bonus dattaque
+à faire : régler ce probleme avec les recherches
+
+Xavier:
+fait: l'auto-attaque
+prob: serveur qui buggue avec la création des buildings
+à faire : régler le bug de ressources et buildings
+
+Francis: maps et l'auto-attaque fonctionnelle
+prob: serveur qui buggue un peu avec la création de buildings
+a faire: à déterminer
