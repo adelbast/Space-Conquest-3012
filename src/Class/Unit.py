@@ -114,11 +114,8 @@ class Unit:    ##Laurence
         print("Unit self-destruct")
 
 
-<<<<<<< HEAD
-    def autoGestion(self, listeJoueur):
-=======
+
     def autoGestion(self,listeJoueur):
->>>>>>> 14d1797f8bddd3c30cf240e23c0077e312926e3b
         try:
             if self.etat == self.IDLE:
                 for joueur in listeJoueur:
@@ -207,6 +204,8 @@ class Unit:    ##Laurence
         bonus = 0 
 
         own = self.parent.listeJoueur[self.owner]
+        print(self.type)
+        print
         if self.type == "infantry":
             bonus = own.modif.infantryBoost[own.modif.VITESSE]
         elif self.type == "range":
