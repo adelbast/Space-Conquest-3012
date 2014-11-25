@@ -241,7 +241,7 @@ class Unit:    ##Laurence
         
 
     def attaque(self):
-        forceTemp = 0
+        forceTemp = self.force
         if(self.destination.currentHp > 0):
             try:
                 if(self.type == "builder"):
