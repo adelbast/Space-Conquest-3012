@@ -64,13 +64,7 @@ class Unit:    ##Laurence
 
         #On set un temps initial pour l'animation
         self.lastFrameTime = int(round(time.time()*1000))
-        try:
-            if(self.destination.owner not in listeJoueurAmi):
-                self.isAmi = False
-            else:
-                self.isAmi = True
-        except:#la destination n'a pas de owner
-            pass
+        
         if unit:
             print("Deplacement vers unit")
             self.destination = unit         # Un Unit
@@ -88,11 +82,18 @@ class Unit:    ##Laurence
             self.etat = self.GOTO_POSITION
             self.isCut = False
             if self.getNode(int(self.destination[0]/32),int(self.destination[1]/32)).voisins is None:
-                print("TRUUUUE")
                 self.isCut = True 
             
         else:
             return None
+            
+        try:
+            if(self.destination.owner not in listeJoueurAmi):
+                self.isAmi = False
+            else:
+                self.isAmi = True
+        except:#la destination n'a pas de owner
+            pass
 
         if(self.type != "air"):
             self.calculatePath()
@@ -113,19 +114,35 @@ class Unit:    ##Laurence
         print("Unit self-destruct")
 
 
+<<<<<<< HEAD
+    def autoGestion(self, listeJoueur):
+=======
     def autoGestion(self,listeJoueur):
+>>>>>>> 14d1797f8bddd3c30cf240e23c0077e312926e3b
         try:
             if self.etat == self.IDLE:
-                pass
+                for joueur in listeJoueur:
+                    if joueur.noJoueur not in listeJoueur[self.owner].listeAllie:
+                        for _, unite in joueur.listeUnite.items():
+                            #print("estAmi",unite.owner not in listeJoueur[self.owner].listeAllie,"enRangfe",self.inRange(unite))
+                            if self.inRange(unite):
+                                print("Owner = ",unite.owner)
+                                self.setDestination(listeJoueurAmi = listeJoueur[self.owner].listeAllie, unit = unite)
+                #listeUnite = [unite for _, unite in  if unite.owner not in listeJoueur[self.owner].listeAllie and self.inRange(unite)]
+                #if(listeUnite):
+                #    self.setDestination(listeJoueurAmi = listeJoueur[self.owner].listeAllie, unit = listeUnite[0])
             elif(self.etat != self.GOTO_POSITION and not self.isAmi and self.inRange(self.destination)):
                 if(self.reloading <= 0):
                     self.attaque()
                     self.tempsAnimation = self.attackSpeed/2
                     self.reloading = self.attackSpeed
                     print("attaque")
+                else:print("reloading")
             elif(self.tempsAnimation <= 0):
+                print(self.etat)
                 if(self.etat == self.FOLLOW):
                     self.followModulator += 1
+                    print("dans follow")
                     if (self.destination.isWalking and not self.followModulator%self.MODULO and self.type != "air"):
                         self.calculatePath()
                 self.move(listeJoueur)
@@ -175,9 +192,13 @@ class Unit:    ##Laurence
                     else:
                         print("Pas de formation")
                         self.etat = self.IDLE
-                
+
+                elif(self.etat == self.FOLLOW):
+                    self.position[0] = self.destination.position[0]
+                    self.position[1] = self.destination.position[1]
+
                 elif(self.type == "builder" and self.isAmi and self.destination.currentHp < self.destination.maxHp):
-                	   self.destination.construire()
+                       self.destination.construire()
 
                 return 1
 
