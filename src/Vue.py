@@ -567,6 +567,8 @@ class Vue:
             self.parent.infoCreation = self.hud.gettags(item)[1]
         elif(self.hud.gettags(item)[2] == "research"):
             print("Recherche : ", self.hud.gettags(item)[1],", dans la fonction getBuildInfo() de la Vue")
+            self.parent.modele.rechercher(self.hud.gettags(item)[1])
+            
         else:
             print(self.hud.gettags(item)[1])
             self.parent.spawnUnit(self.hud.gettags(item)[1])

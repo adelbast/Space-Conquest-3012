@@ -477,7 +477,8 @@ class Modele(object):
             self.bonus      = float (parserRecherche.get(name, 'bonus'))
             self.cost       = [int(parserRecherche.get(name,'costFood')), int(parserRecherche.get(name,'costMetal')), int(parserRecherche.get(name,'costPower'))]
             self.req        = int (parserRecherche.get(name, 'req'))
-            self.dictRecherche[name] = [self.type, self.attribute, self.bonus, self.cost, self.req]
+            self.age        = int (parserRecherche.get(name, 'age'))
+            self.dictRecherche[name] = [self.type, self.attribute, self.bonus, self.cost, self.req,self.age]
             
     def getAIcount(self):
         retour = 0
@@ -500,6 +501,7 @@ class Modele(object):
         if 'Rechercher' not in self.dicAction2Server:
             self.dicAction2Server['Rechercher'] = []
         self.dicAction2Server["Rechercher"].append((recherche,))
+        self.listeJoueur[self.noJoueurLocal].rechercher(recherche)
             
     def changerAge (self):
         self.dicAction2Server["RechercheAge"]+= 1
