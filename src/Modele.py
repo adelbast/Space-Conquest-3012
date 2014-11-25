@@ -264,18 +264,18 @@ class Modele(object):
     def clickCibleOuTile(self,x,y): #retourne None pour un tile et la cible pour une cible
     #fonction qui regarde si le clic est sur un batiment ou une unité
         for joueur in self.listeJoueur:
-            for _, chose in joueur.listeUnite.items():
-                if(x < chose.positionFluide[0]+chose.size):
-                    if(x > chose.positionFluide[0]):
-                        if(y < chose.positionFluide[1]+chose.size):
-                            if(y > chose.positionFluide[1]):
-                                return chose
-            for _, chose in joueur.listeBatiment.items():
-                if(x < chose.position[0]+chose.size/2):
-                    if(x > chose.position[0]-chose.size/2):
-                        if(y < chose.position[1]+chose.size/2):
-                            if(y > chose.position[1]-chose.size/2):
-                                return chose
+            for _, unit in joueur.listeUnite.items():
+                if(x < unit.positionFluide[0]+unit.size):
+                    if(x > unit.positionFluide[0]):
+                        if(y < unit.positionFluide[1]+unit.size):
+                            if(y > unit.positionFluide[1]):
+                                return unit
+            for _, batiment in joueur.listeBatiment.items():
+                if(x < batiment.position[0]+batiment.size/2):
+                    if(x > batiment.position[0]-batiment.size/2):
+                        if(y < batiment.position[1]+batiment.size/2):
+                            if(y > batiment.position[1]-batiment.size/2):
+                                return batiment
         return None
 
 

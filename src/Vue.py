@@ -284,9 +284,14 @@ class Vue:
             self.hud.create_text(448, 110, anchor=NW, text="Range Attack : "+str(unit.rangeAtt), font=("Stencil", 12), tags="infos")
             self.hud.create_text(448, 135, anchor=NW, text="Vitesse : "+str(unit.vitesse), font=("Stencil", 12), tags="infos")
 
-        if(unit.owner == noLocal):
+        if isinstance (unit, Unit):#Décide de ce que construit le "unit"
+            build_type = "structure"
+        else:
+            build_type = "unit"
+
+        if(unit.owner == noLocal and ( build_type == "structure" or unit.estConstruit )):
             #Afficher les unités qui peuvent être produites
-            if(len(unit.canBuild) > 0):
+            if( len(unit.canBuild) > 0 ):
 
                 margin = 5
                 startX = 600
@@ -296,11 +301,6 @@ class Vue:
                 column = 0
 
                 self.hud.create_rectangle(600, 25, 881, 237, fill='black', tags="infos")
-
-                if isinstance (unit, Unit):
-                    build_type = "structure"
-                else:
-                    build_type = "unit"
 
                 for u in unit.canBuild:
                 
