@@ -88,7 +88,6 @@ class Joueur():
 
         elif attribute1 == "generatorProduction":
             if attribute2 == "mine":
-                print("ici")
                 self.modif.generatorProduction[self.modif.MINE] += bonus
                 print(self.modif.generatorProduction[self.modif.MINE])
             elif attribute2 == "farm":
