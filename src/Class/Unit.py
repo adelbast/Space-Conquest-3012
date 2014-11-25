@@ -200,8 +200,6 @@ class Unit:    ##Laurence
         bonus = 0 
 
         own = self.parent.listeJoueur[self.owner]
-        print(self.type)
-        print
         if self.type == "infantry":
             bonus = own.modif.infantryBoost[own.modif.VITESSE]
         elif self.type == "range":
