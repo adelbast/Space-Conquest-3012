@@ -11,11 +11,10 @@ class Joueur():
         self.listeUnite={}
         self.listeBatiment={}
         self.listeArtefact=[]
-
         self.listeRessource=[1000,1000,1000] #nourriture,metaux,energie
 
         self.maxPop=None
-        self.ageRendu=None
+        self.ageRendu=1
         self.diplomatieStatus=False
         self.nbBatiment=0
         self.nbUnite=0
@@ -34,7 +33,6 @@ class Joueur():
 
         self.remplirRecherches() 
 
-        self.rechercher(self.availableResearch[1])
 
 ####################################################################Recherches
     def remplirRecherches(self):
@@ -42,16 +40,18 @@ class Joueur():
         for i in self.parent.dictRecherche:
             indx = self.parent.dictRecherche.get(i)
             if indx[4] <= self.nbRecherches:
-                self.availableResearch.append(i)
+                if i not in self.recherches :
+                    if indx[5] <= self.ageRendu:
+                        self.availableResearch.append(i)
 
     def rechercher(self,nomRecherche):
         indx = self.parent.dictRecherche.get(nomRecherche)
-
         if self.assezRessources(indx[3]):
-            self.recherches.append(nomRecherche)
-            self.appliquerModif(indx[0], indx[1], indx[2])
-            self.parent.rechercher(nomRecherche)
-            self.remplirRecherches()
+            if nomRecherche not in self.recherches:
+                self.recherches.append(nomRecherche)
+                self.appliquerModif(indx[0], indx[1], indx[2])
+                self.nbRecherches += 1 
+                self.remplirRecherches()
 
     def appliquerModif(self, attribute1, attribute2, bonus):
         if attribute1 == "infantryBoost":
@@ -86,10 +86,18 @@ class Joueur():
             elif attribute2 == "armor":
                 self.modif.infantryBoost[self.modif.ARMOR] += bonus
 
+        elif attribute1 == "builderBoost":
+            if attribute2 == "force":
+                self.modif.infantryBoost[self.modif.FORCE] += bonus
+            elif attribute2 == "vitesse":
+                self.modif.infantryBoost[self.modif.VITESSE] += bonus
+            elif attribute2 == "armor":
+                self.modif.infantryBoost[self.modif.ARMOR] += bonus
+
         elif attribute1 == "generatorProduction":
             if attribute2 == "mine":
                 self.modif.generatorProduction[self.modif.MINE] += bonus
-                print(self.modif.generatorProduction[self.modif.MINE])
+                #print(self.modif.generatorProduction[self.modif.MINE])
             elif attribute2 == "farm":
                 self.modif.generatorProduction[self.modif.FARM] += bonus
             elif attribute2 == "solarPanel":
@@ -103,7 +111,7 @@ class Joueur():
 
 ####################################################################
 
-                
+
     def creerBatiment(self,position,nom,attributs):
         attributs[0] += self.modif.hp[self.modif.BUILDING]
         if nom == "farm" or nom == "mine" or nom == "solarPanel":
@@ -120,7 +128,6 @@ class Joueur():
         valide = True
 
         for joueur in self.parent.listeJoueur:
-            print(joueur.nom)
             for _, unit in joueur.listeUnite.items():
                 if(int(unit.position[0]/32) == x and int(unit.position[1]/32) == y):
                     valide = False
@@ -135,7 +142,6 @@ class Joueur():
                 valide = False
             if(valide):
                 for joueur in self.parent.listeJoueur:
-                    print(joueur.nom)
                     for _, unit in joueur.listeUnite.items():
                         if(int(unit.position[0]/32) == x and int(unit.position[1]/32) == y
                             or int(unit.position[0]/32) == x-1 and int(unit.position[1]/32) == y-1
@@ -167,7 +173,6 @@ class Joueur():
             
             if(valide):
                 for joueur in self.parent.listeJoueur:
-                    print(joueur.nom)
                     for _, unit in joueur.listeUnite.items():
                         if(int(unit.position[0]/32) == x and int(unit.position[1]/32) == y
                             or int(unit.position[0]/32) == x-1 and int(unit.position[1]/32) == y-1
@@ -255,7 +260,7 @@ class Joueur():
                 self.parent.reattachNode(self.parent.getNode(x-2,y+1))
             
             del self.listeBatiment[idBatiment]
-            print("batiment supprime")
+            #print("batiment supprime")
         
         except KeyError:
             pass

@@ -10,6 +10,8 @@ class Modif:
         self.vehiculeBoost = [0,0,0]
         self.airBoost = [0,0,0]
 
+        self.builderBoost = [0,0,0]
+
 
         self.MINE = 0
         self.FARM = 1

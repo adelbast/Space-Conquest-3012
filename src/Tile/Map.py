@@ -1,4 +1,4 @@
-__author__ = "Arnaud Girardin &Alexandre Laplante-Turpin"
+__author__ = "Arnaud Girardin &Alexandre Laplante-Turpin& Antoine Delbast"
 
 import csv
 
@@ -22,13 +22,13 @@ class Map:
                 
             self.startingPoint.append((4,4))
             self.startingPoint.append((self.numCol-4,self.numRow-4))
-            self.startingPoint.append((self.numCol-4,int(self.numRow/2)))
+            self.startingPoint.append((self.numCol-4,int((self.numRow/2)-4)))
             self.startingPoint.append((self.numCol-4,4))
-            self.startingPoint.append((int(self.numCol/2),self.numRow-4))
-            self.startingPoint.append((int(self.numCol/2),int(self.numRow/2)))
-            self.startingPoint.append((int(self.numCol/2),4))
-            self.startingPoint.append((4,self.numRow-4))
-            self.startingPoint.append((4,int(self.numRow/2)))
+            self.startingPoint.append((int((self.numCol/2)-5),self.numRow-4))
+            self.startingPoint.append((52,52))
+            self.startingPoint.append((int(self.numCol/2-4),4))
+            self.startingPoint.append((4,self.numRow-9))
+            self.startingPoint.append((15,int((self.numRow/2)+3)))
 
             
 

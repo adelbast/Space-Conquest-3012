@@ -19,6 +19,9 @@ class Vue:
 
         self.sprites = []
 
+        #THumbnails
+        self.thumbnails = {}
+
         #Mesures de la fenetre
         self.windowWidth = 1200
         self.windowHeight = 800
@@ -38,13 +41,26 @@ class Vue:
         self.relativeW = math.floor(self.surfaceW*self.miniMapW/(len(self.parent.modele.map.map[0])*64))
         self.relativeH = math.floor(self.surfaceH*self.miniMapH/(len(self.parent.modele.map.map)*64))
 
-        print(self.relativeW, self.relativeH)
-
         #Image pour le HUD
         self.imageHUD = Image.open("image/gui/gui.png")
         self.photoImageHUD = ImageTk.PhotoImage(self.imageHUD)
         self.boutonUP = Image.open("image/gui/boutonUP.png")
         self.photoImageBoutonUP = ImageTk.PhotoImage(self.boutonUP)
+
+        #Creation des Thumbnails
+        directories = os.listdir("Image/gui/thumbnails")
+
+        for d in directories:
+            #Creation des images
+            if(d != "thumbRecherche"):
+                image = Image.open("image/gui/thumbnails/"+d)
+                photoImage = ImageTk.PhotoImage(image)
+
+            #Insertion des images dans un dictionnaire
+            index1 = d.find("_")+1
+            index2 = d.find(".")
+            name = d[index1:index2]
+            self.thumbnails[name] = [image, photoImage]
 
         #Pour transferer les images en PhotoImage
         for tile in self.tileset.tileset: 
@@ -55,7 +71,6 @@ class Vue:
         self.miniMap = Canvas(self.root, width=self.miniMapW, height=self.miniMapH, bg='black', highlightthickness=0)
         self.surfaceJeu = Canvas(self.root, width=self.surfaceW, height=self.surfaceH, bg='white', highlightthickness=0)
         self.surfaceJeu.configure(scrollregion=(0,0,len(self.parent.modele.map.map[0])*64,len(self.parent.modele.map.map)*64))
-        print("Map size:", len(self.parent.modele.map.map[0])*64, len(self.parent.modele.map.map)*64)
         
         #Pour la fermeture de la fenetre de jeu (afin de pouvoir compléter des actions avant de quitter le programme)
         #self.root.protocol( "WM_DELETE_WINDOW", self.parent.fermeture )
@@ -108,22 +123,20 @@ class Vue:
         variation = 1
         
         if(event.char == 'w'):
-            print('up')
+            #print('up')
             self.surfaceJeu.yview('scroll', -variation, 'units')
 
         elif(event.char == 's'):
-            print("down")
+            #print("down")
             self.surfaceJeu.yview('scroll', variation, 'units')
 
         elif(event.char == 'a'):
-            print("left")
+            #print("left")
             self.surfaceJeu.xview('scroll', -variation, 'units')
             
         elif(event.char == 'd'):
-            print("right")
+            #print("right")
             self.surfaceJeu.xview('scroll', variation, 'units')
-
-        print(self.surfaceJeu.canvasx(0), self.surfaceJeu.canvasy(0))
 
         self.updateMiniMap()
 
@@ -144,7 +157,6 @@ class Vue:
             y = int((event.y+self.surfaceJeu.canvasy(0))/32)*32
             
             size = self.parent.getSizeBatiment(self.parent.infoCreation)[3]
-            print(self.parent.getSizeBatiment(self.parent.infoCreation)[3])
             
             if(size != 32):
                 self.surfaceJeu.create_rectangle(x-(size/2), y-(size/2), x+(size/2), y+(size/2), fill="red", tags="shadow")
@@ -154,7 +166,6 @@ class Vue:
 
     #Deplacer la camera lorsqu'on clique sur le canvas de la minimap
     def miniMapClick(self, event):
-        print(event.x, event.y)
 
         #Calcule le coin en haut a gauche du rectangle pour que le point clique soit le centre
         posx = event.x-(self.relativeW/2)
@@ -176,7 +187,7 @@ class Vue:
         self.miniMap.delete("region")
         self.miniMap.create_rectangle(posx, posy, posx + self.relativeW, posy + self.relativeH, outline='red', tags="region")
 
-        print((posx*(len(self.parent.modele.map.map[0])*64))/self.miniMapW, (posy*(len(self.parent.modele.map.map)*64))/self.miniMapH)
+        #print((posx*(len(self.parent.modele.map.map[0])*64))/self.miniMapW, (posy*(len(self.parent.modele.map.map)*64))/self.miniMapH)
 
         self.surfaceJeu.xview_moveto(posx*1/self.miniMapW)
         self.surfaceJeu.yview_moveto(posy*1/self.miniMapH)
@@ -249,11 +260,10 @@ class Vue:
         self.hud.delete("build")
         self.hud.delete("infos")
         self.hud.delete("button")
+        self.hud.delete("thumbnail")
 
         offset=0
 
-
-        print(unit.owner, noLocal)
         #Affichage de l'image de l'unité
         try:
             if(unit.owner == noLocal):
@@ -290,8 +300,37 @@ class Vue:
             build_type = "unit"
 
         if(unit.owner == noLocal and ( build_type == "structure" or unit.estConstruit )):
+
+            
+            if(unit.name == "researchCenter"):
+                build_type = "research"
+                
+                margin = 5
+                startX = 600
+                startY = 25
+                size = 64
+                row = 0
+                column = 0
+
+                self.hud.create_rectangle(600, 25, 881, 237, fill='black', tags="infos")
+
+                #print("Construction", self.parent.getResearch(noLocal))
+
+                for u in self.parent.getResearch(noLocal):
+                    
+                    #print(u)
+                    self.hud.create_image(startX+((column*size)+margin*(column+1)), startY+((row*size)+margin*(row+1)), anchor=NW, image=self.photoImageBoutonUP, tags=("button", u, build_type))
+                
+                    if(column%3 == 0 and column != 0):
+                        #print("row : ",row)
+                        row +=1
+                        #print("column : ", column)
+                        column = 0
+                    else:
+                        column += 1
+
             #Afficher les unités qui peuvent être produites
-            if( len(unit.canBuild) > 0 ):
+            elif( len(unit.canBuild) > 0 ):
 
                 margin = 5
                 startX = 600
@@ -306,7 +345,11 @@ class Vue:
                 
                     #print(u)
                     self.hud.create_image(startX+((column*size)+margin*(column+1)), startY+((row*size)+margin*(row+1)), anchor=NW, image=self.photoImageBoutonUP, tags=("button", u, build_type))
-                
+                    try:
+                        self.hud.create_image(startX+((column*size)+margin*(column+1)), startY+((row*size)+margin*(row+1)), anchor=NW, image=self.thumbnails[u][1], tags=("thumbnail", u, build_type))
+                    except:
+                        pass
+                    
                     if(column%3 == 0 and column != 0):
                         #print("row : ",row)
                         row +=1
@@ -314,10 +357,10 @@ class Vue:
                         column = 0
                     else:
                         column += 1
-                    
                 
             else:
                 self.hud.delete("button")
+                self.hud.delete("thumbnail")
         
     
         
@@ -358,9 +401,7 @@ class Vue:
             self.buttonCreate.config(state=DISABLED)
 
         if(action == 1): #0:suppression, 1:ajout
-            print("AJOUT")
             if(re.search("[ ]", currentValue)):
-                print("NUMERO DE WIDGET",nomWidget)
                 return False
         return True
 
@@ -537,8 +578,11 @@ class Vue:
         if(self.hud.gettags(item)[2] == "structure"):
             self.parent.etatCreation = True
             self.parent.infoCreation = self.hud.gettags(item)[1]
+        elif(self.hud.gettags(item)[2] == "research"):
+            print("Recherche : ", self.hud.gettags(item)[1],", dans la fonction getBuildInfo() de la Vue")
+            self.parent.modele.rechercher(self.hud.gettags(item)[1])
+            
         else:
-            print(self.hud.gettags(item)[1])
             self.parent.spawnUnit(self.hud.gettags(item)[1])
         #except:
         #print("Aucun choix de construction selectionne")

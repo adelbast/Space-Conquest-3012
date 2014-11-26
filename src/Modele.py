@@ -82,8 +82,6 @@ class Modele(object):
         
         self.host = host
 
-        print("Nom du joueur local : " + self.listeJoueur[self.noJoueurLocal].nom + ", numero : " + str(self.noJoueurLocal))
-
 
 
     def gestion(self,dicActionFromServer):
@@ -181,14 +179,101 @@ class Modele(object):
         
     def incrementerRessource(self):
         self.listeJoueur[self.noJoueurLocal].compterRessource() #Incremente les ressources du joueur local
+
+    #Formation pour les units a la fin d'un deplacement
+    def formationUnit(self):
+
+        newDestination = None
+
+        #Position du Unit
+        pX = self.position[0]
+        pY = self.position[1]
+
+        #Compteurs
+        compteurX = 0
+        compteurY = 0
+
+        numOption = (1)+1 #Le +1 est en fait -1 + 2, parce qu'il faut aller un cube en haut (-1) et il faut rajouter 2 pour aller 1 cube en bas
+
+        #Pour chaque unite dans le groupe qui se deplace
+        for unitF in self.formation:
+
+            #Si l'unite est rendu a destination
+            if(unitF.position == unitF.destination):
+
+                #Si la case n'est pas dans les nodes coupees
+                if(self.parent.getNode(int(pX/32), int(pY/32)) not in self.parent.cutNodes):
+
+                    #Pour chaque element dans la liste complete d'unites
+                    for _, u in self.listeJoueur[self.parent.noJoueurLocal].listeUnite.items():
+                        #node1 = position hypothetique & node2 = position d'une unit
+                        node1, node2 = self.parent.getNode(int(pX/32), int(pY/32)), self.parent.getNode(int(u.position[0]/32), int(u.position[1]/32))
+
+                        #Si la node hypothetique est la meme que celle du unit
+                        if((node1.x == node2.x and node1.y == node2.y) and unitF.id != unit.id):
+                            validatePosition = False
+                            pX -= 32
+                            pY -= 32
+                            break
+                        else:
+                            validatePosition = True
+                
+
+            while(not validatePosition):
+
+                #En partant du coin en haut a gauche du batiment
+                if(compteurX == 0 and compteurY < numOption):
+                    #print("bas")
+                    pY = pY + self.size
+                    compteurY += 1
+                
+                #En partant du coin en bas a gauche du batiment
+                elif (compteurX < numOption and compteurY == numOption):
+                    #print("droite")
+                    pX = pX + self.size
+                    compteurX += 1
+                
+                #En partant du coin en bas a gauche du batiment
+                elif(compteurX == numOption and compteurY > 0):
+                    #print("haut")
+                    pY = pY - self.size
+                    compteurY -= 1
+                
+                #En partant du coin en haut a droite
+                elif(compteurY == 0 and compteurX > 1):
+                    #print("droite")
+                    pX = pX - self.size
+                    compteurX -= 1
+
+                #Si on a finit de regarder toutes les positions posibles
+                elif(compteurX == 1 and compteurY == 0):
+                    numOption += 2
+                    pX = pX - self.size*2
+                    pY = pY - self.size
+                    compteurX = 0
+                    compteurY = 0
+                
             
-        
+                if(node1.x == node2.x and node1.y == node2.y and self.id != unit.id):
+                    #print("Invalide")
+                    validatePosition = False
+                    node2 = self.parent.getNode(int(unit.position[0]/32), int(unit.position[1]/32))
+                    break
+                else:
+                    #print("Valide")
+                    validatePosition = True
+                        
+            if(self.destination != (pX,pY)):
+                newDestination = (pX, pY)
+                
+            return newDestination
+    
     def gestionAuto(self):
         #ajout suppression de batiments
         for joueur in self.listeJoueur:
             for _, uni in joueur.listeUnite.items():
                 if(uni.currentHp > 0):
-                    uni.autoGestion()#Fait bouger toutes les unitées
+                    uni.autoGestion(self.listeJoueur)#Fait bouger toutes les unitées
                 elif(joueur.noJoueur == self.noJoueurLocal and not uni.deleteCallDone):
                     self.supprimerUnit(uni.id)
                     uni.deleteCallDone = True
@@ -245,18 +330,20 @@ class Modele(object):
                 return
             self.selection[:] = []
             if(self.clickPosx!=self.releasePosx or self.clickPosy!=self.releasePosy):
-                print(self.clickPosx,self.clickPosy,self.releasePosx,self.releasePosy)
+                #print(self.clickPosx,self.clickPosy,self.releasePosx,self.releasePosy)
                 for _, unit in self.listeJoueur[self.noJoueurLocal].listeUnite.items(): #Je prends seulement les unites puisque selection multiple de batiment inutile
                     if(self.pointDansForme([self.releasePosx,self.clickPosx,self.clickPosx,self.releasePosx],[self.clickPosy,self.clickPosy,self.releasePosy,self.releasePosy],unit.position[0],unit.position[1])):#La fonction dont je t'ai parlé sur ts frank...
                         self.selection.append(unit)
-                        print(unit.name)
+                        #print(unit.name)
                     else:
                         pass#print("Pas cible")
+
+                self.formation = self.selection
             else:
                 cible = self.clickCibleOuTile(self.releasePosx,self.releasePosy)
                 if(cible):
                     self.selection.append(cible)
-                    print(cible.name)
+                    #print(cible.name)
                 else:
                     pass#print("Pas cible")
             
@@ -476,7 +563,8 @@ class Modele(object):
             self.bonus      = float (parserRecherche.get(name, 'bonus'))
             self.cost       = [int(parserRecherche.get(name,'costFood')), int(parserRecherche.get(name,'costMetal')), int(parserRecherche.get(name,'costPower'))]
             self.req        = int (parserRecherche.get(name, 'req'))
-            self.dictRecherche[name] = [self.type, self.attribute, self.bonus, self.cost, self.req]
+            self.age        = int (parserRecherche.get(name, 'age'))
+            self.dictRecherche[name] = [self.type, self.attribute, self.bonus, self.cost, self.req,self.age]
             
     def getAIcount(self):
         retour = 0
@@ -499,6 +587,7 @@ class Modele(object):
         if 'Rechercher' not in self.dicAction2Server:
             self.dicAction2Server['Rechercher'] = []
         self.dicAction2Server["Rechercher"].append((recherche,))
+        self.listeJoueur[self.noJoueurLocal].rechercher(recherche)
             
     def changerAge (self):
         self.dicAction2Server["RechercheAge"]+= 1
@@ -515,14 +604,14 @@ class Modele(object):
             for y in range(self.map.numRow*2):
                 self.graph.append(Node(x,y,self))    #Cree des nodes
                 
-        print("row and col")
-        print(self.map.numCol, self.map.numRow)
+        #print("row and col")
+        #print(self.map.numCol, self.map.numRow)
                     
         for y in range(self.map.numCol):
             for x in range(self.map.numRow):
                 if parent.vue.tileset.tileset[(int)(self.map.map[x][y])].isWalkable is False:   #Coupe les nodes des tiles qui ne sont pas walkable
-                    print("Nodes Cutting")
-                    print(x, y)
+                    #print("Nodes Cutting")
+                    #print(x, y)
                     self.cutNode(self.getNode(y*2,x*2))
                     self.cutNode(self.getNode(y*2+1,x*2))
                     self.cutNode(self.getNode(y*2,x*2+1))
@@ -536,11 +625,10 @@ class Modele(object):
         return self.graph[x*self.height+y]
     
     def reattachNode(self,x,y): # juste passer un node a la place de x,y (encore en tests)
-        print("dans recreateNode")
         try:
             self.cutNodes.remove(self.getNode(x,y))
         except ValueError as e:
-            print("erreur dans dans cutNodes")
+            pass#print("erreur dans dans cutNodes")
         nodeAjouter = self.getNode(x,y)
         nodeAjouter.voisins = []
         nodeAjouter.defineNeighbors()  ##Si on appelle defineNeighbors on risque de refaire des liens non existant -> voir la fonction relink

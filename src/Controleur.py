@@ -132,7 +132,7 @@ class Controleur:
         self.modele.dicAction2Server.clear()
         while not reception:
             reception = self.client.pullAction()
-            if(self.verbose):print("RECOIE : ", reception)
+            #if(self.verbose):print("RECOIE : ", reception)
             if(not reception):
                 time.sleep(0.01)
                 #print("laaaaag!")
@@ -166,8 +166,12 @@ class Controleur:
         except Exception:
             self.vue.hud.delete("infos")
             self.vue.hud.delete("button")
+            self.vue.hud.delete("thumbnail")
             print("Pas de selection!")
         self.vue.etatCreation = False
+
+    def getResearch(self, noLocal):
+        return self.modele.listeJoueur[noLocal].availableResearch
         
     def spawnUnit(self, unitName):
         self.modele.spawnUnit(unitName)
