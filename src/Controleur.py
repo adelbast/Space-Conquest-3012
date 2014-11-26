@@ -144,7 +144,7 @@ class Controleur:
         self.vue.displayObject(self.modele.listeJoueur,[],self.modele.noJoueurLocal,self.modele.selection)
         #self.vue.displayNodes(self.modele.cutNodes)
         self.compteur+=1
-        self.vue.root.after(24,self.gameLoop) #monter a 50 pour tester le pathfinding plus facilement peux descendre si ca vs derange
+        self.vue.root.after(24,self.gameLoop)
 
     def gererMouseClick(self,event):
         offset = self.vue.getSurfacePos()#Obtenir la position du canvas
@@ -160,7 +160,7 @@ class Controleur:
         offset = self.vue.getSurfacePos()#Obtenir la position du canvas
         self.modele.releasePosx = event.x+offset[0]
         self.modele.releasePosy = event.y+offset[1]
-        self.modele.gererMouseRelease(event,self.etatCreation, self.infoCreation) # A AJOUTER!!!!!!
+        self.modele.gererMouseRelease(event,self.etatCreation, self.infoCreation)
         try:
             self.vue.displayInfoUnit(self.modele.selection[0],self.modele.noJoueurLocal)
         except Exception:
@@ -169,85 +169,9 @@ class Controleur:
             print("Pas de selection!")
         self.vue.etatCreation = False
         
-
-    #Validation de la spawning position
     def spawnUnit(self, unitName):
-
-        validateSpawn = False
+        self.modele.spawnUnit(unitName)
         
-        pX = self.modele.selection[0].position[0] - (self.modele.dictUnit[unitName][7] + self.modele.selection[0].size/2)
-        pY = self.modele.selection[0].position[1] - (self.modele.dictUnit[unitName][7] + self.modele.selection[0].size/2)
-
-        #Nombre de fois qu'il faut passer dans la boucle Ex : 6 options = 0,1,2,3,4,5
-        size = self.modele.dictUnit[unitName][7]
-        
-        numOption = (self.modele.selection[0].size/size)+1 #Le +1 est en fait -1 + 2, parce qu'il faut aller un cube en haut (-1) et il faut rajouter 2 pour aller 1 cube en bas
-
-        #Compteurs
-        compteurX = 0
-        compteurY = 0
-
-        #Regarde si la case choisit est valide
-        if(self.modele.getNode(int(pX/32), int(pY/32)).voisins is not None):
-                
-            for _,unit in self.modele.listeJoueur[self.modele.noJoueurLocal].listeUnite.items():
-                node1, node2 = self.modele.getNode(int(pX/32), int(pY/32)), self.modele.getNode(int(unit.position[0]/32), int(unit.position[1]/32))
-                    
-                if(node1.x == node2.x and node1.y == node2.y):
-                    validateSpawn = False
-                    break
-                else:
-                    validateSpawn = True
-        
-
-        while(not validateSpawn):
-
-            #En partant du coin en haut a gauche du batiment
-            if(compteurX == 0 and compteurY < numOption): 
-                pY = pY + size
-                compteurY += 1
-                
-            #En partant du coin en bas a gauche du batiment
-            elif (compteurX < numOption and compteurY == numOption):
-                pX = pX + size
-                compteurX += 1
-                
-            #En partant du coin en bas a gauche du batiment
-            elif(compteurX == numOption and compteurY > 0):
-                pY = pY - size
-                compteurY -= 1
-                
-            #En partant du coin en haut a droite
-            elif(compteurY == 0 and compteurX > 1):
-                pX = pX - size
-                compteurX -= 1
-
-            #Si on a fnit de regarder toutes les positions posibles
-            elif(compteurX == 1 and compteurY == 0):
-                numOption += 2
-                pX = pX - size*2
-                pY = pY - size
-                compteurX = 0
-                compteurY = 0
-                
-            #Regarde si la case choisit est valide
-            if(self.modele.getNode(int(pX/32), int(pY/32)).voisins is not None):
-                
-                for _,unit in self.modele.listeJoueur[self.modele.noJoueurLocal].listeUnite.items():
-                    node1, node2 = self.modele.getNode(int(pX/32), int(pY/32)), self.modele.getNode(int(unit.position[0]/32), int(unit.position[1]/32))
-                    
-                    if(node1.x == node2.x and node1.y == node2.y):
-                        validateSpawn = False
-                        break
-                    else:
-                        validateSpawn = True
-
-              
-        if('NewUnit' not in self.modele.dicAction2Server):  
-            self.modele.dicAction2Server['NewUnit'] = []
-            
-        self.modele.dicAction2Server['NewUnit'].append((unitName, (pX,pY)))
-
     def moveUnitWithMinimap(self, event):
         #print("Avant : ",event.x, event.y)
         event.x = event.x * (len(self.modele.map.map[0])*64)/self.vue.miniMapW

@@ -527,7 +527,7 @@ class Vue:
                 else:
                     self.miniMap.create_rectangle(pX, pY, pX+rSize, pY+rSize, fill="red", width=0, tags="unit")
     
-    #Affiche les tags des boutons sur le hud
+    #Get les tags des boutons appuyé sur le hud et lance les états nécéssaires au type de bouton appuyé
     def getBuildInfo(self, event):
         item = self.hud.find_closest(event.x, event.y)[0]
         #print("ID : ", item)

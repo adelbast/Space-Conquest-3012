@@ -12,7 +12,7 @@ class Joueur():
         self.listeBatiment={}
         self.listeArtefact=[]
 
-        self.listeRessource=[110000,110000,110000] #nourriture,metaux,energie
+        self.listeRessource=[1000,1000,1000] #nourriture,metaux,energie
 
         self.maxPop=None
         self.ageRendu=None
@@ -104,26 +104,15 @@ class Joueur():
 ####################################################################
 
                 
-    def creerBatiment(self,position,nom,attributs): #fr
-        if self.assezRessources(attributs[1]): #pour savoir si assezRessource
-            if self.positionCreationValide(position,attributs[3]):
-                attributs[0] += self.modif.hp[self.modif.BUILDING]
-                if nom == "farm" or nom == "mine" or nom == "solarPanel":
-                    '''if nom == "farm":
-                        attributs[2] += self.modif.generatorProduction[self.modif.FARM]
-                    elif nom == "mine":
-                        attributs[2] += self.modif.generatorProduction[self.modif.MINE]
-                    elif nom == "solarPanel":
-                        attributs[2] += self.modif.generatorProduction[self.modif.SOLARPANEL]'''
-                    self.listeBatiment[self.idCountBatiment] = Generator(self.noJoueur, nom, position, attributs, self.idCountBatiment, initialisation = False)
-                else:
-                    self.listeBatiment[self.idCountBatiment] = Batiment(self.noJoueur, nom, position, attributs, self.idCountBatiment, initialisation = False)
-                self.idCountBatiment+=1
-                self.listeRessource[0] -= attributs[1][0] #food
-                self.listeRessource[1] -= attributs[1][1] #metaux
-                self.listeRessource[2] -= attributs[1][2] #energie
-                print("batiment cree")
-                return self.idCountBatiment-1 #Ce retour sert dans gestion pour que le builder qui doit le construire connaisse le id de sa cible
+    def creerBatiment(self,position,nom,attributs):
+        attributs[0] += self.modif.hp[self.modif.BUILDING]
+        if nom == "farm" or nom == "mine" or nom == "solarPanel":
+            self.listeBatiment[self.idCountBatiment] = Generator(self.noJoueur, nom, position, attributs, self.idCountBatiment, initialisation = False)
+        else:
+            self.listeBatiment[self.idCountBatiment] = Batiment(self.noJoueur, nom, position, attributs, self.idCountBatiment, initialisation = False)
+        self.idCountBatiment+=1
+        print("batiment cree")
+        return self.idCountBatiment-1 #Ce retour sert dans gestion pour que le builder qui doit le construire connaisse le id de sa cible
     
     def positionCreationValide(self,position,attribut):
         x = int(position[0]/32)
@@ -272,17 +261,9 @@ class Joueur():
             pass
 
     def creerUnite(self,nom,position, attributs):### donner une destination en arg par rapport a la pos du batiment qui l'a cree ou autre ?
-        if(self.assezRessources(attributs[2])):
-            self.listeUnite[self.idCountUnit] = Unit(self.parent,nom, (position[0],position[1]), self.noJoueur, attributs, self.idCountUnit)   #name, xy, owner, attribut, idU, destination = None
-            self.idCountUnit+=1
-            self.listeRessource[0] -= attributs[2][0] #food
-            self.listeRessource[1] -= attributs[2][1] #metaux
-            self.listeRessource[2] -= attributs[2][2] #energie
-            print(self.listeUnite[self.idCountUnit-1].name,"cree")
-            return 1
-        else:
-            print("Ressource insuffisante")
-            return 0
+        self.listeUnite[self.idCountUnit] = Unit(self.parent, nom, (position[0],position[1]), self.noJoueur, attributs, self.idCountUnit)   #name, xy, owner, attribut, idU, destination = None
+        self.idCountUnit+=1
+        print(self.listeUnite[self.idCountUnit-1].name,"cree")
 
     def supprimerUnite(self,idUnite):
         try:
@@ -290,6 +271,11 @@ class Joueur():
             print("unite supprime")
         except KeyError:
             pass
+
+    def soustraireRessource(self, attributRessource):
+        self.listeRessource[0] -= attributRessource[0] #food
+        self.listeRessource[1] -= attributRessource[1] #metaux
+        self.listeRessource[2] -= attributRessource[2] #energie
 
     def changerAge(self):
         self.ageRendu += 1
