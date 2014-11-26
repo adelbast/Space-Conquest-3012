@@ -118,6 +118,7 @@ class Joueur():
             self.listeBatiment[self.idCountBatiment] = Generator(self.noJoueur, nom, position, attributs, self.idCountBatiment, initialisation = False)
         else:
             self.listeBatiment[self.idCountBatiment] = Batiment(self.noJoueur, nom, position, attributs, self.idCountBatiment, initialisation = False)
+        self.cutNodeBatiment(self.idCountBatiment)
         self.idCountBatiment+=1
         print("batiment cree")
         return self.idCountBatiment-1 #Ce retour sert dans gestion pour que le builder qui doit le construire connaisse le id de sa cible
@@ -148,10 +149,6 @@ class Joueur():
                             or int(unit.position[0]/32) == x-1 and int(unit.position[1]/32) == y
                             or int(unit.position[0]/32) == x and int(unit.position[1]/32) == y-1 ):
                             valide = False
-            if(valide):
-                self.parent.cutNode(self.parent.getNode(x-1,y-1))
-                self.parent.cutNode(self.parent.getNode(x-1,y))
-                self.parent.cutNode(self.parent.getNode(x,y-1))
         
         if (valide and attribut == 128):
             
@@ -192,30 +189,38 @@ class Joueur():
                             or int(unit.position[0]/32) == x-2 and int(unit.position[1]/32) == y
                             or int(unit.position[0]/32) == x-2 and int(unit.position[1]/32) == y+1):
                             valide = False
-            if(valide):
-                self.parent.cutNode(self.parent.getNode(x-1,y-1))
-                self.parent.cutNode(self.parent.getNode(x-1,y))
-                self.parent.cutNode(self.parent.getNode(x,y-1))
-
-                self.parent.cutNode(self.parent.getNode(x+1,y+1))
-                self.parent.cutNode(self.parent.getNode(x+1,y))
-                self.parent.cutNode(self.parent.getNode(x+1,y-1))
-                self.parent.cutNode(self.parent.getNode(x-1,y))
-                self.parent.cutNode(self.parent.getNode(x-1,y+1))
-                self.parent.cutNode(self.parent.getNode(x,y+1))
-
-                self.parent.cutNode(self.parent.getNode(x-2,y-2))
-                self.parent.cutNode(self.parent.getNode(x-1,y-2))
-                self.parent.cutNode(self.parent.getNode(x,y-2))
-                self.parent.cutNode(self.parent.getNode(x+1,y-2))
-                self.parent.cutNode(self.parent.getNode(x-2,y-1))
-                self.parent.cutNode(self.parent.getNode(x-2,y))
-                self.parent.cutNode(self.parent.getNode(x-2,y+1))
-        
-        if valide:
-            self.parent.cutNode(self.parent.getNode(x,y))
         
         return valide
+
+    def cutNodeBatiment(self, idBatiment):
+        grosseur = self.listeBatiment[idBatiment].size
+        x = int(self.listeBatiment[idBatiment].position[0]/32)
+        y = int(self.listeBatiment[idBatiment].position[1]/32)
+        if(grosseur == 64):
+            self.parent.cutNode(self.parent.getNode(x-1,y-1))
+            self.parent.cutNode(self.parent.getNode(x-1,y))
+            self.parent.cutNode(self.parent.getNode(x,y-1))
+        if(grosseur == 128):
+            self.parent.cutNode(self.parent.getNode(x-1,y-1))
+            self.parent.cutNode(self.parent.getNode(x-1,y))
+            self.parent.cutNode(self.parent.getNode(x,y-1))
+
+            self.parent.cutNode(self.parent.getNode(x+1,y+1))
+            self.parent.cutNode(self.parent.getNode(x+1,y))
+            self.parent.cutNode(self.parent.getNode(x+1,y-1))
+            self.parent.cutNode(self.parent.getNode(x-1,y))
+            self.parent.cutNode(self.parent.getNode(x-1,y+1))
+            self.parent.cutNode(self.parent.getNode(x,y+1))
+
+            self.parent.cutNode(self.parent.getNode(x-2,y-2))
+            self.parent.cutNode(self.parent.getNode(x-1,y-2))
+            self.parent.cutNode(self.parent.getNode(x,y-2))
+            self.parent.cutNode(self.parent.getNode(x+1,y-2))
+            self.parent.cutNode(self.parent.getNode(x-2,y-1))
+            self.parent.cutNode(self.parent.getNode(x-2,y))
+            self.parent.cutNode(self.parent.getNode(x-2,y+1))
+
+        self.parent.cutNode(self.parent.getNode(x,y))
         
     def assezRessources(self,couts): #fr
         if(self.listeRessource[0] < couts[0]
