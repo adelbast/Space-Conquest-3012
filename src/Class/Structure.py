@@ -43,4 +43,6 @@ class Generator(Batiment):
         self.production = attributs[2]
 
     def generate(self):#retourne le nombre de ressource  generer
-        return self.production
+        if(self.estConstruit):
+            return self.production
+        return 0
