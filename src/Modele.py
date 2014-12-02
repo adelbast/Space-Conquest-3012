@@ -562,7 +562,7 @@ class Modele(object):
         for name in batiments:
             self.maxHp       = int(parserBatiment.get(name, 'hp'))
             self.cost        = [int(parserBatiment.get(name,'costFood')), int(parserBatiment.get(name,'costMetal')), int(parserBatiment.get(name,'costPower'))]
-            self.production  = int(parserBatiment.get(name, 'production'))
+            self.production  = float(parserBatiment.get(name, 'production'))
             self.size        = int(parserBatiment.get(name, 'size'))
             
             try:

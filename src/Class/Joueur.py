@@ -49,6 +49,7 @@ class Joueur():
         indx = self.parent.dictRecherche.get(nomRecherche)
         if self.assezRessources(indx[3]):
             if nomRecherche not in self.recherches:
+                self.soustraireRessource(indx[3])
                 self.recherches.append(nomRecherche)
                 self.appliquerModif(indx[0], indx[1], indx[2])
                 self.nbRecherches += 1 
@@ -109,7 +110,7 @@ class Joueur():
             elif attribute2 == "unit":
                 self.modif.hp[self.modif.UNIT] += bonus
         
-        elif attribute1 == "age_advance1":
+        elif attribute1 == "age_advance":
             self.changerAge()
 
 
@@ -276,6 +277,7 @@ class Joueur():
             pass
 
     def creerUnite(self,nom,position, attributs):### donner une destination en arg par rapport a la pos du batiment qui l'a cree ou autre ?
+        attributs[1] += self.modif.hp[self.modif.UNIT]
         self.listeUnite[self.idCountUnit] = Unit(self.parent, nom, (position[0],position[1]), self.noJoueur, attributs, self.idCountUnit)   #name, xy, owner, attribut, idU, destination = None
         self.currentPop+= self.listeUnite[self.idCountUnit].valPop
         self.idCountUnit+=1

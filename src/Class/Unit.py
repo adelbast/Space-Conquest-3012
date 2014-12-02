@@ -242,8 +242,10 @@ class Unit:    ##Laurence
         
 
     def attaque(self):
+        ##########Ajoute un bonus de force a la current unit
         own = self.parent.listeJoueur[self.owner]
-
+        bonus = 0
+        
         if self.type == "infantry":
             bonus = own.modif.infantryBoost[own.modif.FORCE]
         elif self.type == "range":
@@ -256,12 +258,27 @@ class Unit:    ##Laurence
             bonus = own.modif.builderBoost[own.modif.FORCE]
 
         forceTemp = self.force + bonus
+        
+        ##########Ajoute un bonus de armor a la destination
+        own = self.parent.listeJoueur[self.destination.owner]
+        bonus = 0
+         
+        if self.destination.type == "infantry":
+            bonus = own.modif.infantryBoost[own.modif.ARMOR]
+        elif self.destination.type == "range":
+            bonus = own.modif.rangeBoost[own.modif.ARMOR]
+        elif self.destination.type == "vehicule":
+            bonus = own.modif.vehiculeBoost[own.modif.ARMOR]
+        elif self.destination.type == "air":
+            bonus = own.modif.airBoost[own.modif.ARMOR]
+        elif self.destination.type == "builder":
+            bonus = own.modif.builderBoost[own.modif.ARMOR]
+        
+        armorTemp= self.destionation.armor + bonus 
 
         if(self.destination.currentHp > 0):
             try:
                 if(self.type == "builder"):
-                    bonus = 0 
-                    
                     if(self.destination.type == "builder"):    # ==
                         self.destination.currentHp -= forceTemp-self.destination.armor
                     elif(self.destination.type == "infantry"):  # >
