@@ -241,26 +241,26 @@ class Unit:    ##Laurence
         
 
     def attaque(self):
-        forceTemp = self.force
+        own = self.parent.listeJoueur[self.owner]
+
+        if self.type == "infantry":
+            bonus = own.modif.infantryBoost[own.modif.FORCE]
+        elif self.type == "range":
+            bonus = own.modif.rangeBoost[own.modif.FORCE]
+        elif self.type == "vehicule":
+            bonus = own.modif.vehiculeBoost[own.modif.FORCE]
+        elif self.type == "air":
+            bonus = own.modif.airBoost[own.modif.FORCE]
+        elif self.type == "builder":
+            bonus = own.modif.builderBoost[own.modif.FORCE]
+
+        forceTemp = self.force + bonus
+
         if(self.destination.currentHp > 0):
             try:
                 if(self.type == "builder"):
                     bonus = 0 
-                    own = self.parent.listeJoueur[self.owner]
-
-                    if self.type == "infantry":
-                        bonus = own.modif.infantryBoost[own.modif.FORCE]
-                    elif self.type == "range":
-                        bonus = own.modif.rangeBoost[own.modif.FORCE]
-                    elif self.type == "vehicule":
-                        bonus = own.modif.vehiculeBoost[own.modif.FORCE]
-                    elif self.type == "air":
-                        bonus = own.modif.airBoost[own.modif.FORCE]
-                    elif self.type == "builder":
-                        bonus = own.modif.builderBoost[own.modif.FORCE]
-
-                    forceTemp = self.force + bonus
-
+                    
                     if(self.destination.type == "builder"):    # ==
                         self.destination.currentHp -= forceTemp-self.destination.armor
                     elif(self.destination.type == "infantry"):  # >
@@ -490,6 +490,9 @@ class Unit:    ##Laurence
                       came_from[self.getNode(next[0],next[1])] = current
                 
        return came_from, cost_so_far
+
+
+    
 
     def reconstruct_path(self, came_from, start, goal): #Reconstruit le chemin trouve par le path finder
        current = goal

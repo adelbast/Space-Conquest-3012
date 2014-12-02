@@ -88,16 +88,15 @@ class Joueur():
 
         elif attribute1 == "builderBoost":
             if attribute2 == "force":
-                self.modif.infantryBoost[self.modif.FORCE] += bonus
+                self.modif.builderBoost[self.modif.FORCE] += bonus
             elif attribute2 == "vitesse":
-                self.modif.infantryBoost[self.modif.VITESSE] += bonus
+                self.modif.builderBoost[self.modif.VITESSE] += bonus
             elif attribute2 == "armor":
-                self.modif.infantryBoost[self.modif.ARMOR] += bonus
+                self.modif.builderBoost[self.modif.ARMOR] += bonus
 
         elif attribute1 == "generatorProduction":
             if attribute2 == "mine":
                 self.modif.generatorProduction[self.modif.MINE] += bonus
-                #print(self.modif.generatorProduction[self.modif.MINE])
             elif attribute2 == "farm":
                 self.modif.generatorProduction[self.modif.FARM] += bonus
             elif attribute2 == "solarPanel":
