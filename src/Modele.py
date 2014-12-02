@@ -396,82 +396,83 @@ class Modele(object):
 
     #Validation de la spawning position
     def spawnUnit(self, unitName):
-        if(self.listeJoueur[self.noJoueurLocal].assezRessources(self.dictUnit[unitName][2])):
+        if (len(self.listeJoueur[self.noJoueurLocal].listeUnite) < self.listeJoueur[self.noJoueurLocal].maxPop ):
+            if(self.listeJoueur[self.noJoueurLocal].assezRessources(self.dictUnit[unitName][2])):
 
-            validateSpawn = False
-            
-            pX = self.selection[0].position[0] - (self.dictUnit[unitName][7] + self.selection[0].size/2)
-            pY = self.selection[0].position[1] - (self.dictUnit[unitName][7] + self.selection[0].size/2)
+                validateSpawn = False
+                
+                pX = self.selection[0].position[0] - (self.dictUnit[unitName][7] + self.selection[0].size/2)
+                pY = self.selection[0].position[1] - (self.dictUnit[unitName][7] + self.selection[0].size/2)
 
-            #Nombre de fois qu'il faut passer dans la boucle Ex : 6 options = 0,1,2,3,4,5
-            size = self.dictUnit[unitName][7]
-            
-            numOption = (self.selection[0].size/size)+1 #Le +1 est en fait -1 + 2, parce qu'il faut aller un cube en haut (-1) et il faut rajouter 2 pour aller 1 cube en bas
+                #Nombre de fois qu'il faut passer dans la boucle Ex : 6 options = 0,1,2,3,4,5
+                size = self.dictUnit[unitName][7]
+                
+                numOption = (self.selection[0].size/size)+1 #Le +1 est en fait -1 + 2, parce qu'il faut aller un cube en haut (-1) et il faut rajouter 2 pour aller 1 cube en bas
 
-            #Compteurs
-            compteurX = 0
-            compteurY = 0
+                #Compteurs
+                compteurX = 0
+                compteurY = 0
 
-            #Regarde si la case choisit est valide
-            if(self.getNode(int(pX/32), int(pY/32)).voisins is not None):
-                    
-                for _,unit in self.listeJoueur[self.noJoueurLocal].listeUnite.items():
-                    node1, node2 = self.getNode(int(pX/32), int(pY/32)), self.getNode(int(unit.position[0]/32), int(unit.position[1]/32))
-                        
-                    if(node1.x == node2.x and node1.y == node2.y):
-                        validateSpawn = False
-                        break
-                    else:
-                        validateSpawn = True
-            
-
-            while(not validateSpawn):
-
-                #En partant du coin en haut a gauche du batiment
-                if(compteurX == 0 and compteurY < numOption): 
-                    pY = pY + size
-                    compteurY += 1
-                    
-                #En partant du coin en bas a gauche du batiment
-                elif (compteurX < numOption and compteurY == numOption):
-                    pX = pX + size
-                    compteurX += 1
-                    
-                #En partant du coin en bas a gauche du batiment
-                elif(compteurX == numOption and compteurY > 0):
-                    pY = pY - size
-                    compteurY -= 1
-                    
-                #En partant du coin en haut a droite
-                elif(compteurY == 0 and compteurX > 1):
-                    pX = pX - size
-                    compteurX -= 1
-
-                #Si on a fnit de regarder toutes les positions posibles
-                elif(compteurX == 1 and compteurY == 0):
-                    numOption += 2
-                    pX = pX - size*2
-                    pY = pY - size
-                    compteurX = 0
-                    compteurY = 0
-                    
                 #Regarde si la case choisit est valide
                 if(self.getNode(int(pX/32), int(pY/32)).voisins is not None):
-                    
+                        
                     for _,unit in self.listeJoueur[self.noJoueurLocal].listeUnite.items():
                         node1, node2 = self.getNode(int(pX/32), int(pY/32)), self.getNode(int(unit.position[0]/32), int(unit.position[1]/32))
-                        
+                            
                         if(node1.x == node2.x and node1.y == node2.y):
                             validateSpawn = False
                             break
                         else:
                             validateSpawn = True
-
-            self.listeJoueur[self.noJoueurLocal].soustraireRessource(self.dictUnit[unitName][2])
-            if('NewUnit' not in self.dicAction2Server):
-                self.dicAction2Server['NewUnit'] = []
                 
-            self.dicAction2Server['NewUnit'].append((unitName, (pX,pY)))
+
+                while(not validateSpawn):
+
+                    #En partant du coin en haut a gauche du batiment
+                    if(compteurX == 0 and compteurY < numOption): 
+                        pY = pY + size
+                        compteurY += 1
+                        
+                    #En partant du coin en bas a gauche du batiment
+                    elif (compteurX < numOption and compteurY == numOption):
+                        pX = pX + size
+                        compteurX += 1
+                        
+                    #En partant du coin en bas a gauche du batiment
+                    elif(compteurX == numOption and compteurY > 0):
+                        pY = pY - size
+                        compteurY -= 1
+                        
+                    #En partant du coin en haut a droite
+                    elif(compteurY == 0 and compteurX > 1):
+                        pX = pX - size
+                        compteurX -= 1
+
+                    #Si on a fnit de regarder toutes les positions posibles
+                    elif(compteurX == 1 and compteurY == 0):
+                        numOption += 2
+                        pX = pX - size*2
+                        pY = pY - size
+                        compteurX = 0
+                        compteurY = 0
+                        
+                    #Regarde si la case choisit est valide
+                    if(self.getNode(int(pX/32), int(pY/32)).voisins is not None):
+                        
+                        for _,unit in self.listeJoueur[self.noJoueurLocal].listeUnite.items():
+                            node1, node2 = self.getNode(int(pX/32), int(pY/32)), self.getNode(int(unit.position[0]/32), int(unit.position[1]/32))
+                            
+                            if(node1.x == node2.x and node1.y == node2.y):
+                                validateSpawn = False
+                                break
+                            else:
+                                validateSpawn = True
+
+                self.listeJoueur[self.noJoueurLocal].soustraireRessource(self.dictUnit[unitName][2])
+                if('NewUnit' not in self.dicAction2Server):
+                    self.dicAction2Server['NewUnit'] = []
+                    
+                self.dicAction2Server['NewUnit'].append((unitName, (pX,pY)))
 
     def createDict(self):
 
