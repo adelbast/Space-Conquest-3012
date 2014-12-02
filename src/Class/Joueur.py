@@ -238,35 +238,35 @@ class Joueur():
             size = self.listeBatiment[idBatiment].size
             x = int(self.listeBatiment[idBatiment].position[0]/32)
             y = int(self.listeBatiment[idBatiment].position[1]/32)
-            
+            print(y)
             if(size == 32):
-                self.parent.reattachNode(self.parent.getNode(x,y))
+                self.parent.reattachNode(x,y)
             
             if(size == 64):
-                self.parent.reattachNode(self.parent.getNode(x,y))
-                self.parent.reattachNode(self.parent.getNode(x-1,y-1))
-                self.parent.reattachNode(self.parent.getNode(x-1,y))
-                self.parent.reattachNode(self.parent.getNode(x,y-1))
+                self.parent.reattachNode(x,y)
+                self.parent.reattachNode(x-1,y-1)
+                self.parent.reattachNode(x-1,y)
+                self.parent.reattachNode(x,y-1)
             
             if(size == 128):
-                self.parent.reattachNode(self.parent.getNode(x,y))
+                self.parent.reattachNode(x,y)
 
-                self.parent.reattachNode(self.parent.getNode(x-1,y-1))
-                self.parent.reattachNode(self.parent.getNode(x-1,y))
-                self.parent.reattachNode(self.parent.getNode(x,y-1))
+                self.parent.reattachNode(x-1,y-1)
+                self.parent.reattachNode(x-1,y)
+                self.parent.reattachNode(x,y-1)
 
-                self.parent.reattachNode(self.parent.getNode(x+1,y+1))
-                self.parent.reattachNode(self.parent.getNode(x+1,y))
-                self.parent.reattachNode(self.parent.getNode(x+1,y-1))
-                self.parent.reattachNode(self.parent.getNode(x-1,y+1))
-                self.parent.reattachNode(self.parent.getNode(x,y+1))
-                self.parent.reattachNode(self.parent.getNode(x-2,y-2))
-                self.parent.reattachNode(self.parent.getNode(x-1,y-2))
-                self.parent.reattachNode(self.parent.getNode(x,y-2))
-                self.parent.reattachNode(self.parent.getNode(x+1,y-2))
-                self.parent.reattachNode(self.parent.getNode(x-2,y-1))
-                self.parent.reattachNode(self.parent.getNode(x-2,y))
-                self.parent.reattachNode(self.parent.getNode(x-2,y+1))
+                self.parent.reattachNode(x+1,y+1)
+                self.parent.reattachNode(x+1,y)
+                self.parent.reattachNode(x+1,y-1)
+                self.parent.reattachNode(x-1,y+1)
+                self.parent.reattachNode(x,y+1)
+                self.parent.reattachNode(x-2,y-2)
+                self.parent.reattachNode(x-1,y-2)
+                self.parent.reattachNode(x,y-2)
+                self.parent.reattachNode(x+1,y-2)
+                self.parent.reattachNode(x-2,y-1)
+                self.parent.reattachNode(x-2,y)
+                self.parent.reattachNode(x-2,y+1)
             
             del self.listeBatiment[idBatiment]
             #print("batiment supprime")
