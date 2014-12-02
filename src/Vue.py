@@ -46,6 +46,8 @@ class Vue:
         self.photoImageHUD = ImageTk.PhotoImage(self.imageHUD)
         self.boutonUP = Image.open("image/gui/boutonUP.png")
         self.photoImageBoutonUP = ImageTk.PhotoImage(self.boutonUP)
+        self.cover = Image.open("image/gui/cover.png")
+        self.photoImageCover = ImageTk.PhotoImage(self.cover)
 
         #Creation des Thumbnails
         directories = os.listdir("Image/gui/thumbnails")
@@ -61,6 +63,7 @@ class Vue:
             index2 = d.find(".")
             name = d[index1:index2]
             self.thumbnails[name] = [image, photoImage]
+            print(name)
 
         #Pour transferer les images en PhotoImage
         for tile in self.tileset.tileset: 
@@ -304,6 +307,7 @@ class Vue:
             
             if(unit.name == "researchCenter"):
                 build_type = "research"
+
                 
                 margin = 5
                 startX = 600
@@ -317,10 +321,19 @@ class Vue:
                 #print("Construction", self.parent.getResearch(noLocal))
 
                 for u in self.parent.getResearch(noLocal):
+
+                    print(u)
                     
                     #print(u)
                     self.hud.create_image(startX+((column*size)+margin*(column+1)), startY+((row*size)+margin*(row+1)), anchor=NW, image=self.photoImageBoutonUP, tags=("button", u, build_type))
-                
+
+                    try:
+                        self.hud.create_image(startX+((column*size)+margin*(column+1)), startY+((row*size)+margin*(row+1)), anchor=NW, image=self.thumbnails[u][1], tags=("thumbnail", u, build_type))
+                    except:
+                        pass
+
+                    self.hud.create_image(startX+((column*size)+margin*(column+1)), startY+((row*size)+margin*(row+1)), anchor=NW, image=self.photoImageCover, tags=("button", u, build_type))
+                    
                     if(column%3 == 0 and column != 0):
                         #print("row : ",row)
                         row +=1
@@ -349,6 +362,8 @@ class Vue:
                         self.hud.create_image(startX+((column*size)+margin*(column+1)), startY+((row*size)+margin*(row+1)), anchor=NW, image=self.thumbnails[u][1], tags=("thumbnail", u, build_type))
                     except:
                         pass
+
+                    self.hud.create_image(startX+((column*size)+margin*(column+1)), startY+((row*size)+margin*(row+1)), anchor=NW, image=self.photoImageCover, tags=("button", u, build_type))
                     
                     if(column%3 == 0 and column != 0):
                         #print("row : ",row)
@@ -583,6 +598,7 @@ class Vue:
             self.parent.modele.rechercher(self.hud.gettags(item)[1])
             
         else:
+            print("Spawn")
             self.parent.spawnUnit(self.hud.gettags(item)[1])
         #except:
         #print("Aucun choix de construction selectionne")

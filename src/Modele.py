@@ -426,6 +426,7 @@ class Modele(object):
             
 
             while(not validateSpawn):
+                
 
                 #En partant du coin en haut a gauche du batiment
                 if(compteurX == 0 and compteurY < numOption): 

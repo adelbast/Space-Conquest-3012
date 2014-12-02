@@ -226,6 +226,7 @@ class Joueur():
         if(self.listeRessource[0] < couts[0]
            or self.listeRessource[1] < couts[1]
            or self.listeRessource[2] < couts[2]):
+            print("Ressources insuffisantes")
             return False;
         return True;
             
