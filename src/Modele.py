@@ -7,6 +7,7 @@ from Class.Unit import *
 
 import configparser
 import math
+import traceback
 
 
 
@@ -279,6 +280,9 @@ class Modele(object):
                     uni.deleteCallDone = True
             try:
                 joueur.faireQqch() # AI
+            except TypeError as e:
+                print(traceback.print_exc())
+                print (e)
             except:
                 pass
             for _, batiment in joueur.listeBatiment.items():
@@ -395,14 +399,20 @@ class Modele(object):
                 return
 
     #Validation de la spawning position
-    def spawnUnit(self, unitName):
+    def spawnUnit(self, unitName,batimentAI=None):
         if(self.listeJoueur[self.noJoueurLocal].assezRessources(self.dictUnit[unitName][2])):
 
             validateSpawn = False
-            
-            pX = self.selection[0].position[0] - (self.dictUnit[unitName][7] + self.selection[0].size/2)
-            pY = self.selection[0].position[1] - (self.dictUnit[unitName][7] + self.selection[0].size/2)
+            if (batimentAI != None):
+                
+                pX = batimentAI.position[0] - 32
+                pY = batimentAI.position[1] - 32
+                
+            else:
 
+                pX = self.selection[0].position[0] - (self.dictUnit[unitName][7] + self.selection[0].size/2)
+                pY = self.selection[0].position[1] - (self.dictUnit[unitName][7] + self.selection[0].size/2)
+                
             #Nombre de fois qu'il faut passer dans la boucle Ex : 6 options = 0,1,2,3,4,5
             size = self.dictUnit[unitName][7]
             
@@ -468,10 +478,15 @@ class Modele(object):
                             validateSpawn = True
 
             self.listeJoueur[self.noJoueurLocal].soustraireRessource(self.dictUnit[unitName][2])
-            if('NewUnit' not in self.dicAction2Server):
-                self.dicAction2Server['NewUnit'] = []
-                
-            self.dicAction2Server['NewUnit'].append((unitName, (pX,pY)))
+
+
+            if (batimentAI  == None):
+                if('NewUnit' not in self.dicAction2Server):
+                    self.dicAction2Server['NewUnit'] = []
+                self.dicAction2Server['NewUnit'].append((unitName, (pX,pY)))
+
+            else:
+                return (pX,pY)
 
     def createDict(self):
 

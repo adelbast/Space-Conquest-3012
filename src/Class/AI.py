@@ -1,4 +1,5 @@
 from Class.Joueur import Joueur
+import traceback
 #auteurs : Alexandre + Antoine
 class AI(Joueur):
     def __init__(self, parent, noJoueur):
@@ -13,15 +14,25 @@ class AI(Joueur):
         self.nbWorkersReq = 3
         self.nbGen = [0,0,0]
         self.nbGenReq = [0,0,0]
+        self.test = False
+        self.test2 = False
+        self.TrooperCree=False
+        
     def faireQqch(self):#bouge automatiquement(arbitrairement) l'unité 0
         self.compteur += 1
         self.dictionaireAction.clear()
-        self.contruireBarracks()
-        #self.construireBatiment(0,"HQ")
+      
+        
+        if not self.test:
+            self.test = True
+            self.construireBatiment(0,"barrack")
+
+        self.etatMilitaire()
+
 
         #self.etatCroissance()
-        #self.etatMilitaire()
-        #self.construireWorkers()
+        
+        self.construireWorkers()
 #------------------------------Croissance------------------------------#
 
     def etatCroissance(self):
@@ -45,7 +56,6 @@ class AI(Joueur):
 
     def verificationCarre(self,x,y,unit,a):
         print("=-==-=",int(x),int(y),a,"-=-=-=-")
-        input()
         a= 0
         if x >= 0:
             if y >= 0:
@@ -57,41 +67,37 @@ class AI(Joueur):
         j=-32
         placed = False
         while not placed:
-            #print("-----------------new---------------------",(self.parent.dictBatiment[unit][3]/2) , (self.listeBatiment[0].size/2))
-            j+=32
+            j+=32         
             d = int((self.parent.dictBatiment[unit][3]/2) + (self.listeBatiment[0].size/2) + j )
             g = (self.listeBatiment[0].size + 2*d)/32
-            #print(d,g,j,self.listeBatiment[0].size)
             g2 = g*2
-            print(g)
+
             for i in range(int(g2)):
 
                 if not placed:
-                    print(i,self.listeBatiment[0].position[0],self.listeBatiment[0].size/2,d,g)
-                    x = ((i*32+ self.listeBatiment[0].position[0]) - ((self.listeBatiment[0].size/2) +d) /32)-g
+   
+                    x = i+ ((self.listeBatiment[0].position[0] - self.listeBatiment[0].size/2) +d) -g
 
-                    y = (self.listeBatiment[0].position[1] - ((self.listeBatiment[0].size/2) + d)) /32
+                    y = ((self.listeBatiment[0].position[1] - self.listeBatiment[0].size/2) + d) 
+                    print(x,y)
                     placed = self.verificationCarre(x,y,unit,1)
                     if placed:
                         return (x,y)
-
-                
                     
                 if not placed:
 
-                    x = ((i*32 + self.listeBatiment[0].position[0]) - ((self.listeBatiment[0].size/2) +d)/32) - g
-                    y = (self.listeBatiment[0].position[1] +  ((self.listeBatiment[0].size/2)+d)) /32
+                    x = ((i*32 + self.listeBatiment[0].position[0]) - ((self.listeBatiment[0].size/2) +d)) - g
+                    y = (self.listeBatiment[0].position[1] +  ((self.listeBatiment[0].size/2)+d)) 
 
                     placed = self.verificationCarre (x,y,unit,2)
                     
                     if placed:
                         return (x,y)
-
                     
                 if not placed:
 
-                    x = ( self.listeBatiment[0].position[0] + (self.listeBatiment[0].size/2) + d) /32
-                    y = ((i*32+self.listeBatiment[0].position[1]) + ((self.listeBatiment[0].size/2) + d) /32)-g
+                    x = ( self.listeBatiment[0].position[0] + (self.listeBatiment[0].size/2) + d) 
+                    y = ((i*32+self.listeBatiment[0].position[1]) + ((self.listeBatiment[0].size/2) + d) )-g
 
 
                     placed = self.verificationCarre (x,y,unit,3)
@@ -101,9 +107,9 @@ class AI(Joueur):
 
                     
                 if not placed:
-                    x = (self.listeBatiment[0].position[0] + ((self.listeBatiment[0].size/2) + d)) /32
+                    x = (self.listeBatiment[0].position[0] + ((self.listeBatiment[0].size/2) + d)) 
                     print(4)
-                    y = ((i*32+ self.listeBatiment[0].position[1]) -((self.listeBatiment[0].size/2) +d) /32)-g
+                    y = ((i*32+ self.listeBatiment[0].position[1]) -((self.listeBatiment[0].size/2) +d) )-g
                     print(4)
 
                     placed = self.verificationCarre (x,y,unit,4)
@@ -119,31 +125,22 @@ class AI(Joueur):
                 for j in range(self.nbWorkersReq - self.nbWorkers):
                     print(j)
                     print(self.nbWorkersReq - self.nbWorkers)
-                    if 'NewUnit' in self.dictionaireAction:
-                        print("dic existe")
-                        print(j)
-                        self.dictionaireAction['NewUnit'].append(("worker", (self.listeBatiment[i].position[0]+60,self.listeBatiment[i].position[1]+50*j)))
-                        self.nbWorkers+=1
-                        print("unit cree")
-                    else:
-                        print("dic existe pas")
-                        self.dictionaireAction['NewUnit'] =[("worker", (self.listeBatiment[i].position[0]+60,self.listeBatiment[i].position[1]+(50*j*2)))]
-                        self.nbWorkers+=1
-                        print(j)
-                        print("unit cree no dic")
+                    if 'NewUnit' not in self.dictionaireAction:
+                        self.dictionaireAction['NewUnit'] = []
+                    print("dic existe")
+                    print(j)
+                    self.dictionaireAction['NewUnit'].append(("worker", (self.listeBatiment[i].position[0]+60,self.listeBatiment[i].position[1]+50*j)))
+                    self.nbWorkers+=1
+                    print("unit cree")
+                    
             #else: créer un HQ
 
-    def construireBarracks(self):
-          self.dictionaireAction['NewBatiment'].append(("Barracks", (self.listeBatiment[0].position[0]-60,self.listeBatiment[i].position[1])))
-          print("baracks AI contruit)
-        
-
+  
             
                
 
 
-                  
-
+    
      
           
     def calculateGen():
@@ -157,7 +154,7 @@ class AI(Joueur):
                    self.nbGen[2]+=1
 
         for i in self.nbGenReq :
-            i = 1 + int(self.compteur /20000)
+            i = 1 + int(self.compttracebackeur /20000)
             if i > 5:
                i = 5
 
@@ -171,18 +168,24 @@ class AI(Joueur):
         if self.nbWorkersReq > 20:
             self.nbWorkerReq = 20
                  
-    def construireBatiment(self,worker,batiment):   #tentative de faire créer un batiments à l'AI - à arranger 
-        x,y =self.positionPossible("HQ")
-        print("123456789!/$%?&*(",x,y)
-        valeur = [("HQ",0,x,y)]
-        self.dictionaireAction["NewBatiment"]= valeur
-        
+    def construireBatiment(self,worker,batiment):  
+        x,y =self.positionPossible(batiment)
+        valeur = [(batiment,0,x,y)]
+        if not self.test2:
+            self.dictionaireAction["NewBatiment"]= valeur
+            self.test2 = True
         
     
 #------------------------------Aggresive------------------------------#
     def etatMilitaire(self):
-        pass
-
+        if (self.TrooperCree == False):
+            for i in range(self.listeBatiment.__len__()):
+                if (self.listeBatiment[i].name == "barrack"):
+                    if self.listeBatiment[i].estConstruit:
+                       if "NewUnit" not in self.dictionaireAction:
+                           self.dictionaireAction["NewUnit"] = []
+                       self.dictionaireAction["NewUnit"].append (  ("trooper",(self.listeBatiment[i].position[0], self.listeBatiment[i].position[1]-110) )) #self.parent.spawnUnit("trooper",self.listeBatiment[i])
+                       self.TrooperCree=True
     def verifierNbTypeUnitAttaque(self):
         pass
     
