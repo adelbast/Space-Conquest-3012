@@ -290,6 +290,12 @@ class Vue:
         self.hud.create_rectangle(310, 200, 438, 210, fill='black', tags="infos")
         self.hud.create_rectangle(310, 200, 310+conversionVie, 210, fill='green', tags="infos")
 
+        #Afficher le bouton pour le delete
+        self.hud.create_image(490, 168, anchor=NW, image=self.photoImageBoutonUP, tags=("button", "delete"))
+        self.hud.create_image(490, 168, anchor=NW, image=self.thumbnails["delete"][1], tags=("icone", "delete"))
+        self.hud.create_image(490, 168, anchor=NW, image=self.photoImageCover, tags=("button", "delete"))
+        
+        
         #Affichage des stats
         if isinstance (unit, Unit):
             self.hud.create_text(448, 60, anchor=NW, text="Power : "+str(unit.force), font=("Stencil", 12), tags="infos")
@@ -506,7 +512,7 @@ class Vue:
                     if(b.currentHp < b.maxHp):
                         conversionVie = (b.size*b.currentHp)/b.maxHp
                         offsetY = 70
-                        offsetX = 64
+                        offsetX = b.size/2
                         height = 3
                 
                         self.surfaceJeu.create_rectangle(b.position[0]-offsetX, (b.position[1])-offsetY, (b.position[0])+b.size-offsetX, (b.position[1])+(height-offsetY), fill="red", width=0, tags="healthbars")
@@ -596,7 +602,8 @@ class Vue:
         elif(self.hud.gettags(item)[2] == "research"):
             print("Recherche : ", self.hud.gettags(item)[1],", dans la fonction getBuildInfo() de la Vue")
             self.parent.modele.rechercher(self.hud.gettags(item)[1])
-            
+        elif(self.hud.gettags(item)[1] == "delete"):
+            print("Delete unit")
         else:
             print("Spawn")
             self.parent.spawnUnit(self.hud.gettags(item)[1])
