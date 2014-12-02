@@ -16,6 +16,7 @@ class AI(Joueur):
     def faireQqch(self):#bouge automatiquement(arbitrairement) l'unité 0
         self.compteur += 1
         self.dictionaireAction.clear()
+        self.contruireBarracks()
         #self.construireBatiment(0,"HQ")
 
         #self.etatCroissance()
@@ -131,6 +132,12 @@ class AI(Joueur):
                         print(j)
                         print("unit cree no dic")
             #else: créer un HQ
+
+    def construireBarracks(self):
+          self.dictionaireAction['NewBatiment'].append(("Barracks", (self.listeBatiment[0].position[0]-60,self.listeBatiment[i].position[1])))
+          print("baracks AI contruit)
+        
+
             
                
 
