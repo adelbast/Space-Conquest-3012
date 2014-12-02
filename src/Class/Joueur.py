@@ -14,6 +14,7 @@ class Joueur():
         self.listeRessource=[1000,1000,1000] #nourriture,metaux,energie
 
         self.maxPop=10
+        self.currentPop=1 #a cause du worker de depart
         self.ageRendu=1 #il y en a 3
         self.diplomatieStatus=False
         self.nbBatiment=0
@@ -276,11 +277,15 @@ class Joueur():
 
     def creerUnite(self,nom,position, attributs):### donner une destination en arg par rapport a la pos du batiment qui l'a cree ou autre ?
         self.listeUnite[self.idCountUnit] = Unit(self.parent, nom, (position[0],position[1]), self.noJoueur, attributs, self.idCountUnit)   #name, xy, owner, attribut, idU, destination = None
+        self.currentPop+= self.listeUnite[self.idCountUnit].valPop
         self.idCountUnit+=1
+        print(self.currentPop)
+        print(self.listeUnite[self.idCountUnit-1].valPop)
         print(self.listeUnite[self.idCountUnit-1].name,"cree")
 
     def supprimerUnite(self,idUnite):
         try:
+            self.currentPop -= self.listeUnite[idUnite].valPop
             del self.listeUnite[idUnite]
             print("unite supprime")
         except KeyError:

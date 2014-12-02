@@ -397,7 +397,7 @@ class Modele(object):
 
     #Validation de la spawning position
     def spawnUnit(self, unitName):
-        if (len(self.listeJoueur[self.noJoueurLocal].listeUnite) < self.listeJoueur[self.noJoueurLocal].maxPop ):
+        if ( self.listeJoueur[self.noJoueurLocal].currentPop+self.dictUnit[unitName][11] <= self.listeJoueur[self.noJoueurLocal].maxPop ):
             if(self.listeJoueur[self.noJoueurLocal].assezRessources(self.dictUnit[unitName][2])):
 
                 validateSpawn = False
@@ -515,12 +515,13 @@ class Modele(object):
             self.size        = int(parser.get(name, 'size'))
             self.armor       = int(parser.get(name, 'armor'))
             self.vitesseAtt  = int(parser.get(name, 'vitesseAttaque'))
+            self.valPop   = int(parser.get(name,'valPop'))
             try:
                 self.canBuild    = parser.get(name, 'canBuild').split(",")
             except:
                 self.canBuild    = []
 
-            self.dictUnit[name] = [self.type, self.maxHp, self.cost, self.force, self.vitesse, self.rangeVision, self.rangeAtt,self.size, self.canBuild, self.armor, self.vitesseAtt]
+            self.dictUnit[name] = [self.type, self.maxHp, self.cost, self.force, self.vitesse, self.rangeVision, self.rangeAtt,self.size, self.canBuild, self.armor, self.vitesseAtt,self.valPop]
 
         for name in unitVe:
             self.type        = parserVehicule.get(name, 'type')
@@ -533,12 +534,13 @@ class Modele(object):
             self.size        = int(parserVehicule.get(name, 'size'))
             self.armor       = int(parserVehicule.get(name, 'armor'))
             self.vitesseAtt  = int(parserVehicule.get(name, 'vitesseAttaque'))
+            self.valPop      = int(parserVehicule.get(name,'valPop'))
             try:
                 self.canBuild    = parserBatiment.get(name, 'canBuild').split(",")
             except:
                 self.canBuild    = []
                 
-            self.dictUnit[name] = [self.type, self.maxHp, self.cost, self.force, self.vitesse, self.rangeVision, self.rangeAtt,self.size, self.canBuild, self.armor, self.vitesseAtt]
+            self.dictUnit[name] = [self.type, self.maxHp, self.cost, self.force, self.vitesse, self.rangeVision, self.rangeAtt,self.size, self.canBuild, self.armor, self.vitesseAtt,self.valPop]
         
         for name in batiments:
             self.maxHp       = int(parserBatiment.get(name, 'hp'))

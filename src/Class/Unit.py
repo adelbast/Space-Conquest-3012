@@ -24,6 +24,7 @@ class Unit:    ##Laurence
         self.canBuild    = attribut[8]
         self.armor       = attribut[9]
         self.attackSpeed = attribut[10]
+        self.valPop      = attribut[11]
 
         self.currentHp   = self.maxHp
         self.currentFrame = '1'
