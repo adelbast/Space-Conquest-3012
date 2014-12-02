@@ -14,6 +14,7 @@ class Joueur():
         self.listeRessource=[1000,1000,1000] #nourriture,metaux,energie
 
         self.maxPop=10
+        self.currentPop=1 #a cause du worker de depart
         self.ageRendu=1 #il y en a 3
         self.diplomatieStatus=False
         self.nbBatiment=0
@@ -230,6 +231,7 @@ class Joueur():
         if(self.listeRessource[0] < couts[0]
            or self.listeRessource[1] < couts[1]
            or self.listeRessource[2] < couts[2]):
+            print("Ressources insuffisantes")
             return False;
         return True;
             
@@ -238,35 +240,35 @@ class Joueur():
             size = self.listeBatiment[idBatiment].size
             x = int(self.listeBatiment[idBatiment].position[0]/32)
             y = int(self.listeBatiment[idBatiment].position[1]/32)
-            
+            print(y)
             if(size == 32):
-                self.parent.reattachNode(self.parent.getNode(x,y))
+                self.parent.reattachNode(x,y)
             
             if(size == 64):
-                self.parent.reattachNode(self.parent.getNode(x,y))
-                self.parent.reattachNode(self.parent.getNode(x-1,y-1))
-                self.parent.reattachNode(self.parent.getNode(x-1,y))
-                self.parent.reattachNode(self.parent.getNode(x,y-1))
+                self.parent.reattachNode(x,y)
+                self.parent.reattachNode(x-1,y-1)
+                self.parent.reattachNode(x-1,y)
+                self.parent.reattachNode(x,y-1)
             
             if(size == 128):
-                self.parent.reattachNode(self.parent.getNode(x,y))
+                self.parent.reattachNode(x,y)
 
-                self.parent.reattachNode(self.parent.getNode(x-1,y-1))
-                self.parent.reattachNode(self.parent.getNode(x-1,y))
-                self.parent.reattachNode(self.parent.getNode(x,y-1))
+                self.parent.reattachNode(x-1,y-1)
+                self.parent.reattachNode(x-1,y)
+                self.parent.reattachNode(x,y-1)
 
-                self.parent.reattachNode(self.parent.getNode(x+1,y+1))
-                self.parent.reattachNode(self.parent.getNode(x+1,y))
-                self.parent.reattachNode(self.parent.getNode(x+1,y-1))
-                self.parent.reattachNode(self.parent.getNode(x-1,y+1))
-                self.parent.reattachNode(self.parent.getNode(x,y+1))
-                self.parent.reattachNode(self.parent.getNode(x-2,y-2))
-                self.parent.reattachNode(self.parent.getNode(x-1,y-2))
-                self.parent.reattachNode(self.parent.getNode(x,y-2))
-                self.parent.reattachNode(self.parent.getNode(x+1,y-2))
-                self.parent.reattachNode(self.parent.getNode(x-2,y-1))
-                self.parent.reattachNode(self.parent.getNode(x-2,y))
-                self.parent.reattachNode(self.parent.getNode(x-2,y+1))
+                self.parent.reattachNode(x+1,y+1)
+                self.parent.reattachNode(x+1,y)
+                self.parent.reattachNode(x+1,y-1)
+                self.parent.reattachNode(x-1,y+1)
+                self.parent.reattachNode(x,y+1)
+                self.parent.reattachNode(x-2,y-2)
+                self.parent.reattachNode(x-1,y-2)
+                self.parent.reattachNode(x,y-2)
+                self.parent.reattachNode(x+1,y-2)
+                self.parent.reattachNode(x-2,y-1)
+                self.parent.reattachNode(x-2,y)
+                self.parent.reattachNode(x-2,y+1)
             
             del self.listeBatiment[idBatiment]
             #print("batiment supprime")
@@ -277,11 +279,15 @@ class Joueur():
     def creerUnite(self,nom,position, attributs):### donner une destination en arg par rapport a la pos du batiment qui l'a cree ou autre ?
         attributs[1] += self.modif.hp[self.modif.UNIT]
         self.listeUnite[self.idCountUnit] = Unit(self.parent, nom, (position[0],position[1]), self.noJoueur, attributs, self.idCountUnit)   #name, xy, owner, attribut, idU, destination = None
+        self.currentPop+= self.listeUnite[self.idCountUnit].valPop
         self.idCountUnit+=1
+        print(self.currentPop)
+        print(self.listeUnite[self.idCountUnit-1].valPop)
         print(self.listeUnite[self.idCountUnit-1].name,"cree")
 
     def supprimerUnite(self,idUnite):
         try:
+            self.currentPop -= self.listeUnite[idUnite].valPop
             del self.listeUnite[idUnite]
             print("unite supprime")
         except KeyError:

@@ -282,8 +282,9 @@ class Modele(object):
             except:
                 pass
             for _, batiment in joueur.listeBatiment.items():
-                if(batiment.currentHp < 0):
+                if(joueur.noJoueur == self.noJoueurLocal and not batiment.deleteCallDone and batiment.currentHp <= 0):
                     self.supprimerBatiment(batiment.id)
+                    batiment.deleteCallDone = True
 
 
     def gererMouseRelease(self, event, etat, info):
@@ -396,7 +397,7 @@ class Modele(object):
 
     #Validation de la spawning position
     def spawnUnit(self, unitName):
-        if (len(self.listeJoueur[self.noJoueurLocal].listeUnite) < self.listeJoueur[self.noJoueurLocal].maxPop ):
+        if ( self.listeJoueur[self.noJoueurLocal].currentPop+self.dictUnit[unitName][11] <= self.listeJoueur[self.noJoueurLocal].maxPop ):
             if(self.listeJoueur[self.noJoueurLocal].assezRessources(self.dictUnit[unitName][2])):
 
                 validateSpawn = False
@@ -404,10 +405,15 @@ class Modele(object):
                 pX = self.selection[0].position[0] - (self.dictUnit[unitName][7] + self.selection[0].size/2)
                 pY = self.selection[0].position[1] - (self.dictUnit[unitName][7] + self.selection[0].size/2)
 
+                """
+
+            while(not validateSpawn):
+                
                 #Nombre de fois qu'il faut passer dans la boucle Ex : 6 options = 0,1,2,3,4,5
                 size = self.dictUnit[unitName][7]
                 
                 numOption = (self.selection[0].size/size)+1 #Le +1 est en fait -1 + 2, parce qu'il faut aller un cube en haut (-1) et il faut rajouter 2 pour aller 1 cube en bas
+
 
                 #Compteurs
                 compteurX = 0
@@ -467,7 +473,7 @@ class Modele(object):
                                 break
                             else:
                                 validateSpawn = True
-
+                """
                 self.listeJoueur[self.noJoueurLocal].soustraireRessource(self.dictUnit[unitName][2])
                 if('NewUnit' not in self.dicAction2Server):
                     self.dicAction2Server['NewUnit'] = []
@@ -509,12 +515,13 @@ class Modele(object):
             self.size        = int(parser.get(name, 'size'))
             self.armor       = int(parser.get(name, 'armor'))
             self.vitesseAtt  = int(parser.get(name, 'vitesseAttaque'))
+            self.valPop   = int(parser.get(name,'valPop'))
             try:
                 self.canBuild    = parser.get(name, 'canBuild').split(",")
             except:
                 self.canBuild    = []
 
-            self.dictUnit[name] = [self.type, self.maxHp, self.cost, self.force, self.vitesse, self.rangeVision, self.rangeAtt,self.size, self.canBuild, self.armor, self.vitesseAtt]
+            self.dictUnit[name] = [self.type, self.maxHp, self.cost, self.force, self.vitesse, self.rangeVision, self.rangeAtt,self.size, self.canBuild, self.armor, self.vitesseAtt,self.valPop]
 
         for name in unitVe:
             self.type        = parserVehicule.get(name, 'type')
@@ -527,12 +534,13 @@ class Modele(object):
             self.size        = int(parserVehicule.get(name, 'size'))
             self.armor       = int(parserVehicule.get(name, 'armor'))
             self.vitesseAtt  = int(parserVehicule.get(name, 'vitesseAttaque'))
+            self.valPop      = int(parserVehicule.get(name,'valPop'))
             try:
                 self.canBuild    = parserBatiment.get(name, 'canBuild').split(",")
             except:
                 self.canBuild    = []
                 
-            self.dictUnit[name] = [self.type, self.maxHp, self.cost, self.force, self.vitesse, self.rangeVision, self.rangeAtt,self.size, self.canBuild, self.armor, self.vitesseAtt]
+            self.dictUnit[name] = [self.type, self.maxHp, self.cost, self.force, self.vitesse, self.rangeVision, self.rangeAtt,self.size, self.canBuild, self.armor, self.vitesseAtt,self.valPop]
         
         for name in batiments:
             self.maxHp       = int(parserBatiment.get(name, 'hp'))

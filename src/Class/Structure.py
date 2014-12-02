@@ -12,6 +12,7 @@ class Batiment (object):
         self.id         = idB
         self.currentHp  = self.maxHp
         self.estConstruit = True
+        self.deleteCallDone = False
         if(not initialisation):
             self.currentHp  = 1
             self.estConstruit = False
@@ -38,8 +39,10 @@ class Batiment (object):
 
 class Generator(Batiment):
     def __init__(self,owner,name,xy,attributs,idB, initialisation = True):
-        super(Generator,self).__init__(owner,name,xy,attributs,idB)
+        super(Generator,self).__init__(owner,name,xy,attributs,idB,initialisation)
         self.production = attributs[2]
 
     def generate(self):#retourne le nombre de ressource  generer
-        return self.production
+        if(self.estConstruit):
+            return self.production
+        return 0
