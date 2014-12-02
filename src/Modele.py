@@ -282,8 +282,9 @@ class Modele(object):
             except:
                 pass
             for _, batiment in joueur.listeBatiment.items():
-                if(batiment.currentHp < 0):
+                if(joueur.noJoueur == self.noJoueurLocal and not batiment.deleteCallDone and batiment.currentHp <= 0):
                     self.supprimerBatiment(batiment.id)
+                    batiment.deleteCallDone = True
 
 
     def gererMouseRelease(self, event, etat, info):
