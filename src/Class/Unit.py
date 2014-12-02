@@ -121,7 +121,7 @@ class Unit:    ##Laurence
                     if joueur.noJoueur not in listeJoueur[self.owner].listeAllie:
                         for _, unite in joueur.listeUnite.items():
                             #print("estAmi",unite.owner not in listeJoueur[self.owner].listeAllie,"enRangfe",self.inRange(unite))
-                            if self.inRange(unite):
+                            if self.inRangeVision(unite): #self.inRangeVision(unite)
                                 self.setDestination(listeJoueurAmi = listeJoueur[self.owner].listeAllie, unit = unite)
                 #listeUnite = [unite for _, unite in  if unite.owner not in listeJoueur[self.owner].listeAllie and self.inRange(unite)]
                 #if(listeUnite):
@@ -241,26 +241,26 @@ class Unit:    ##Laurence
         
 
     def attaque(self):
-        forceTemp = self.force
+        own = self.parent.listeJoueur[self.owner]
+
+        if self.type == "infantry":
+            bonus = own.modif.infantryBoost[own.modif.FORCE]
+        elif self.type == "range":
+            bonus = own.modif.rangeBoost[own.modif.FORCE]
+        elif self.type == "vehicule":
+            bonus = own.modif.vehiculeBoost[own.modif.FORCE]
+        elif self.type == "air":
+            bonus = own.modif.airBoost[own.modif.FORCE]
+        elif self.type == "builder":
+            bonus = own.modif.builderBoost[own.modif.FORCE]
+
+        forceTemp = self.force + bonus
+
         if(self.destination.currentHp > 0):
             try:
                 if(self.type == "builder"):
                     bonus = 0 
-                    own = self.parent.listeJoueur[self.owner]
-
-                    if self.type == "infantry":
-                        bonus = own.modif.infantryBoost[own.modif.FORCE]
-                    elif self.type == "range":
-                        bonus = own.modif.rangeBoost[own.modif.FORCE]
-                    elif self.type == "vehicule":
-                        bonus = own.modif.vehiculeBoost[own.modif.FORCE]
-                    elif self.type == "air":
-                        bonus = own.modif.airBoost[own.modif.FORCE]
-                    elif self.type == "builder":
-                        bonus = own.modif.builderBoost[own.modif.FORCE]
-
-                    forceTemp = self.force + bonus
-
+                    
                     if(self.destination.type == "builder"):    # ==
                         self.destination.currentHp -= forceTemp-self.destination.armor
                     elif(self.destination.type == "infantry"):  # >
@@ -332,6 +332,15 @@ class Unit:    ##Laurence
                 return True
         except:
             if  math.sqrt(abs(self.position[0] - unit.position[0])**2 + abs(self.position[1] - unit.position[1])**2) < self.rangeAtt:
+                return True
+        return False
+
+    def inRangeVision(self,unit):
+        try:
+            if  math.sqrt(abs(self.positionFluide[0] - unit.positionFluide[0])**2 + abs(self.positionFluide[1] - unit.positionFluide[1])**2) < self.rangeVision:
+                return True
+        except:
+            if  math.sqrt(abs(self.position[0] - unit.position[0])**2 + abs(self.position[1] - unit.position[1])**2) < self.rangeVision:
                 return True
         return False
 
@@ -490,6 +499,9 @@ class Unit:    ##Laurence
                       came_from[self.getNode(next[0],next[1])] = current
                 
        return came_from, cost_so_far
+
+
+    
 
     def reconstruct_path(self, came_from, start, goal): #Reconstruit le chemin trouve par le path finder
        current = goal

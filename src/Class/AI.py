@@ -13,10 +13,16 @@ class AI(Joueur):
         self.nbWorkersReq = 3
         self.nbGen = [0,0,0]
         self.nbGenReq = [0,0,0]
+        self.test = False
+        self.test2 = False
+        
     def faireQqch(self):#bouge automatiquement(arbitrairement) l'unité 0
         self.compteur += 1
         self.dictionaireAction.clear()
-        #self.construireBatiment(0,"HQ")
+        
+        if not self.test:
+            test = True
+            self.construireBatiment(0,"barrack")
 
         #self.etatCroissance()
         #self.etatMilitaire()
@@ -44,7 +50,6 @@ class AI(Joueur):
 
     def verificationCarre(self,x,y,unit,a):
         print("=-==-=",int(x),int(y),a,"-=-=-=-")
-        input()
         a= 0
         if x >= 0:
             if y >= 0:
@@ -56,41 +61,37 @@ class AI(Joueur):
         j=-32
         placed = False
         while not placed:
-            #print("-----------------new---------------------",(self.parent.dictBatiment[unit][3]/2) , (self.listeBatiment[0].size/2))
-            j+=32
+            j+=32         
             d = int((self.parent.dictBatiment[unit][3]/2) + (self.listeBatiment[0].size/2) + j )
             g = (self.listeBatiment[0].size + 2*d)/32
-            #print(d,g,j,self.listeBatiment[0].size)
             g2 = g*2
-            print(g)
+
             for i in range(int(g2)):
 
                 if not placed:
-                    print(i,self.listeBatiment[0].position[0],self.listeBatiment[0].size/2,d,g)
-                    x = ((i*32+ self.listeBatiment[0].position[0]) - ((self.listeBatiment[0].size/2) +d) /32)-g
+   
+                    x = i+ ((self.listeBatiment[0].position[0] - self.listeBatiment[0].size/2) +d) -g
 
-                    y = (self.listeBatiment[0].position[1] - ((self.listeBatiment[0].size/2) + d)) /32
+                    y = ((self.listeBatiment[0].position[1] - self.listeBatiment[0].size/2) + d) 
+                    print(x,y)
                     placed = self.verificationCarre(x,y,unit,1)
                     if placed:
                         return (x,y)
-
-                
                     
                 if not placed:
 
-                    x = ((i*32 + self.listeBatiment[0].position[0]) - ((self.listeBatiment[0].size/2) +d)/32) - g
-                    y = (self.listeBatiment[0].position[1] +  ((self.listeBatiment[0].size/2)+d)) /32
+                    x = ((i*32 + self.listeBatiment[0].position[0]) - ((self.listeBatiment[0].size/2) +d)) - g
+                    y = (self.listeBatiment[0].position[1] +  ((self.listeBatiment[0].size/2)+d)) 
 
                     placed = self.verificationCarre (x,y,unit,2)
                     
                     if placed:
                         return (x,y)
-
                     
                 if not placed:
 
-                    x = ( self.listeBatiment[0].position[0] + (self.listeBatiment[0].size/2) + d) /32
-                    y = ((i*32+self.listeBatiment[0].position[1]) + ((self.listeBatiment[0].size/2) + d) /32)-g
+                    x = ( self.listeBatiment[0].position[0] + (self.listeBatiment[0].size/2) + d) 
+                    y = ((i*32+self.listeBatiment[0].position[1]) + ((self.listeBatiment[0].size/2) + d) )-g
 
 
                     placed = self.verificationCarre (x,y,unit,3)
@@ -100,9 +101,9 @@ class AI(Joueur):
 
                     
                 if not placed:
-                    x = (self.listeBatiment[0].position[0] + ((self.listeBatiment[0].size/2) + d)) /32
+                    x = (self.listeBatiment[0].position[0] + ((self.listeBatiment[0].size/2) + d)) 
                     print(4)
-                    y = ((i*32+ self.listeBatiment[0].position[1]) -((self.listeBatiment[0].size/2) +d) /32)-g
+                    y = ((i*32+ self.listeBatiment[0].position[1]) -((self.listeBatiment[0].size/2) +d) )-g
                     print(4)
 
                     placed = self.verificationCarre (x,y,unit,4)
@@ -165,11 +166,11 @@ class AI(Joueur):
             self.nbWorkerReq = 20
                  
     def construireBatiment(self,worker,batiment):   #tentative de faire créer un batiments à l'AI - à arranger 
-        x,y =self.positionPossible("HQ")
-        print("123456789!/$%?&*(",x,y)
-        valeur = [("HQ",0,x,y)]
-        self.dictionaireAction["NewBatiment"]= valeur
-        
+        x,y =self.positionPossible(batiment)
+        valeur = [(batiment,0,x,y)]
+        if not self.test2:
+            self.dictionaireAction["NewBatiment"]= valeur
+            self.test2 = True
         
     
 #------------------------------Aggresive------------------------------#
