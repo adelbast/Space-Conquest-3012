@@ -404,11 +404,18 @@ class Modele(object):
                 pX = self.selection[0].position[0] - (self.dictUnit[unitName][7] + self.selection[0].size/2)
                 pY = self.selection[0].position[1] - (self.dictUnit[unitName][7] + self.selection[0].size/2)
 
+<<<<<<< HEAD
                 """
+=======
+
+            while(not validateSpawn):
+                
+>>>>>>> 8805519bae61aaf2309fbf22c76dd054c58b4fdb
                 #Nombre de fois qu'il faut passer dans la boucle Ex : 6 options = 0,1,2,3,4,5
                 size = self.dictUnit[unitName][7]
                 
                 numOption = (self.selection[0].size/size)+1 #Le +1 est en fait -1 + 2, parce qu'il faut aller un cube en haut (-1) et il faut rajouter 2 pour aller 1 cube en bas
+
 
                 #Compteurs
                 compteurX = 0
