@@ -13,8 +13,8 @@ class Joueur():
         self.listeArtefact=[]
         self.listeRessource=[1000,1000,1000] #nourriture,metaux,energie
 
-        self.maxPop=None
-        self.ageRendu=1
+        self.maxPop=10
+        self.ageRendu=1 #il y en a 3
         self.diplomatieStatus=False
         self.nbBatiment=0
         self.nbUnite=0
@@ -108,6 +108,10 @@ class Joueur():
                 self.modif.hp[self.modif.BUILDING] += bonus
             elif attribute2 == "unit":
                 self.modif.hp[self.modif.UNIT] += bonus
+        
+        elif attribute1 == "age_advance1":
+            self.changerAge()
+
 
 ####################################################################
 
@@ -289,7 +293,7 @@ class Joueur():
 
     def changerAge(self):
         self.ageRendu += 1
-        maxPop += maxPop
+        self.maxPop += 15
     
     def compterRessource (self):
         for _, i in self.listeBatiment.items():
