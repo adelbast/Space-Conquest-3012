@@ -286,8 +286,9 @@ class Modele(object):
             except:
                 pass
             for _, batiment in joueur.listeBatiment.items():
-                if(batiment.currentHp < 0):
+                if(joueur.noJoueur == self.noJoueurLocal and not batiment.deleteCallDone and batiment.currentHp <= 0):
                     self.supprimerBatiment(batiment.id)
+                    batiment.deleteCallDone = True
 
 
     def gererMouseRelease(self, event, etat, info):
@@ -399,78 +400,37 @@ class Modele(object):
                 return
 
     #Validation de la spawning position
-    def spawnUnit(self, unitName,batimentAI=None):
-        if(self.listeJoueur[self.noJoueurLocal].assezRessources(self.dictUnit[unitName][2])):
 
-            validateSpawn = False
-            if (batimentAI != None):
-                
-                pX = batimentAI.position[0] - 32
-                pY = batimentAI.position[1] - 32
-                
-            else:
+    def spawnUnit(self, unitName):
+        if ( self.listeJoueur[self.noJoueurLocal].currentPop+self.dictUnit[unitName][11] <= self.listeJoueur[self.noJoueurLocal].maxPop ):
+            if(self.listeJoueur[self.noJoueurLocal].assezRessources(self.dictUnit[unitName][2])):
 
+                validateSpawn = False
+                
                 pX = self.selection[0].position[0] - (self.dictUnit[unitName][7] + self.selection[0].size/2)
                 pY = self.selection[0].position[1] - (self.dictUnit[unitName][7] + self.selection[0].size/2)
-                
-            #Nombre de fois qu'il faut passer dans la boucle Ex : 6 options = 0,1,2,3,4,5
-            size = self.dictUnit[unitName][7]
-            
-            numOption = (self.selection[0].size/size)+1 #Le +1 est en fait -1 + 2, parce qu'il faut aller un cube en haut (-1) et il faut rajouter 2 pour aller 1 cube en bas
 
-            #Compteurs
-            compteurX = 0
-            compteurY = 0
 
-            #Regarde si la case choisit est valide
-            if(self.getNode(int(pX/32), int(pY/32)).voisins is not None):
-                    
-                for _,unit in self.listeJoueur[self.noJoueurLocal].listeUnite.items():
-                    node1, node2 = self.getNode(int(pX/32), int(pY/32)), self.getNode(int(unit.position[0]/32), int(unit.position[1]/32))
-                        
-                    if(node1.x == node2.x and node1.y == node2.y):
-                        validateSpawn = False
-                        break
-                    else:
-                        validateSpawn = True
-            
+                """
 
             while(not validateSpawn):
+                
+                #Nombre de fois qu'il faut passer dans la boucle Ex : 6 options = 0,1,2,3,4,5
+                size = self.dictUnit[unitName][7]
+                
+                numOption = (self.selection[0].size/size)+1 #Le +1 est en fait -1 + 2, parce qu'il faut aller un cube en haut (-1) et il faut rajouter 2 pour aller 1 cube en bas
 
-                #En partant du coin en haut a gauche du batiment
-                if(compteurX == 0 and compteurY < numOption): 
-                    pY = pY + size
-                    compteurY += 1
-                    
-                #En partant du coin en bas a gauche du batiment
-                elif (compteurX < numOption and compteurY == numOption):
-                    pX = pX + size
-                    compteurX += 1
-                    
-                #En partant du coin en bas a gauche du batiment
-                elif(compteurX == numOption and compteurY > 0):
-                    pY = pY - size
-                    compteurY -= 1
-                    
-                #En partant du coin en haut a droite
-                elif(compteurY == 0 and compteurX > 1):
-                    pX = pX - size
-                    compteurX -= 1
 
-                #Si on a fnit de regarder toutes les positions posibles
-                elif(compteurX == 1 and compteurY == 0):
-                    numOption += 2
-                    pX = pX - size*2
-                    pY = pY - size
-                    compteurX = 0
-                    compteurY = 0
-                    
+                #Compteurs
+                compteurX = 0
+                compteurY = 0
+
                 #Regarde si la case choisit est valide
                 if(self.getNode(int(pX/32), int(pY/32)).voisins is not None):
-                    
+                        
                     for _,unit in self.listeJoueur[self.noJoueurLocal].listeUnite.items():
                         node1, node2 = self.getNode(int(pX/32), int(pY/32)), self.getNode(int(unit.position[0]/32), int(unit.position[1]/32))
-                        
+                            
                         if(node1.x == node2.x and node1.y == node2.y):
                             validateSpawn = False
                             break
@@ -487,6 +447,55 @@ class Modele(object):
 
             else:
                 return (pX,pY)
+                
+
+                while(not validateSpawn):
+
+                    #En partant du coin en haut a gauche du batiment
+                    if(compteurX == 0 and compteurY < numOption): 
+                        pY = pY + size
+                        compteurY += 1
+                        
+                    #En partant du coin en bas a gauche du batiment
+                    elif (compteurX < numOption and compteurY == numOption):
+                        pX = pX + size
+                        compteurX += 1
+                        
+                    #En partant du coin en bas a gauche du batiment
+                    elif(compteurX == numOption and compteurY > 0):
+                        pY = pY - size
+                        compteurY -= 1
+                        
+                    #En partant du coin en haut a droite
+                    elif(compteurY == 0 and compteurX > 1):
+                        pX = pX - size
+                        compteurX -= 1
+
+                    #Si on a fnit de regarder toutes les positions posibles
+                    elif(compteurX == 1 and compteurY == 0):
+                        numOption += 2
+                        pX = pX - size*2
+                        pY = pY - size
+                        compteurX = 0
+                        compteurY = 0
+                        
+                    #Regarde si la case choisit est valide
+                    if(self.getNode(int(pX/32), int(pY/32)).voisins is not None):
+                        
+                        for _,unit in self.listeJoueur[self.noJoueurLocal].listeUnite.items():
+                            node1, node2 = self.getNode(int(pX/32), int(pY/32)), self.getNode(int(unit.position[0]/32), int(unit.position[1]/32))
+                            
+                            if(node1.x == node2.x and node1.y == node2.y):
+                                validateSpawn = False
+                                break
+                            else:
+                                validateSpawn = True
+                
+                self.listeJoueur[self.noJoueurLocal].soustraireRessource(self.dictUnit[unitName][2])
+                if('NewUnit' not in self.dicAction2Server):
+                    self.dicAction2Server['NewUnit'] = []
+                    
+                self.dicAction2Server['NewUnit'].append((unitName, (pX,pY)))"""
 
     def createDict(self):
 
@@ -523,12 +532,13 @@ class Modele(object):
             self.size        = int(parser.get(name, 'size'))
             self.armor       = int(parser.get(name, 'armor'))
             self.vitesseAtt  = int(parser.get(name, 'vitesseAttaque'))
+            self.valPop   = int(parser.get(name,'valPop'))
             try:
                 self.canBuild    = parser.get(name, 'canBuild').split(",")
             except:
                 self.canBuild    = []
 
-            self.dictUnit[name] = [self.type, self.maxHp, self.cost, self.force, self.vitesse, self.rangeVision, self.rangeAtt,self.size, self.canBuild, self.armor, self.vitesseAtt]
+            self.dictUnit[name] = [self.type, self.maxHp, self.cost, self.force, self.vitesse, self.rangeVision, self.rangeAtt,self.size, self.canBuild, self.armor, self.vitesseAtt,self.valPop]
 
         for name in unitVe:
             self.type        = parserVehicule.get(name, 'type')
@@ -541,12 +551,13 @@ class Modele(object):
             self.size        = int(parserVehicule.get(name, 'size'))
             self.armor       = int(parserVehicule.get(name, 'armor'))
             self.vitesseAtt  = int(parserVehicule.get(name, 'vitesseAttaque'))
+            self.valPop      = int(parserVehicule.get(name,'valPop'))
             try:
                 self.canBuild    = parserBatiment.get(name, 'canBuild').split(",")
             except:
                 self.canBuild    = []
                 
-            self.dictUnit[name] = [self.type, self.maxHp, self.cost, self.force, self.vitesse, self.rangeVision, self.rangeAtt,self.size, self.canBuild, self.armor, self.vitesseAtt]
+            self.dictUnit[name] = [self.type, self.maxHp, self.cost, self.force, self.vitesse, self.rangeVision, self.rangeAtt,self.size, self.canBuild, self.armor, self.vitesseAtt,self.valPop]
         
         for name in batiments:
             self.maxHp       = int(parserBatiment.get(name, 'hp'))

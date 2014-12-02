@@ -46,6 +46,8 @@ class Vue:
         self.photoImageHUD = ImageTk.PhotoImage(self.imageHUD)
         self.boutonUP = Image.open("image/gui/boutonUP.png")
         self.photoImageBoutonUP = ImageTk.PhotoImage(self.boutonUP)
+        self.cover = Image.open("image/gui/cover.png")
+        self.photoImageCover = ImageTk.PhotoImage(self.cover)
 
         #Creation des Thumbnails
         directories = os.listdir("Image/gui/thumbnails")
@@ -61,6 +63,7 @@ class Vue:
             index2 = d.find(".")
             name = d[index1:index2]
             self.thumbnails[name] = [image, photoImage]
+            print(name)
 
         #Pour transferer les images en PhotoImage
         for tile in self.tileset.tileset: 
@@ -287,6 +290,12 @@ class Vue:
         self.hud.create_rectangle(310, 200, 438, 210, fill='black', tags="infos")
         self.hud.create_rectangle(310, 200, 310+conversionVie, 210, fill='green', tags="infos")
 
+        #Afficher le bouton pour le delete
+        self.hud.create_image(490, 168, anchor=NW, image=self.photoImageBoutonUP, tags=("button", "delete"))
+        self.hud.create_image(490, 168, anchor=NW, image=self.thumbnails["delete"][1], tags=("icone", "delete"))
+        self.hud.create_image(490, 168, anchor=NW, image=self.photoImageCover, tags=("button", "delete"))
+        
+        
         #Affichage des stats
         if isinstance (unit, Unit):
             self.hud.create_text(448, 60, anchor=NW, text="Power : "+str(unit.force), font=("Stencil", 12), tags="infos")
@@ -304,6 +313,7 @@ class Vue:
             
             if(unit.name == "researchCenter"):
                 build_type = "research"
+
                 
                 margin = 5
                 startX = 600
@@ -317,10 +327,19 @@ class Vue:
                 #print("Construction", self.parent.getResearch(noLocal))
 
                 for u in self.parent.getResearch(noLocal):
+
+                    print(u)
                     
                     #print(u)
                     self.hud.create_image(startX+((column*size)+margin*(column+1)), startY+((row*size)+margin*(row+1)), anchor=NW, image=self.photoImageBoutonUP, tags=("button", u, build_type))
-                
+
+                    try:
+                        self.hud.create_image(startX+((column*size)+margin*(column+1)), startY+((row*size)+margin*(row+1)), anchor=NW, image=self.thumbnails[u][1], tags=("thumbnail", u, build_type))
+                    except:
+                        pass
+
+                    self.hud.create_image(startX+((column*size)+margin*(column+1)), startY+((row*size)+margin*(row+1)), anchor=NW, image=self.photoImageCover, tags=("button", u, build_type))
+                    
                     if(column%3 == 0 and column != 0):
                         #print("row : ",row)
                         row +=1
@@ -349,6 +368,8 @@ class Vue:
                         self.hud.create_image(startX+((column*size)+margin*(column+1)), startY+((row*size)+margin*(row+1)), anchor=NW, image=self.thumbnails[u][1], tags=("thumbnail", u, build_type))
                     except:
                         pass
+
+                    self.hud.create_image(startX+((column*size)+margin*(column+1)), startY+((row*size)+margin*(row+1)), anchor=NW, image=self.photoImageCover, tags=("button", u, build_type))
                     
                     if(column%3 == 0 and column != 0):
                         #print("row : ",row)
@@ -491,7 +512,7 @@ class Vue:
                     if(b.currentHp < b.maxHp):
                         conversionVie = (b.size*b.currentHp)/b.maxHp
                         offsetY = 70
-                        offsetX = 64
+                        offsetX = b.size/2
                         height = 3
                 
                         self.surfaceJeu.create_rectangle(b.position[0]-offsetX, (b.position[1])-offsetY, (b.position[0])+b.size-offsetX, (b.position[1])+(height-offsetY), fill="red", width=0, tags="healthbars")
@@ -581,8 +602,10 @@ class Vue:
         elif(self.hud.gettags(item)[2] == "research"):
             print("Recherche : ", self.hud.gettags(item)[1],", dans la fonction getBuildInfo() de la Vue")
             self.parent.modele.rechercher(self.hud.gettags(item)[1])
-            
+        elif(self.hud.gettags(item)[1] == "delete"):
+            print("Delete unit")
         else:
+            print("Spawn")
             self.parent.spawnUnit(self.hud.gettags(item)[1])
         #except:
         #print("Aucun choix de construction selectionne")
