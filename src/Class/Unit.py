@@ -259,25 +259,27 @@ class Unit:    ##Laurence
 
         forceTemp = self.force + bonus
         
-        ##########Ajoute un bonus de armor a la destination
-        own = self.parent.listeJoueur[self.destination.owner]
-        bonus = 0
-         
-        if self.destination.type == "infantry":
-            bonus = own.modif.infantryBoost[own.modif.ARMOR]
-        elif self.destination.type == "range":
-            bonus = own.modif.rangeBoost[own.modif.ARMOR]
-        elif self.destination.type == "vehicule":
-            bonus = own.modif.vehiculeBoost[own.modif.ARMOR]
-        elif self.destination.type == "air":
-            bonus = own.modif.airBoost[own.modif.ARMOR]
-        elif self.destination.type == "builder":
-            bonus = own.modif.builderBoost[own.modif.ARMOR]
         
-        armorTemp= self.destination.armor + bonus 
 
         if(self.destination.currentHp > 0):
             try:
+                ##########Ajoute un bonus de armor a la destination
+                own = self.parent.listeJoueur[self.destination.owner]
+                bonus = 0
+                 
+                if self.destination.type == "infantry":
+                    bonus = own.modif.infantryBoost[own.modif.ARMOR]
+                elif self.destination.type == "range":
+                    bonus = own.modif.rangeBoost[own.modif.ARMOR]
+                elif self.destination.type == "vehicule":
+                    bonus = own.modif.vehiculeBoost[own.modif.ARMOR]
+                elif self.destination.type == "air":
+                    bonus = own.modif.airBoost[own.modif.ARMOR]
+                elif self.destination.type == "builder":
+                    bonus = own.modif.builderBoost[own.modif.ARMOR]
+        
+                armorTemp= self.destination.armor + bonus
+                
                 if(self.type == "builder"):
                     if(self.destination.type == "builder"):    # ==
                         self.destination.currentHp -= forceTemp-self.destination.armor
