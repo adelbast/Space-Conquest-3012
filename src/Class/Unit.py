@@ -274,7 +274,7 @@ class Unit:    ##Laurence
         elif self.destination.type == "builder":
             bonus = own.modif.builderBoost[own.modif.ARMOR]
         
-        armorTemp= self.destionation.armor + bonus 
+        armorTemp= self.destination.armor + bonus 
 
         if(self.destination.currentHp > 0):
             try:
