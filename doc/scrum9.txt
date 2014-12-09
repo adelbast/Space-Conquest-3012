@@ -1,0 +1,26 @@
+Scrum 9 
+
+Arnaud 
+fait: thumbnail et autres voutons
+problemes: problemes avce le apwnunit
+à faire : regler le bug critique
+
+Laurence
+fait: implementation des recherches (upgrade)
+probleme:bug de bouton
+a faire: debug de bouton
+
+Alex: contruction batiment AI
+probleme: un peu avec lalgorythme de deplacement des batiments
+a faire: batiments de l'AI
+
+Antoine
+fait: construction des units agressifs de l'AI
+probleme: oui, spawn unit est unitilisables
+à faire: continuer l'AI
+
+Xavier
+fait: aide géneralx auc coqequipiers, les générateurs fonctionnent comme les autres batimets
+probleme: pas de probleme
+a faire: regler des bugs en général
+
