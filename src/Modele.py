@@ -410,14 +410,7 @@ class Modele(object):
                 pX = self.selection[0].position[0] - (self.dictUnit[unitName][7] + self.selection[0].size/2)
                 pY = self.selection[0].position[1] - (self.dictUnit[unitName][7] + self.selection[0].size/2)
 
-                if('NewUnit' not in self.dicAction2Server):
-                    self.dicAction2Server['NewUnit'] = []
-                    
-                self.dicAction2Server['NewUnit'].append((unitName, (pX,pY)))
 
-                """
-
-            while(not validateSpawn):
                 
                 #Nombre de fois qu'il faut passer dans la boucle Ex : 6 options = 0,1,2,3,4,5
                 size = self.dictUnit[unitName][7]
@@ -431,28 +424,21 @@ class Modele(object):
 
                 #Regarde si la case choisit est valide
                 if(self.getNode(int(pX/32), int(pY/32)).voisins is not None):
-                        
-                    for _,unit in self.listeJoueur[self.noJoueurLocal].listeUnite.items():
-                        node1, node2 = self.getNode(int(pX/32), int(pY/32)), self.getNode(int(unit.position[0]/32), int(unit.position[1]/32))
+
+                    if(len(self.listeJoueur[self.noJoueurLocal].listeUnite) > 0):
+                        for _,unit in self.listeJoueur[self.noJoueurLocal].listeUnite.items():
+                            node1, node2 = self.getNode(int(pX/32), int(pY/32)), self.getNode(int(unit.position[0]/32), int(unit.position[1]/32))
                             
-                        if(node1.x == node2.x and node1.y == node2.y):
-                            validateSpawn = False
-                            break
-                        else:
-                            validateSpawn = True
+                            if(node1.x == node2.x and node1.y == node2.y):
+                                validateSpawn = False
+                                break
+                            else:
+                                validateSpawn = True
+                                
+                    else:
+                        validateSpawn = True
 
-            self.listeJoueur[self.noJoueurLocal].soustraireRessource(self.dictUnit[unitName][2])
-
-
-            if (batimentAI  == None):
-                if('NewUnit' not in self.dicAction2Server):
-                    self.dicAction2Server['NewUnit'] = []
-                self.dicAction2Server['NewUnit'].append((unitName, (pX,pY)))
-
-            else:
-                return (pX,pY)
                 
-
                 while(not validateSpawn):
 
                     #En partant du coin en haut a gauche du batiment
@@ -485,21 +471,27 @@ class Modele(object):
                         
                     #Regarde si la case choisit est valide
                     if(self.getNode(int(pX/32), int(pY/32)).voisins is not None):
-                        
-                        for _,unit in self.listeJoueur[self.noJoueurLocal].listeUnite.items():
-                            node1, node2 = self.getNode(int(pX/32), int(pY/32)), self.getNode(int(unit.position[0]/32), int(unit.position[1]/32))
+
+                        if(len(self.listeJoueur[self.noJoueurLocal].listeUnite) > 0):
+                            for _,unit in self.listeJoueur[self.noJoueurLocal].listeUnite.items():
+                                node1, node2 = self.getNode(int(pX/32), int(pY/32)), self.getNode(int(unit.position[0]/32), int(unit.position[1]/32))
                             
-                            if(node1.x == node2.x and node1.y == node2.y):
-                                validateSpawn = False
-                                break
-                            else:
-                                validateSpawn = True
+                                if(node1.x == node2.x and node1.y == node2.y):
+                                    validateSpawn = False
+                                    break
+                                else:
+                                    validateSpawn = True
+                        else:
+                            validateSpawn = True
                 
                 self.listeJoueur[self.noJoueurLocal].soustraireRessource(self.dictUnit[unitName][2])
+                
                 if('NewUnit' not in self.dicAction2Server):
                     self.dicAction2Server['NewUnit'] = []
                     
-                self.dicAction2Server['NewUnit'].append((unitName, (pX,pY)))"""
+                self.dicAction2Server['NewUnit'].append((unitName, (pX,pY)))
+
+                
 
     def createDict(self):
 
