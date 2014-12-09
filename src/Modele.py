@@ -556,12 +556,8 @@ class Modele(object):
             self.armor       = int(parserVehicule.get(name, 'armor'))
             self.vitesseAtt  = int(parserVehicule.get(name, 'vitesseAttaque'))
             self.valPop      = int(parserVehicule.get(name,'valPop'))
-            try:
-                self.canBuild    = parserBatiment.get(name, 'canBuild').split(",")
-            except:
-                self.canBuild    = []
                 
-            self.dictUnit[name] = [self.type, self.maxHp, self.cost, self.force, self.vitesse, self.rangeVision, self.rangeAtt,self.size, self.canBuild, self.armor, self.vitesseAtt,self.valPop]
+            self.dictUnit[name] = [self.type, self.maxHp, self.cost, self.force, self.vitesse, self.rangeVision, self.rangeAtt,self.size, [], self.armor, self.vitesseAtt,self.valPop]
         
         for name in batiments:
             self.maxHp       = int(parserBatiment.get(name, 'hp'))
