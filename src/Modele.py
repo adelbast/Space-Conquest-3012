@@ -609,11 +609,12 @@ class Modele(object):
             self.dicAction2Server['SuppressionUnit'] = []
         self.dicAction2Server["SuppressionUnit"].append(idUnite)
 
-    def rechercher (self,recherche):  #Passe une string (le nom de la recherche
-        if 'Rechercher' not in self.dicAction2Server:
-            self.dicAction2Server['Rechercher'] = []
-        self.dicAction2Server["Rechercher"].append((recherche,))
-        self.listeJoueur[self.noJoueurLocal].rechercher(recherche)
+    def rechercher (self, recherche):  #Passe une string (le nom de la recherche
+        if( self.listeJoueur[self.noJoueurLocal].peutChercher(recherche) ):
+            if 'Rechercher' not in self.dicAction2Server:
+                self.dicAction2Server['Rechercher'] = []
+            self.dicAction2Server["Rechercher"].append((recherche,))
+            self.listeJoueur[self.noJoueurLocal].rechercher(recherche)
             
     def changerAge (self):
         self.dicAction2Server["RechercheAge"]+= 1

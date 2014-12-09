@@ -11,7 +11,7 @@ class Joueur():
         self.listeUnite={}
         self.listeBatiment={}
         self.listeArtefact=[]
-        self.listeRessource=[1000,1000,1000] #nourriture,metaux,energie
+        self.listeRessource=[10000,10000,10000] #nourriture,metaux,energie
 
         self.maxPop=10
         self.currentPop=1 #a cause du worker de depart
@@ -47,13 +47,18 @@ class Joueur():
 
     def rechercher(self,nomRecherche):
         indx = self.parent.dictRecherche.get(nomRecherche)
+        self.recherches.append(nomRecherche)
+        self.appliquerModif(indx[0], indx[1], indx[2])
+        self.nbRecherches += 1 
+        self.remplirRecherches()
+
+    def peutChercher(self, nomRecherche):
+        indx = self.parent.dictRecherche.get(nomRecherche)
         if self.assezRessources(indx[3]):
             if nomRecherche not in self.recherches:
                 self.soustraireRessource(indx[3])
-                self.recherches.append(nomRecherche)
-                self.appliquerModif(indx[0], indx[1], indx[2])
-                self.nbRecherches += 1 
-                self.remplirRecherches()
+                return True
+        return False
 
     def appliquerModif(self, attribute1, attribute2, bonus):
         if attribute1 == "infantryBoost":
