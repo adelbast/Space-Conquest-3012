@@ -4,6 +4,7 @@ from PIL import ImageTk, Image
 from Tile import Tileset
 from Sprites.Sprites import Sprites
 from Class.Unit import *
+from Class.Structure import *
 import time
 import os
 
@@ -604,6 +605,13 @@ class Vue:
             self.parent.modele.rechercher(self.hud.gettags(item)[1])
         elif(self.hud.gettags(item)[1] == "delete"):
             print("Delete unit")
+            try:
+                if(isinstance(self.parent.modele.selection[0],Unit)):
+                    self.parent.modele.supprimerUnit(self.parent.modele.selection[0].id)
+                elif(isinstance(self.parent.modele.selection[0],Batiment)):
+                    self.parent.modele.supprimerBatiment(self.parent.modele.selection[0].id)
+            except:
+                print("rien de selectionner")
         else:
             print("Spawn")
             self.parent.spawnUnit(self.hud.gettags(item)[1])
