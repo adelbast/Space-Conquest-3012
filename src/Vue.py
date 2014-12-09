@@ -4,6 +4,7 @@ from PIL import ImageTk, Image
 from Tile import Tileset
 from Sprites.Sprites import Sprites
 from Class.Unit import *
+from Class.Structure import *
 import time
 import os
 
@@ -292,7 +293,7 @@ class Vue:
 
         #Afficher le bouton pour le delete
         self.hud.create_image(490, 168, anchor=NW, image=self.photoImageBoutonUP, tags=("button", "delete"))
-        self.hud.create_image(490, 168, anchor=NW, image=self.thumbnails["delete"][1], tags=("icone", "delete"))
+        self.hud.create_image(490, 168, anchor=NW, image=self.thumbnails["delete"][1], tags=("infos", "delete"))
         self.hud.create_image(490, 168, anchor=NW, image=self.photoImageCover, tags=("button", "delete"))
         
         
@@ -511,8 +512,11 @@ class Vue:
 
                     if(b.currentHp < b.maxHp):
                         conversionVie = (b.size*b.currentHp)/b.maxHp
-                        offsetY = 70
-                        offsetX = b.size/2
+                        offsetY = (b.size/2)+6
+                        if(b.size != 32):
+                            offsetX = b.size/2
+                        else:
+                            offsetX =0
                         height = 3
                 
                         self.surfaceJeu.create_rectangle(b.position[0]-offsetX, (b.position[1])-offsetY, (b.position[0])+b.size-offsetX, (b.position[1])+(height-offsetY), fill="red", width=0, tags="healthbars")
@@ -526,7 +530,10 @@ class Vue:
 
                         #Si l'unite est selectionnee
                         if(b in selection):
-                            self.surfaceJeu.create_image(b.position[0]-b.size/2, b.position[1]-b.size/2, anchor=NW, image=self.sprites[joueur.noJoueur][1].spriteDict[b.name], tags="structure")
+                            if(b.size != 32):
+                                self.surfaceJeu.create_image(b.position[0]-b.size/2, b.position[1]-b.size/2, anchor=NW, image=self.sprites[joueur.noJoueur][1].spriteDict[b.name], tags="structure")
+                            else:
+                                self.surfaceJeu.create_image(b.position[0], b.position[1], anchor=NW, image=self.sprites[joueur.noJoueur][1].spriteDict[b.name], tags="structure")      
                         #Si l'unite n'est pas selectionnee
                         else:
                             if(b.size != 32):
@@ -534,16 +541,29 @@ class Vue:
                             else:
                                 self.surfaceJeu.create_image(b.position[0], b.position[1], anchor=NW, image=self.sprites[joueur.noJoueur][0].spriteDict[b.name], tags="structure")
 
-
                     #Sinon si l'unite est a un autre joueur
                     else:
                         self.surfaceJeu.create_image(b.position[0]-b.size/2, b.position[1]-b.size/2, anchor=NW, image=self.sprites[joueur.noJoueur].spriteDict[b.name], tags="structure")
+
+                    if(b.currentHp < b.maxHp):
+                        conversionVie = (b.size*b.currentHp)/b.maxHp
+                        offsetY = (b.size/2)+6
+                        if(b.size != 32):
+                            offsetX = b.size/2
+                        else:
+                            offsetX =0
+                        height = 3
+                
+                        self.surfaceJeu.create_rectangle(b.position[0]-offsetX, (b.position[1])-offsetY, (b.position[0])+b.size-offsetX, (b.position[1])+(height-offsetY), fill="red", width=0, tags="healthbars")
+                        self.surfaceJeu.create_rectangle(b.position[0]-offsetX, (b.position[1])-offsetY, (b.position[0])+conversionVie-offsetX, (b.position[1])+(height-offsetY), fill="blue", width=0, tags="healthbars")
 
                 #Afficher les unites sur la minimap
                 if(joueur.noJoueur == noLocal):
                    self.miniMap.create_rectangle(pX, pY, pX+rSize, pY+rSize, fill="yellow", width=0, tags="structure")
                 else:
                     self.miniMap.create_rectangle(pX, pY, pX+rSize, pY+rSize, fill="red", width=0, tags="structure")
+
+                
                     
             #Affiche les unités
             for _, u in joueur.listeUnite.items():# _ == placeholder pour la clée
@@ -559,14 +579,6 @@ class Vue:
                     if(u.isWalking):
                         self.animateSprites(u)
 
-                    if(u.currentHp < u.maxHp):
-                        conversionVie = (u.size*u.currentHp)/u.maxHp
-                        offsetY = 6
-                        height = 3
-                
-                        self.surfaceJeu.create_rectangle(u.positionFluide[0], (u.positionFluide[1])-offsetY, (u.positionFluide[0])+u.size, (u.positionFluide[1])+(height-offsetY), fill="red", width=0, tags="healthbars")
-                        self.surfaceJeu.create_rectangle(u.positionFluide[0], (u.positionFluide[1])-offsetY, (u.positionFluide[0])+conversionVie, (u.positionFluide[1])+(height-offsetY), fill="blue", width=0, tags="healthbars")
-
                     #Si l'unite est au joueur local
                     if(joueur.noJoueur == noLocal):
 
@@ -581,6 +593,13 @@ class Vue:
                     else:
                         self.surfaceJeu.create_image(u.positionFluide[0], u.positionFluide[1], anchor=NW, image=self.sprites[joueur.noJoueur].spriteDict[u.name][u.orientation][u.currentFrame], tags="unit")
 
+                    if(u.currentHp < u.maxHp):
+                        conversionVie = (u.size*u.currentHp)/u.maxHp
+                        offsetY = 6
+                        height = 3
+                
+                        self.surfaceJeu.create_rectangle(u.positionFluide[0], (u.positionFluide[1])-offsetY, (u.positionFluide[0])+u.size, (u.positionFluide[1])+(height-offsetY), fill="red", width=0, tags="healthbars")
+                        self.surfaceJeu.create_rectangle(u.positionFluide[0], (u.positionFluide[1])-offsetY, (u.positionFluide[0])+conversionVie, (u.positionFluide[1])+(height-offsetY), fill="blue", width=0, tags="healthbars")
                     
                     
                 #Afficher les unites sur la minimap
@@ -604,6 +623,17 @@ class Vue:
             self.parent.modele.rechercher(self.hud.gettags(item)[1])
         elif(self.hud.gettags(item)[1] == "delete"):
             print("Delete unit")
+            try:
+                if(isinstance(self.parent.modele.selection[0],Unit)):
+                    self.parent.modele.supprimerUnit(self.parent.modele.selection[0].id)
+                elif(isinstance(self.parent.modele.selection[0],Batiment)):
+                    self.parent.modele.supprimerBatiment(self.parent.modele.selection[0].id)
+                #On enleve tous ses boutons
+                self.hud.delete("button")
+                self.hud.delete("thumbnail")
+                self.hud.delete("infos")
+            except:
+                print("rien de selectionner")
         else:
             print("Spawn")
             self.parent.spawnUnit(self.hud.gettags(item)[1])
