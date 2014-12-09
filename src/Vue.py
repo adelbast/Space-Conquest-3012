@@ -628,6 +628,10 @@ class Vue:
                     self.parent.modele.supprimerUnit(self.parent.modele.selection[0].id)
                 elif(isinstance(self.parent.modele.selection[0],Batiment)):
                     self.parent.modele.supprimerBatiment(self.parent.modele.selection[0].id)
+                #On enleve tous ses boutons
+                self.hud.delete("button")
+                self.hud.delete("thumbnail")
+                self.hud.delete("infos")
             except:
                 print("rien de selectionner")
         else:
