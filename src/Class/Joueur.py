@@ -11,7 +11,7 @@ class Joueur():
         self.listeUnite={}
         self.listeBatiment={}
         self.listeArtefact=[]
-        self.listeRessource=[10000,10000,10000] #nourriture,metaux,energie
+        self.listeRessource=[100000,100000,100000] #nourriture,metaux,energie
 
         self.maxPop=10
         self.currentPop=1 #a cause du worker de depart

@@ -142,6 +142,7 @@ class Controleur:
         self.modele.actualiser()
         self.vue.displayRessources(self.modele.listeJoueur[self.modele.noJoueurLocal].listeRessource)
         self.vue.displayObject(self.modele.listeJoueur,[],self.modele.noJoueurLocal,self.modele.selection)
+        self.vue.displayPop(self.modele.listeJoueur[self.modele.noJoueurLocal])
         #self.vue.displayNodes(self.modele.cutNodes)
         self.compteur+=1
         self.vue.root.after(24,self.gameLoop)

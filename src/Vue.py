@@ -294,9 +294,9 @@ class Vue:
         self.hud.create_rectangle(310, 200, 310+conversionVie, 210, fill='green', tags="infos")
 
         #Afficher le bouton pour le delete
-        self.hud.create_image(490, 168, anchor=NW, image=self.photoImageBoutonUP, tags=("button", "delete"))
+        self.hud.create_image(490, 168, anchor=NW, image=self.photoImageBoutonUP, tags=("infos", "delete"))
         self.hud.create_image(490, 168, anchor=NW, image=self.thumbnails["delete"][1], tags=("infos", "delete"))
-        self.hud.create_image(490, 168, anchor=NW, image=self.photoImageCover, tags=("button", "delete"))
+        self.hud.create_image(490, 168, anchor=NW, image=self.photoImageCover, tags=("infos", "delete"))
         
         
         #Affichage des stats
@@ -387,6 +387,11 @@ class Vue:
                 self.hud.delete("thumbnail")
         
     
+    #Afficher la population du joueur
+    def displayPop(self, joueur):
+        self.hud.delete("pop")
+        pop = "Population : "+str(len(joueur.listeUnite))+"/"+str(joueur.maxPop)
+        self.hud.create_text(300, 230, font=("Stencil", 12), text=pop, anchor=NW, tags="pop")
         
     #Affiche les ressources
     def displayRessources(self, ressources):
