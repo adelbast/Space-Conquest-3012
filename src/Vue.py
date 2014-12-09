@@ -280,6 +280,8 @@ class Vue:
         if(thumbnail.width() != 128):
             #print(thumbnail.width())
             offset = (128-thumbnail.width())/2
+
+        self.hud.create_text(320, 40, anchor=NW, text=unit.name, font=("Stencil", 12), tags="infos")
             
         self.hud.create_rectangle(310, 60, 438, 188, fill='red')
         
@@ -389,9 +391,9 @@ class Vue:
     #Affiche les ressources
     def displayRessources(self, ressources):
         self.hud.delete("ressources")
-        self.hud.create_text(400, 0, font=("Stencil", 12), text="Food : "+str(round(ressources[0])), anchor=NW, tags="ressources")
-        self.hud.create_text(600, 0, font=("Stencil", 12), text="Metal : "+str(round(ressources[1])), anchor=NW, tags="ressources")
-        self.hud.create_text(800, 0, font=("Stencil", 12), text="Power : "+str(round(ressources[2])), anchor=NW, tags="ressources")
+        self.hud.create_text(350, 0, font=("Stencil", 12), text="Food : "+str(round(ressources[0])), anchor=NW, tags="ressources")
+        self.hud.create_text(550, 0, font=("Stencil", 12), text="Metal : "+str(round(ressources[1])), anchor=NW, tags="ressources")
+        self.hud.create_text(750, 0, font=("Stencil", 12), text="Power : "+str(round(ressources[2])), anchor=NW, tags="ressources")
 
     def displaySelection(self, initialClick, event):
         self.surfaceJeu.delete("selection")
