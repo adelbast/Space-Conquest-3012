@@ -43,11 +43,11 @@ class Vue:
         self.relativeH = math.floor(self.surfaceH*self.miniMapH/(len(self.parent.modele.map.map)*64))
 
         #Image pour le HUD
-        self.imageHUD = Image.open("image/gui/gui.png")
+        self.imageHUD = Image.open("Image/gui/gui.png")
         self.photoImageHUD = ImageTk.PhotoImage(self.imageHUD)
-        self.boutonUP = Image.open("image/gui/boutonUP.png")
+        self.boutonUP = Image.open("Image/gui/boutonUP.png")
         self.photoImageBoutonUP = ImageTk.PhotoImage(self.boutonUP)
-        self.cover = Image.open("image/gui/cover.png")
+        self.cover = Image.open("Image/gui/cover.png")
         self.photoImageCover = ImageTk.PhotoImage(self.cover)
 
         #Creation des Thumbnails
@@ -56,7 +56,7 @@ class Vue:
         for d in directories:
             #Creation des images
             if(d != "thumbRecherche"):
-                image = Image.open("image/gui/thumbnails/"+d)
+                image = Image.open("Image/gui/thumbnails/"+d)
                 photoImage = ImageTk.PhotoImage(image)
 
             #Insertion des images dans un dictionnaire
