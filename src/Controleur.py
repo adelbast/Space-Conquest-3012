@@ -3,7 +3,7 @@ from Modele import Modele
 from Class.AI import AI
 from Class.Server import Server
 from Class.Client import Client
-import time,os
+import time,os,platform
 import traceback
 
 class Controleur:
@@ -24,14 +24,14 @@ class Controleur:
         self.verbose = False # //Mettre verbose a True pour plus de print venant du serveur
         
         self.client = Client()
-        self.initServerLobby()#lorsque le menu sera fait, utiliser la fontion du bas plutôt que celle-ci
-        #self.vue.afficherMenu()
+        self.initServerLobby()
         self.vue.root.mainloop()
         self.closeGame()
 
 
     #Fonction qui crée le serveur. Un seul est nécéssaire par partie
-    def creeServeur(self,nameServer, nomPartie, nomJoueur):
+    def creeServeur(self, nameServer, nomPartie, nomJoueur):
+        print(nameServer, nomPartie, nomJoueur, self.verbose)
         self.serveur = Server(nameServer, nomPartie, nomJoueur, test = self.verbose) #Initialisation 
         self.serveur.daemon = True
         self.serveur.start()    #Démarrage du serveur
@@ -73,6 +73,9 @@ class Controleur:
         self.vue.root.after_cancel(self.afterID)
         self.client.nom = self.vue.entreClient.get()
         self.creeServeur(self.client.nameServer, self.vue.entreServeur.get(), self.client.nom)
+        while not self.serveur.isReady:
+            time.sleep(0.1)
+            #possibilité d'affficher un loading ici
         self.client.findNameServer()
         self.client.connect(self.vue.entreServeur.get())
         self.vue.removeGridDisplay()
@@ -97,6 +100,13 @@ class Controleur:
         if(self.serveur): return True
         return False
 
+    def clearLog(self):
+        se = platform.system()
+        if(se == 'Windows'):
+            os.system('cls')
+        else:
+            os.system('clear')
+
     #Fonction qui démarre la partie
     def lancerPartie(self):
         self.vue.root.after_cancel(self.afterID)
@@ -104,9 +114,9 @@ class Controleur:
             self.serveur.removeServerBroadcast()
             self.client.proxy.startGame()
         self.vue.removeGridDisplay()
-        os.system('cls')
-        print(self.client.noJoueur)
-        self.modele.initPartie(self.client.noJoueur,self.client.getStartingInfo(),self.isHost())
+        self.clearLog()
+        print("Numero de joueur : " + str(self.client.noJoueur))
+        self.modele.initPartie(self.client.noJoueur, self.client.getStartingInfo(), self.isHost())
         self.client.setCpuClient(self.modele.getAIcount())
         self.vue.displayMap(self.modele.map)
         self.vue.generateSpriteSet(self.modele.noJoueurLocal)

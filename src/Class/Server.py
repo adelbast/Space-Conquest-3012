@@ -160,10 +160,16 @@ class InternalClient(object):
 class Server(Thread):
     def __init__(self, ns, nomServeur = "SpaceConquest3012", nomJoueurHost = "xavier", test = False, standAlone = False):
         super(Server, self).__init__()
+        if(Pyro4.config.SERIALIZER == "serpent"): #Petit test afin de voir si le serveur peut être lancé
+            try:
+                import serpent
+            except Exception as e:
+                print("Le sérializeur par défaut de Pyro est 'serpent', mais il n'est pas installé!")
+                raise e
         self.isReady = False
         self.nomServeur = nomServeur
         self.uri = None        #adresse utiliser par pyro pour se connecter au objets distants
-        self.ip = socket.gethostbyname(socket.gethostname())                        #retourne le IP
+        self.ip = [(s.connect(('8.8.8.8', 80)), s.getsockname()[0], s.close()) for s in [socket.socket(socket.AF_INET, socket.SOCK_DGRAM)]][0][1] #retourne le IP
         self.serverObject = ServerObject(nomServeur, nomJoueurHost, self.ip, test)  #objet distant
         self.nameServerThread = None
         self.nameServer = ns
@@ -179,8 +185,10 @@ class Server(Thread):
         if(self.nameServer):
             self.nameServer.register(name=self.nomServeur, uri=self.uri)
         else:
+            print("[Serveur] : ","Aucun nameServer trouver")
             self.startNameServer()
         print("[Serveur] : ","Prêt!")
+        self.isReady = True
         daemon.requestLoop()
 
     def startNameServer(self):      #lance le serveur qui broadcast les infos du serveur de jeu sur le réseau
@@ -188,6 +196,7 @@ class Server(Thread):
             print("[Serveur] : ","Lancement du nameServer... ")
             self.nameServerThread = Thread(target = Pyro4.naming.startNSloop,args=(self.ip, None, True)) #création de l'objet serveur
             self.nameServerThread.start()    #lance le nameServeur dans un thread
+            time.sleep(1) #Pour les PC lent (donne le temps au NS de se lancer avant de continuer l'éxécution)
             print("[Serveur] : ","Lancement du nameServer RÉUSSI ")
             print("[Serveur] : ","Enregistrement du serveur sur le nameServer... ")
             Pyro4.naming.locateNS(host=self.ip).register(name=self.nomServeur, uri=self.uri)
@@ -195,6 +204,7 @@ class Server(Thread):
         except:
             print("[Serveur] : ","Quelque Chose a planté dans la mise en marche du nameServer, voici les détails : \n")
             print(traceback.print_exc())
+            raise
         
     def removeServerBroadcast(self):
         try:
