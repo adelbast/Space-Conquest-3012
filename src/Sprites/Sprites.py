@@ -2,6 +2,7 @@ __author__ = "Arnaud Girardin"
 
 from PIL import Image, ImageTk, ImageEnhance
 import configparser
+from os.path import dirname
 
 class Sprites:
     def __init__(self):
@@ -16,7 +17,7 @@ class Sprites:
         for unit in cfg.sections() :
 
 
-            sprites = Image.open("Image/sprites/"+folder+"/units/"+unit+".png")
+            sprites = Image.open(dirname(__file__) + "/../Image/sprites/"+folder+"/units/"+unit+".png")
             converter = ImageEnhance.Color(sprites)
             sprites = converter.enhance(brightness)
                 
@@ -61,7 +62,7 @@ class Sprites:
 
         for building in cfg.sections() :
 
-            sprites = Image.open("Image/sprites/"+folder+"/buildings/"+building+".png")
+            sprites = Image.open(dirname(__file__) + "/../Image/sprites/"+folder+"/buildings/"+building+".png")
             converter = ImageEnhance.Color(sprites)
             img = converter.enhance(brightness)
 

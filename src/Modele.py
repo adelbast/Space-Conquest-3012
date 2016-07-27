@@ -3,6 +3,7 @@ from Class.Joueur import Joueur
 from Class.AI import AI
 from Class.Structure import Batiment
 from Class.Unit import *
+from os.path import dirname
 
 
 import configparser
@@ -21,14 +22,13 @@ class Modele(object):
         self.selection = []
         self.listeArtefact = []
         self.dictUnit = {}            #dicte combiencoute chaque unit
-        self.dictBatiment = {}        #dicte combiencoute chaque batiment  
+        self.dictBatiment = {}        #dicte combiencoute chaque batiment
         self.dictArtefact = {}
         self.dictRecherche = {} #Contient un modele de toutes les recherches
         self.createDict()
-    
-        
+
         self.idB=0
-        self.map = Map("Tile/map1.csv")
+        self.map = Map(dirname(__file__) + "/Tile/map1.csv")
 
         self.dicAction2Server = {}
         self.dicActionFromServer = []
@@ -56,7 +56,7 @@ class Modele(object):
 
         self.height =  self.map.numRow*2
         self.width = self.map.numCol*2
-          
+
 
         self.graph = []
         self.cutNodes = []
@@ -496,19 +496,19 @@ class Modele(object):
     def createDict(self):
 
         parser = configparser.ConfigParser()
-        parser.read('Config/AttributeInfantryUnits.cfg')
+        parser.read(dirname(__file__) + '/Config/AttributeInfantryUnits.cfg')
         
         parserVehicule = configparser.ConfigParser()
-        parserVehicule.read('Config/AttributeVehicule.cfg')
+        parserVehicule.read(dirname(__file__) + '/Config/AttributeVehicule.cfg')
         
         parserBatiment = configparser.ConfigParser()
-        parserBatiment.read('Config/AttributeBuilding.cfg')
+        parserBatiment.read(dirname(__file__) + '/Config/AttributeBuilding.cfg')
 
         parserArtefact = configparser.ConfigParser()
-        parserArtefact.read('Config/AttributeArtefact.cfg')
+        parserArtefact.read(dirname(__file__) + '/Config/AttributeArtefact.cfg')
 
         parserRecherche = configparser.ConfigParser()
-        parserRecherche.read('Config/AttributeRecherche.cfg')
+        parserRecherche.read(dirname(__file__) + '/Config/AttributeRecherche.cfg')
         
         
         unit = parser.sections()

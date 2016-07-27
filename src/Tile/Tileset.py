@@ -2,7 +2,7 @@ __author__ = "Arnaud Girardin"
 
 from PIL import Image
 import configparser
-
+from os.path import dirname
 class Tileset:
     def __init__(self, tilesetImg, tileWidth, tileHeight):
         self.tilesetImg = Image.open(tilesetImg)
@@ -16,7 +16,7 @@ class Tileset:
     def generateTileset(self):
 
         cfg = configparser.ConfigParser()
-        cfg.read('Tile/tileconfig.cfg')
+        cfg.read(dirname(__file__) + '/tileconfig.cfg')
 
         #Variables contenant la grandeur total de l'image
         (totalWidth, totalHeight) = self.tilesetImg.size

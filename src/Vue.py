@@ -7,6 +7,7 @@ from Class.Unit import *
 from Class.Structure import *
 import time
 import os
+from os.path import dirname
 
 class Vue:
     def __init__(self, parent):    
@@ -16,7 +17,7 @@ class Vue:
         self.root.title("Space Conquest 3012")
 
         #Creation du Tileset
-        self.tileset = Tileset.Tileset("Image/tileset/tileset.png",64,64)
+        self.tileset = Tileset.Tileset(dirname(__file__) + "/Image/tileset/tileset.png",64,64)
 
         self.sprites = []
 
@@ -43,20 +44,20 @@ class Vue:
         self.relativeH = math.floor(self.surfaceH*self.miniMapH/(len(self.parent.modele.map.map)*64))
 
         #Image pour le HUD
-        self.imageHUD = Image.open("Image/gui/gui.png")
+        self.imageHUD = Image.open(dirname(__file__) + "/Image/gui/gui.png")
         self.photoImageHUD = ImageTk.PhotoImage(self.imageHUD)
-        self.boutonUP = Image.open("Image/gui/boutonUP.png")
+        self.boutonUP = Image.open(dirname(__file__) + "/Image/gui/boutonUP.png")
         self.photoImageBoutonUP = ImageTk.PhotoImage(self.boutonUP)
-        self.cover = Image.open("Image/gui/cover.png")
+        self.cover = Image.open(dirname(__file__) + "/Image/gui/cover.png")
         self.photoImageCover = ImageTk.PhotoImage(self.cover)
 
         #Creation des Thumbnails
-        directories = os.listdir("Image/gui/thumbnails")
+        directories = os.listdir(dirname(__file__) + "/Image/gui/thumbnails")
 
         for d in directories:
             #Creation des images
             if(d != "thumbRecherche"):
-                image = Image.open("Image/gui/thumbnails/"+d)
+                image = Image.open(dirname(__file__) + "/Image/gui/thumbnails/"+d)
                 photoImage = ImageTk.PhotoImage(image)
 
             #Insertion des images dans un dictionnaire
@@ -218,18 +219,19 @@ class Vue:
 
     #Generation des sprites pour chacun des joueurs
     def generateSpriteSet(self, noLocal):
-        directories = os.listdir("Image/sprites")
+        thisDirectory = dirname(__file__)
+        directories = os.listdir(thisDirectory + "/Image/sprites")
 
         for d in directories:
             
             s = Sprites()
             
             #Generation des infantries
-            s.generateSprites(32,32,96,128,"Config/AttributeInfantryUnits.cfg", d, 1)
+            s.generateSprites(32,32,96,128,thisDirectory + "/Config/AttributeInfantryUnits.cfg", d, 1)
             #Generation des vehicules
-            s.generateSprites(64,64,192,256,"Config/AttributeVehicule.cfg", d, 1)
+            s.generateSprites(64,64,192,256,thisDirectory + "/Config/AttributeVehicule.cfg", d, 1)
             #Generation des buildings
-            s.generateBuildingSprites("Config/AttributeBuilding.cfg", d, 1)
+            s.generateBuildingSprites(thisDirectory + "/Config/AttributeBuilding.cfg", d, 1)
 
             #Si on est au directory du joueur local, il faut creer une autre version des sprites pour la selection
             if(directories.index(d) == noLocal):
@@ -237,11 +239,11 @@ class Vue:
 
 
                 #Generation des infantries
-                ss.generateSprites(32,32,96,128,"Config/AttributeInfantryUnits.cfg", d, 3)
+                ss.generateSprites(32,32,96,128,thisDirectory + "/Config/AttributeInfantryUnits.cfg", d, 3)
                 #Generation des vehicules
-                ss.generateSprites(64,64,192,256,"Config/AttributeVehicule.cfg", d, 3)
+                ss.generateSprites(64,64,192,256,thisDirectory + "/Config/AttributeVehicule.cfg", d, 3)
                 #Generation des buildings
-                ss.generateBuildingSprites("Config/AttributeBuilding.cfg", d, 3)
+                ss.generateBuildingSprites(thisDirectory + "/Config/AttributeBuilding.cfg", d, 3)
                 
                 self.sprites.append((s, ss))
                 
